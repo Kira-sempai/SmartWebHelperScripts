@@ -1,0 +1,1 @@
+g++ -o C:\Users\SmartWebProgrammer\Desktop\DataLoggerFirmwarePacker\DLPack C:\development\Datalogger\tools\DLPack\crc16.c C:\development\Datalogger\tools\DLPack\pack.cc C:\development\Datalogger\tools\DLPack\read.cc
