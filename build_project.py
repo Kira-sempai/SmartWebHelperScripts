@@ -4,7 +4,6 @@ from subprocess import Popen
 
 def do(project_path, project_name, platform, device, production):
 	os.chdir(project_path)
-	print os.getcwd()
 	
 	p = Popen(
 		[
