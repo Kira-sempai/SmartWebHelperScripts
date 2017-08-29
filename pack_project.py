@@ -1,8 +1,10 @@
-import os, shutil
-import sys
+import os, shutil, sys
 sys.path.insert(0, "./scripts")
 import func
 from subprocess import Popen
+from distutils.dir_util import copy_tree
+from termcolor import colored
+
 
 def clear_folder(folder):
 	for the_file in os.listdir(folder):
@@ -10,24 +12,35 @@ def clear_folder(folder):
 		try:
 			if os.path.isfile(file_path):
 				os.unlink(file_path)
+				print colored("clear file: " + file_path, 'green')
+			elif os.path.isdir(file_path):
+				shutil.rmtree(file_path)
+				print colored("clear path: " + file_path, 'green')
 		except Exception as e:
 			print(e)
 
 def reset_folders(folders):
+	print colored("/n/rReset working dirs", 'green')
+
 	for folder in folders:
 		if os.path.exists(folder):
 			clear_folder(folder)
 		else:
 			os.makedirs(folder)
-	
-			
-def do(project_path, projectName, production, deviceName, board, boardVariant, src_files_list, dest_files_list):
-	
-	if production :
-		projectName = projectName + '_production'
+			print colored("make new dir: " + folder, 'green')
 
-	buildDirPath	= os.path.join(project_path, "build/", projectName, "device" + boardVariant)
+def copySDCardFiles(src_files_list, dest_files_list, tmp_folder):
+	print colored("/n/rCopy SD-Card files to tmp folder", 'green')
 	
+	if len(src_files_list) > 0:
+		for src, dest in zip(src_files_list, dest_files_list):
+			dest = os.path.join(tmp_folder, dest)
+			if os.path.isdir(src):
+				func.copytree(src, dest)
+			else:
+				shutil.copy2(src, dest)
+
+def generateFirmwareFileName(deviceName, board, boardVariant, langkey):
 	baseEnv = dict()
 	baseEnv['CFG_OEM_ID']			= 'OID_SOREL'
 	baseEnv['CFG_DEVICENAME']		= deviceName
@@ -36,65 +49,75 @@ def do(project_path, projectName, production, deviceName, board, boardVariant, s
 	baseEnv['CFG_BOARD_REVISION']	= '1'
 	baseEnv['CFG_BOARD_VARIANT']	= boardVariant
 	
-	sdCardFirmwarePostfix			= 'west-sdcard.bin'
-	
-	SDCardFirmwareFileName = func.MakeFilename(baseEnv, sdCardFirmwarePostfix)
-	
+	sdCardFirmwarePostfix = 'sdcard.bin'
+	if not langkey == 'rom':
+		sdCardFirmwarePostfix = langkey + '-' + sdCardFirmwarePostfix
+		
+	return func.MakeFilename(baseEnv, sdCardFirmwarePostfix)
+
+
+def do(project_path, projectName, production, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list):
 	# prepare temp data folders
 	data_folder = './data_files'
 	firmware_folder = './install_files'
 	output_folder = './archive'
+	tmp_folder = './tmp'
 	
 	dest_folders = [
 		data_folder,
 		firmware_folder,
 		output_folder,
+		tmp_folder,
 	]
 	
+	#clear working tree
 	reset_folders(dest_folders)
 	
-	#copy sd-card data to data_folder
-	if len(src_files_list) > 0:
-		for src, dest in zip(src_files_list, dest_files_list):
-			dest = os.path.join(data_folder, dest)
-			if os.path.isdir(src):
-				func.copytree(src, dest)
-			else:
-				shutil.copy2(src, dest)
+	#copy sd-card data to tmp_folder
+	copySDCardFiles(src_files_list, dest_files_list, tmp_folder)
+	
+	#convert file names
+	print colored("/n/rRun hashren.exe script for tmp folder", 'green')
+	p = Popen(["hashren.exe", tmp_folder])
+	p.communicate()
+	
+	#copy data from tmp_folder to data_folder
+	print colored("/n/rCopy tmp folder to data folder", 'green')
+	copy_tree(tmp_folder, data_folder)
 	
 	#copy sd-card firmware file to firmware_folder
-	firmwareSourcePath           = os.path.join(buildDirPath, 'shared/platform/stm32/')
+	if production :
+		projectName = projectName + '_production'
+	
+	SDCardFirmwareFileName = generateFirmwareFileName(deviceName, board, boardVariant, langkey)
+	
+	firmwareSourcePath           = os.path.join(project_path, "build/", projectName, "device" + boardVariant, 'shared/platform/stm32/')
 	SDCardFirmwareFileSourcePath = os.path.join(firmwareSourcePath, SDCardFirmwareFileName)
 	SDCardFirmwareFileDestPath   = os.path.join(firmware_folder, 'firmware.bin')
 	
 	shutil.copy2(SDCardFirmwareFileSourcePath, SDCardFirmwareFileDestPath)
-	
-	
-	#convert file names
-	p = Popen(["hashren.exe", data_folder])
-	stdout, stderr = p.communicate()
-	
 	
 	#pack firmware in several ways
 	fw_pack = deviceName + '_FW.bin'
 	sd_pack = deviceName + '_SD.bin'
 	fw_sd_pack = deviceName + '_FW_SD.bin'
 	
+	print colored("/n/rRun DLPack.exe script for firmware and data folders:", 'green')
+	print colored("pack firmware", 'green')
 	p = Popen(["DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, fw_pack)])
-	stdout, stderr = p.communicate()
+	p.communicate()
+	print colored("pack data", 'green')
 	p = Popen(["DLPack.exe", data_folder, 'null', os.path.join(output_folder, sd_pack)])
-	stdout, stderr = p.communicate()
+	p.communicate()
+	print colored("pack firmware and data", 'green')
 	p = Popen(["DLPack.exe", firmware_folder, data_folder, os.path.join(output_folder, fw_sd_pack)])
-	stdout, stderr = p.communicate()
-	
-	
+	p.communicate()
+
 	#pack bootloader
-	bl_pack = deviceName + '_BL.bin'
-	baseEnv['CFG_DEVICENAME'] = 'loader'
-	sdCardBootloaderPostfix = 'sdcard.bin'
-	SDCardBootloaderFileName = func.MakeFilename(baseEnv, sdCardBootloaderPostfix)
+	bootloader_name = 'loader'
+	SDCardBootloaderFileName = generateFirmwareFileName(bootloader_name, board, boardVariant, langkey)
 	
-	bootloaderSourcePath           = os.path.join(project_path, 'build/', projectName, 'loader/shared/platform/stm32/')
+	bootloaderSourcePath           = os.path.join(project_path, 'build/', projectName, bootloader_name, 'shared/platform/stm32/')
 	SDCardBootloaderFileSourcePath = os.path.join(bootloaderSourcePath, SDCardBootloaderFileName)
 	SDCardBootloaderFileDestPath   = os.path.join(firmware_folder, 'bootldr.bin')
 	
@@ -102,9 +125,12 @@ def do(project_path, projectName, production, deviceName, board, boardVariant, s
 	
 	shutil.copy2(SDCardBootloaderFileSourcePath, SDCardBootloaderFileDestPath)
 	
+	print colored("run DLPack.exe script for bootloader", 'green')
+	bl_pack = deviceName + '_BL.bin'
 	p = Popen(["DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
-	stdout, stderr = p.communicate()
+	p.communicate()
 	
+	input = raw_input("Press ENTER to continue")
 	
 	
 	
