@@ -5,6 +5,14 @@ from subprocess import Popen
 from distutils.dir_util import copy_tree
 from termcolor import colored
 
+WarningList = []
+
+def print_warning(warning):
+	warning = colored(warning, 'white', 'on_red')
+	print warning
+	WarningList.append(warning)
+	input = raw_input(colored("Press ENTER to continue\r", 'red', 'on_white'))
+
 def clear_folder(folder):
 	for the_file in os.listdir(folder):
 		file_path = os.path.join(folder, the_file)
@@ -26,6 +34,13 @@ def reset_folders(folders):
 		else:
 			os.makedirs(folder)
 			print colored("make new dir: " + folder, 'magenta', 'on_green')
+	print '\n\r'
+
+def reduceFileNames(path):
+	print colored("Run hashren.exe script for tmp folder", 'blue', 'on_green')
+	p = Popen(["hashren.exe", path])
+	p.communicate()
+	print colored("Done\n\r", 'blue', 'on_green')
 
 def copySDCardFiles(src_files_list, dest_files_list, tmp_folder):
 	print colored("Copy SD-Card files to tmp folder", 'green')
@@ -36,17 +51,33 @@ def copySDCardFiles(src_files_list, dest_files_list, tmp_folder):
 			if os.path.isdir(src):
 				func.copytree(src, dest)
 			elif os.path.isfile(src):
+				dest_path = os.path.dirname(os.path.abspath(dest))
+				if not os.path.exists(dest_path):
+					os.makedirs(dest_path)
 				shutil.copy2(src, dest)
 			else:
-				print colored("SD-Card file not found: " + src, 'red')
-				input = raw_input(colored("Press ENTER to continue", 'red', 'on_white')
+				print_warning("SD-Card file not found: " + src)
+
+def printEndMessage():
+	warningListLen = len(WarningList)
+	endColor = 'green'
+	
+	if warningListLen > 0:
+		endColor = 'red'
+		print colored("You have %d warning/s!!" % (warningListLen), 'red')
+		input = raw_input(colored("Want to see it? (y/n) ", 'red', 'on_white'))
+		if input != 'n':
+			for warning in WarningList:
+				print warning
+	
+	input = raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 
 def do(project_path, projectName, production, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list):
 	# prepare temp data folders
 	data_folder = './data_files'
 	firmware_folder = './install_files'
 	output_folder = './archive'
-	tmp_folder = '.\\tmp'
+	tmp_folder = './tmp'
 	
 	dest_folders = [
 		data_folder,
@@ -62,9 +93,7 @@ def do(project_path, projectName, production, deviceName, board, boardVariant, l
 	copySDCardFiles(src_files_list, dest_files_list, tmp_folder)
 	
 	#convert file names
-	print colored("Run hashren.exe script for tmp folder", 'blue', 'on_green')
-	p = Popen(["hashren.exe", tmp_folder])
-	p.communicate()
+	reduceFileNames(tmp_folder)
 	
 	#copy data from tmp_folder to data_folder
 	print colored("Copy tmp folder to data folder", 'green')
@@ -97,6 +126,7 @@ def do(project_path, projectName, production, deviceName, board, boardVariant, l
 	print colored("pack firmware and data", 'blue', 'on_green')
 	p = Popen(["DLPack.exe", firmware_folder, data_folder, os.path.join(output_folder, fw_sd_pack)])
 	p.communicate()
+	
 	#pack bootloader
 	bootloader_name = 'loader'
 	langkey = 'rom'
@@ -115,8 +145,5 @@ def do(project_path, projectName, production, deviceName, board, boardVariant, l
 	p = Popen(["DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
 	
-	input = raw_input("Press ENTER to continue")
-	
-	
-	
+	printEndMessage()
 	
