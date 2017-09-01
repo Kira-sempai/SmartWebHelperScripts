@@ -72,7 +72,7 @@ def printEndMessage():
 	
 	input = raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 
-def do(project_path, projectName, production, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list):
+def do(project_path, projectName, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list):
 	# prepare temp data folders
 	data_folder = './data_files'
 	firmware_folder = './install_files'
@@ -100,9 +100,6 @@ def do(project_path, projectName, production, deviceName, board, boardVariant, l
 	copy_tree(tmp_folder, data_folder)
 	
 	#copy sd-card firmware file to firmware_folder
-	if production :
-		projectName = projectName + '_production'
-	
 	SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey)
 	
 	firmwareSourcePath           = os.path.join(project_path, "build/", projectName, "device" + boardVariant, 'shared/platform/stm32/')

@@ -2,8 +2,9 @@ import pack_project, colorama, sys
 sys.path.insert(0, "./scripts")
 import func
 
-#=====================================#
 project_path = r'C:/development/xhcc/'
+
+#=====================================#
 production = True
 projectName = 'DataLogger'
 deviceName = 'DL'
@@ -12,11 +13,13 @@ boardVariant = ''
 langkey = 'rom'
 #=====================================#
 
-projectTmpName = projectName + '_production' if production else projectName
-buildProjectPath = project_path + 'build/' + projectTmpName + '/device' + boardVariant + '/'
-SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey)
+if production :
+	projectName = projectName + '_production'
+
 
 #=====================================#
+buildProjectPath = project_path + 'build/' + projectName + '/device' + boardVariant + '/'
+SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey)
 src_files_list = [
 	project_path + 'web/teplomonitor-server/server',
 	project_path + 'web/teplomonitor-server/sitemenu.txt',
@@ -36,4 +39,4 @@ dest_files_list = [
 
 colorama.init()
 
-pack_project.do(project_path, projectName, production, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list)
+pack_project.do(project_path, projectName, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list)

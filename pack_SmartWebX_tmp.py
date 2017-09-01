@@ -3,21 +3,28 @@ sys.path.insert(0, "./scripts")
 import func
 
 project_path = r'C:/development/xhcc/'
+
+#=====================================#
 production = True
 projectName = 'xhcc'
 deviceName = 'XHCC'
 board = 'S61'
 boardVariant = '2'
 langkey = 'west'
+#=====================================#
 
-projectTmpName = projectName + '_production' if production else projectName
-buildProjectPath = project_path + 'build/' + projectTmpName + '/device' + boardVariant + '/'
+if production :
+	projectName = projectName + '_production'
+
+
+#=====================================#
+buildProjectPath = project_path + 'build/' + projectName + '/device' + boardVariant + '/'
 SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey)
 
 src_files_list = [
 	project_path + 'web/teplomonitor-server/server',
 	project_path + 'web/teplomonitor-server/sitemenu.txt',
-	buildProjectPath + 'shared/platform/stm32/langs.sd',
+#	buildProjectPath + 'shared/platform/stm32/langs.sd',
 	buildProjectPath + 'shared/platform/stm32/dlparams.sd',
 	buildProjectPath + 'shared/platform/stm32/' + SDCardFirmwareFileName,
 ]
@@ -25,11 +32,12 @@ src_files_list = [
 dest_files_list = [
 	'WEB/',
 	'sitemenu.txt',
-	'langs.sd',
+#	'langs.sd',
 	'dlparams.sd',
 	'update/firmware.bin',
 ]
+#=====================================#
 
 colorama.init()
 
-pack_project.do(project_path, projectName, production, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list)
+pack_project.do(project_path, projectName, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list)
