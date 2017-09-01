@@ -27,8 +27,7 @@ dest_files_list = [
 	'sitemenu.txt',
 	'langs.sd',
 	'dlparams.sd',
-	'update/' + SDCardFirmwareFileName,
-#	SDCardFirmwareFileName,
+	'update/firmware.bin',
 ]
 
 colorama.init()
