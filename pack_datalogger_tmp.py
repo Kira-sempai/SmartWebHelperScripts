@@ -1,28 +1,38 @@
-import pack_project, colorama
+import pack_project, colorama, sys
+sys.path.insert(0, "./scripts")
+import func
 
-project_path = r'C:\development\xhcc'
-projectName = 'DataLogger'
+#=====================================#
+project_path = r'C:/development/xhcc/'
 production = True
+projectName = 'DataLogger'
 deviceName = 'DL'
 board = 'L30'
 boardVariant = ''
 langkey = 'rom'
+#=====================================#
 
+projectTmpName = projectName + '_production' if production else projectName
+buildProjectPath = project_path + 'build/' + projectTmpName + '/device' + boardVariant + '/'
+SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey)
+
+#=====================================#
 src_files_list = [
-	r'C:\development\xhcc\web\teplomonitor-server\server',
-	r'C:\development\xhcc\build\DataLogger_production\device\shared\platform\stm32\langs.sd',
-	r'C:\development\xhcc\web\teplomonitor-server\sitemenu.txt',
-	r'C:\development\xhcc\build\DataLogger_production\device\shared\platform\stm32\dlparams.sd',
-	r'C:\development\xhcc\build\DataLogger_production\device\shared\platform\stm32\DL-Sorel-L30vr1-STM32-sdcard.bin',
+	project_path + 'web/teplomonitor-server/server',
+	project_path + 'web/teplomonitor-server/sitemenu.txt',
+	buildProjectPath + 'shared/platform/stm32/langs.sd',
+	buildProjectPath + 'shared/platform/stm32/dlparams.sd',
+	buildProjectPath + 'shared/platform/stm32/' + SDCardFirmwareFileName,
 ]
 
 dest_files_list = [
 	'WEB/',
-	'langs.sd',
 	'sitemenu.txt',
+	'langs.sd',
 	'dlparams.sd',
 	'firmware.bin',
 ]
+#=====================================#
 
 colorama.init()
 
