@@ -48,3 +48,18 @@ def parseVersionInfoFileToDestFolderName(versionFilePath):
 	versionDate = versionDate.replace('/', '_')
 	
 	return versionDate + '_' + versionGU
+
+def generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey):
+	baseEnv = dict()
+	baseEnv['CFG_OEM_ID']			= 'OID_SOREL'
+	baseEnv['CFG_DEVICENAME']		= deviceName
+	baseEnv['TARGET_PLATFORM']		= 'STM32'
+	baseEnv['BOARD']				= board
+	baseEnv['CFG_BOARD_REVISION']	= '1'
+	baseEnv['CFG_BOARD_VARIANT']	= boardVariant
+	
+	sdCardFirmwarePostfix = 'sdcard.bin'
+	if not langkey == 'rom':
+		sdCardFirmwarePostfix = langkey + '-' + sdCardFirmwarePostfix
+		
+	return MakeFilename(baseEnv, sdCardFirmwarePostfix)
