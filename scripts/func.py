@@ -12,12 +12,11 @@ def getProjectDirName(project):
 	return project['projectName'] + postfix
 
 def getDeviceBuildDir(project):
-	return os.path.join(project['project_path'], "build/", getProjectDirName(project), "device" + project['boardVariant'])
+	return os.path.join(project['project_path'], "build", getProjectDirName(project), project['project'] + project['boardVariant'])
 	
 def getProjectFirmwareDir(project):
 	return os.path.join(getDeviceBuildDir(project), 'shared/platform/stm32/')
 
-	
 #took from Sorel code
 def MakeFilename(env, postfix='', no_platform=False):
 	"""Build a filename string with platform/board/etc with postfix appended"""
@@ -57,7 +56,7 @@ def parseVersionInfoFileToDestFolderName(versionFilePath):
 
 	file.close()
 	
-	versionGU  = re.search(r'SHORT_VERSION.*g(\w{7,7})', text).group(1)
+	versionGU  = re.search(r'SHORT_VERSION.*"(.*)"', text).group(1)
 	versionDate = re.search(r'VERSION_DATE.*"(.*)"', text).group(1)
 	versionDate = versionDate.replace('/', '_')
 	

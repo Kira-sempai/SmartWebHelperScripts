@@ -17,7 +17,7 @@ def do(project):
 			'CFG_PROJECT=' + project['projectName'],
 			'CFG_PLATFORM=' + project['platform'],
 			'CFG_PRODUCTION=' + project['production'],
-			'--jobs=8'
+			'--jobs=8',
 		],
 		cwd = project['project_path']
 	)

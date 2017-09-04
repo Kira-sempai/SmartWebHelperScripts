@@ -3,8 +3,8 @@ import glob
 import os
 import func
 
-def copyProjectBinaryFiles(project, dest)
-	firmwareSourcePath = funct.getProjectFirmwareDir(project)
+def copyProjectBinaryFiles(project, dest):
+	firmwareSourcePath = func.getProjectFirmwareDir(project)
 	sourceExtensionList = ['map','s19','hex','bin']
 	for extension in sourceExtensionList:
 		for item in glob.glob(firmwareSourcePath+'*.'+extension):
@@ -24,15 +24,14 @@ def do(project, dest):
 	#################################################
 	#################################################
 
-	buildDirPath	= getDeviceBuildDir(project)
-	webDirPath		= 'C:/development/xhcc/web/teplomonitor-server/'
+	buildDirPath	= func.getDeviceBuildDir(project)
 
 	versionFilePath =  os.path.join(buildDirPath, 'shared/include/versionInfo.h')
 	print 'version file path: ' + versionFilePath
 
 	firmwareFolderName = func.parseVersionInfoFileToDestFolderName(versionFilePath)
 
-	firmwareDestPath            = os.path.join(dest, getProjectDirName(project), firmwareFolderName)
+	firmwareDestPath            = os.path.join(dest, func.getProjectDirName(project), firmwareFolderName)
 	firmwareDestPathBin			= os.path.join(firmwareDestPath, 'firmware/')
 	firmwareDestPathWeb			= os.path.join(firmwareDestPath, 'web_firmware/')
 	firmwareDestPathSD			= os.path.join(firmwareDestPath, 'SD-card/')
@@ -52,14 +51,10 @@ def do(project, dest):
 	sourceWebArchivePath = './archive'
 
 	for archive in sourceWebArchiveList:
-		shutil.copy2(sourceWebArchivePath + archive, firmwareDestPathWeb)
+		shutil.copy2(os.path.join(sourceWebArchivePath, archive), firmwareDestPathWeb)
 
-	SDCardFirmwareFileName = func.MakeFilename(baseEnv, sdCardFirmwarePostfix)
-
-	SDCardFirmwareFileDestPath		= os.path.join(firmwareDestPathSDUpdate	, SDCardFirmwareFileName)
-	SDCardFirmwareFileSourcePath	= os.path.join(firmwareSourcePath		, SDCardFirmwareFileName)
-
-	shutil.copy2(SDCardFirmwareFileSourcePath, SDCardFirmwareFileDestPath)
+	SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(project)
 
 	sourceSDCardFilesPath = './data_files'
 	func.copytree(sourceSDCardFilesPath, firmwareDestPathSD)
+	
