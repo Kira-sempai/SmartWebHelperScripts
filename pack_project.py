@@ -2,7 +2,6 @@ import os, shutil, sys
 sys.path.insert(0, "./scripts")
 import func
 from subprocess import Popen
-from distutils.dir_util import copy_tree
 from termcolor import colored
 
 WarningList = []
@@ -37,7 +36,7 @@ def reset_folders(folders):
 	print '\n\r'
 
 def reduceFileNames(path):
-	print colored("Run hashren.exe script for tmp folder", 'blue', 'on_green')
+	print colored("Run hashren.exe script for %s" % (path) , 'blue', 'on_green')
 	p = Popen(["hashren.exe", path])
 	p.communicate()
 	print colored("Done\n\r", 'blue', 'on_green')
@@ -72,12 +71,14 @@ def printEndMessage():
 	
 	input = raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 
-def do(project_path, projectName, deviceName, board, boardVariant, langkey, src_files_list, dest_files_list):
+def do(project):
+	print colored("Packing project: %s" % (project['projectName']), 'white', 'on_green', attrs=['bold'])
+	
 	# prepare temp data folders
-	data_folder = './data_files'
+	data_folder     = './data_files'
 	firmware_folder = './install_files'
-	output_folder = './archive'
-	tmp_folder = './tmp'
+	output_folder   = './archive'
+	tmp_folder      = './tmp'
 	
 	dest_folders = [
 		data_folder,
@@ -90,46 +91,47 @@ def do(project_path, projectName, deviceName, board, boardVariant, langkey, src_
 	reset_folders(dest_folders)
 	
 	#copy sd-card data to tmp_folder
-	copySDCardFiles(src_files_list, dest_files_list, tmp_folder)
+	copySDCardFiles(project['src_files_list'], project['dest_files_list'], tmp_folder)
 	
 	#convert file names
 	reduceFileNames(tmp_folder)
 	
 	#copy data from tmp_folder to data_folder
 	print colored("Copy tmp folder to data folder", 'green')
-	copy_tree(tmp_folder, data_folder)
+	func.copytree(tmp_folder, data_folder)
 	
 	#copy sd-card firmware file to firmware_folder
-	SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey)
+	SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(project)
 	
-	firmwareSourcePath           = os.path.join(project_path, "build/", projectName, "device" + boardVariant, 'shared/platform/stm32/')
+	firmwareSourcePath           = func.getProjectFirmwareDir(project)
 	SDCardFirmwareFileSourcePath = os.path.join(firmwareSourcePath, SDCardFirmwareFileName)
 	SDCardFirmwareFileDestPath   = os.path.join(firmware_folder, 'firmware.bin')
 	
 	shutil.copy2(SDCardFirmwareFileSourcePath, SDCardFirmwareFileDestPath)
 	
 	#pack firmware in several ways
-	fw_pack = deviceName + '_FW.bin'
-	sd_pack = deviceName + '_SD.bin'
-	fw_sd_pack = deviceName + '_FW_SD.bin'
+	fw_pack = project['deviceName'] + '_FW.bin'
+	sd_pack = project['deviceName'] + '_SD.bin'
+	fw_sd_pack = project['deviceName'] + '_FW_SD.bin'
 	
-	print colored("Run DLPack.exe script for firmware and data folders:", 'blue', 'on_green')
-	print colored("pack firmware", 'blue', 'on_green')
+	print colored("Run DLPack.exe script for firmware and data folders:", 'white', 'on_green')
+	print colored("pack firmware", 'white', 'on_green')
 	p = Popen(["DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, fw_pack)])
 	p.communicate()
-	print colored("pack data", 'blue', 'on_green')
+	print colored("pack data", 'white', 'on_green')
 	p = Popen(["DLPack.exe", data_folder, 'null', os.path.join(output_folder, sd_pack)])
 	p.communicate()
-	print colored("pack firmware and data", 'blue', 'on_green')
+	print colored("pack firmware and data", 'white', 'on_green')
 	p = Popen(["DLPack.exe", firmware_folder, data_folder, os.path.join(output_folder, fw_sd_pack)])
 	p.communicate()
 	
 	#pack bootloader
-	bootloader_name = 'loader'
-	langkey = 'rom'
-	SDCardBootloaderFileName = func.generateSDCardFirmwareFileName(bootloader_name, board, boardVariant, langkey)
+	bootloader_project = project.copy()
+	bootloader_project['deviceName'] = 'loader'
+	bootloader_project['langkey'] = 'rom'
+	SDCardBootloaderFileName = func.generateSDCardFirmwareFileName(bootloader_project)
 	
-	bootloaderSourcePath           = os.path.join(project_path, 'build/', projectName, bootloader_name, 'shared/platform/stm32/')
+	bootloaderSourcePath           = os.path.join(bootloader_project['project_path'], 'build/', bootloader_project['projectName'], bootloader_project['deviceName'], 'shared/platform/stm32/')
 	SDCardBootloaderFileSourcePath = os.path.join(bootloaderSourcePath, SDCardBootloaderFileName)
 	SDCardBootloaderFileDestPath   = os.path.join(firmware_folder, 'bootldr.bin')
 	
@@ -137,8 +139,8 @@ def do(project_path, projectName, deviceName, board, boardVariant, langkey, src_
 	
 	shutil.copy2(SDCardBootloaderFileSourcePath, SDCardBootloaderFileDestPath)
 	
-	print colored("Run DLPack.exe script for bootloader", 'blue', 'on_green')
-	bl_pack = deviceName + '_BL.bin'
+	print colored("Run DLPack.exe script for bootloader", 'white', 'on_green')
+	bl_pack = bootloader_project['deviceName'] + '_BL.bin'
 	p = Popen(["DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
 	

@@ -4,6 +4,20 @@ import shutil
 #################################################
 #################################################
 
+def getProjectDirName(project):
+	postfix = ''
+	if project['production'] == '1':
+		postfix = '_production'
+	
+	return project['projectName'] + postfix
+
+def getDeviceBuildDir(project):
+	return os.path.join(project['project_path'], "build/", getProjectDirName(project), "device" + project['boardVariant'])
+	
+def getProjectFirmwareDir(project):
+	return os.path.join(getDeviceBuildDir(project), 'shared/platform/stm32/')
+
+	
 #took from Sorel code
 def MakeFilename(env, postfix='', no_platform=False):
 	"""Build a filename string with platform/board/etc with postfix appended"""
@@ -49,17 +63,17 @@ def parseVersionInfoFileToDestFolderName(versionFilePath):
 	
 	return versionDate + '_' + versionGU
 
-def generateSDCardFirmwareFileName(deviceName, board, boardVariant, langkey):
+def generateSDCardFirmwareFileName(project):
 	baseEnv = dict()
 	baseEnv['CFG_OEM_ID']			= 'OID_SOREL'
-	baseEnv['CFG_DEVICENAME']		= deviceName
+	baseEnv['CFG_DEVICENAME']		= project['deviceName']
 	baseEnv['TARGET_PLATFORM']		= 'STM32'
-	baseEnv['BOARD']				= board
+	baseEnv['BOARD']				= project['board']
 	baseEnv['CFG_BOARD_REVISION']	= '1'
-	baseEnv['CFG_BOARD_VARIANT']	= boardVariant
+	baseEnv['CFG_BOARD_VARIANT']	= project['boardVariant']
 	
 	sdCardFirmwarePostfix = 'sdcard.bin'
-	if not langkey == 'rom':
-		sdCardFirmwarePostfix = langkey + '-' + sdCardFirmwarePostfix
+	if not project['langkey'] == 'rom':
+		sdCardFirmwarePostfix = project['langkey'] + '-' + sdCardFirmwarePostfix
 		
 	return MakeFilename(baseEnv, sdCardFirmwarePostfix)
