@@ -12,7 +12,7 @@ def getProjectDirName(project):
 	return project['projectName'] + postfix
 
 def getDeviceBuildDir(project):
-	return os.path.join(project['project_path'], "build", getProjectDirName(project), project['project'] + project['boardVariant'])
+	return os.path.join(project['project_path'], "build", getProjectDirName(project), project['project'])
 	
 def getProjectFirmwareDir(project):
 	return os.path.join(getDeviceBuildDir(project), 'shared/platform/stm32/')

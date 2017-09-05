@@ -16,9 +16,9 @@ serverDir = "Z:/firmware"
 
 #=====================================#
 datalogger     = dict(project_path = default_project_path, project = 'device', projectName = 'DataLogger', platform = 'device', production = '1', deviceName = 'DL'      , board = 'L30'             , boardVariant =  '', langkey = 'rom',)
-SmartWeb_X     = dict(project_path = default_project_path, project = 'device', projectName = 'xhcc'      , platform = 'device', production = '1', deviceName = 'XHCC'    , board = 'S61'             , boardVariant = '2', langkey = 'west',)
-SmartWeb_X2    = dict(project_path = default_project_path, project = 'device', projectName = 'xhcc_s62'  , platform = 'device', production = '1', deviceName = 'XHCC-S62', board = 'S62'             , boardVariant = '2', langkey = 'west',)
-SmartWeb_Disco = dict(project_path = default_project_path, project = 'device', projectName = 'disco'     , platform = 'device', production = '1', deviceName = 'DISCO'   , board = '32F746GDISCOVERY', boardVariant = '1', langkey = 'west',)
+SmartWeb_X     = dict(project_path = default_project_path, project = 'device2', projectName = 'xhcc'      , platform = 'device', production = '1', deviceName = 'XHCC'    , board = 'S61'             , boardVariant = '2', langkey = 'west',)
+SmartWeb_X2    = dict(project_path = default_project_path, project = 'device2', projectName = 'xhcc_s62'  , platform = 'device', production = '1', deviceName = 'XHCC-S62', board = 'S62'             , boardVariant = '2', langkey = 'west',)
+SmartWeb_Disco = dict(project_path = default_project_path, project = 'device1', projectName = 'disco'     , platform = 'device', production = '1', deviceName = 'DISCO'   , board = '32F746GDISCOVERY', boardVariant = '1', langkey = 'west',)
 
 #=====================================#
 

@@ -128,7 +128,6 @@ def do(project):
 	bootloader_project = project.copy()
 	bootloader_project['project'] = 'loader'
 	bootloader_project['deviceName'] = 'loader'
-	bootloader_project['boardVariant'] = ''
 	bootloader_project['langkey'] = 'rom'
 	SDCardBootloaderFileName = func.generateSDCardFirmwareFileName(bootloader_project)
 	
