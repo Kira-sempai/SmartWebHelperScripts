@@ -13,7 +13,7 @@ def do(project):
 	p = Popen(
 		[
 			"scons.bat",
-			project['project'],
+			project['project'] + project['boardVariant'],
 			'CFG_PROJECT=' + project['projectName'],
 			'CFG_PLATFORM=' + project['platform'],
 			'CFG_PRODUCTION=' + project['production'],
