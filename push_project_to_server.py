@@ -27,11 +27,10 @@ def do(project, dest):
 	buildDirPath	= func.getDeviceBuildDir(project)
 
 	versionFilePath =  os.path.join(buildDirPath, 'shared/include/versionInfo.h')
-	print 'version file path: ' + versionFilePath
 
 	firmwareFolderName = func.parseVersionInfoFileToDestFolderName(versionFilePath)
 
-	firmwareDestPath            = os.path.join(dest, func.getProjectDirName(project), firmwareFolderName)
+	firmwareDestPath            = os.path.join(dest, firmwareFolderName)
 	firmwareDestPathBin			= os.path.join(firmwareDestPath, 'firmware/')
 	firmwareDestPathWeb			= os.path.join(firmwareDestPath, 'web_firmware/')
 	firmwareDestPathSD			= os.path.join(firmwareDestPath, 'SD-card/')
