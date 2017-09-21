@@ -2,6 +2,7 @@ import sys
 import shutil
 import glob
 import os
+sys.path.insert(0, "./scripts")
 import func
 
 def copyProjectBinaryFiles(project, dest):
@@ -46,9 +47,9 @@ def do(project, dest):
 		if not os.path.exists(path):
 			try:
 				os.makedirs(path)
-		except Exception as e:
-			print_warning(e)
-			sys.exit()
+			except Exception as e:
+				func.print_warning('%s \n\r%s' % (e, 'Probably server not available =('))
+				sys.exit()
 
 	copyProjectBinaryFiles(project, firmwareDestPathBin)
 
