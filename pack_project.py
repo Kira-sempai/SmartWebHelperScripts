@@ -34,11 +34,11 @@ def reduceFileNames(path):
 	p.communicate()
 	print colored("Done", 'blue', 'on_green')
 
-def copySDCardFiles(src_files_list, dest_files_list, tmp_folder):
+def copySDCardFiles(sd_card_src_files_list, sd_card_dest_files_list, tmp_folder):
 	print colored("Copy SD-Card files to %s" % (tmp_folder), 'green')
 	
-	if len(src_files_list) > 0:
-		for src, dest in zip(src_files_list, dest_files_list):
+	if len(sd_card_src_files_list) > 0:
+		for src, dest in zip(sd_card_src_files_list, sd_card_dest_files_list):
 			dest = os.path.join(tmp_folder, dest)
 			if os.path.isdir(src):
 				func.copytree(src, dest)
@@ -84,7 +84,7 @@ def do(project):
 	reset_folders(dest_folders)
 	
 	#copy sd-card data to tmp_folder
-	copySDCardFiles(project['src_files_list'], project['dest_files_list'], tmp_folder)
+	copySDCardFiles(project['sd_card_src_files_list'], project['sd_card_dest_files_list'], tmp_folder)
 	
 	#convert file names
 	reduceFileNames(tmp_folder)

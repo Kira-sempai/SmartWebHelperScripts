@@ -4,7 +4,7 @@ def append(project):
 	buildProjectPath = func.getDeviceBuildDir(project)
 	SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(project)
 
-	project['src_files_list'] = [
+	project['sd_card_src_files_list'] = [
 		os.path.join(project['project_path'], 'web/teplomonitor-server/server'),
 		os.path.join(project['project_path'], 'web/teplomonitor-server/sitemenu.txt'),
 		os.path.join(project['project_path'], 'sdcard/Disco/GUI'),
@@ -12,7 +12,7 @@ def append(project):
 		os.path.join(buildProjectPath, 'shared/platform/stm32', SDCardFirmwareFileName),
 	]
 	
-	project['dest_files_list'] = [
+	project['sd_card_dest_files_list'] = [
 		'WEB/',
 		'sitemenu.txt',
 		'GUI/',
