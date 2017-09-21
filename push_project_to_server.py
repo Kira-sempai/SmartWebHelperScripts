@@ -1,3 +1,4 @@
+import sys
 import shutil
 import glob
 import os
@@ -43,7 +44,11 @@ def do(project, dest):
 
 	for path in firmwareDestPathList:
 		if not os.path.exists(path):
-			os.makedirs(path)
+			try:
+				os.makedirs(path)
+		except Exception as e:
+			print_warning(e)
+			sys.exit()
 
 	copyProjectBinaryFiles(project, firmwareDestPathBin)
 
