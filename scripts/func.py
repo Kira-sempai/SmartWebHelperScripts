@@ -4,6 +4,11 @@ import shutil
 #################################################
 #################################################
 
+def print_warning(warning):
+	warning = colored(warning, 'white', 'on_red')
+	print warning
+	input = raw_input(colored("Press ENTER to continue\r", 'red', 'on_white'))
+
 def getProjectDirName(project):
 	postfix = ''
 	if project['production'] == '1':

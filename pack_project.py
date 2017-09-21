@@ -4,13 +4,7 @@ import func
 from subprocess import Popen
 from termcolor import colored
 
-WarningList = []
-
-def print_warning(warning):
-	warning = colored(warning, 'white', 'on_red')
-	print warning
-	WarningList.append(warning)
-	input = raw_input(colored("Press ENTER to continue\r", 'red', 'on_white'))
+#WarningList = []
 
 def clear_folder(folder):
 	for the_file in os.listdir(folder):
@@ -144,5 +138,5 @@ def do(project):
 	p = Popen(["tools/DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
 	
-	printEndMessage()
+#	printEndMessage()
 	
