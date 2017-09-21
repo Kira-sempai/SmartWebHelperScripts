@@ -16,6 +16,9 @@ import sd_card_files_SmartWeb_X2
 
 colorama.init()
 
+def getProjectDestPathPostfix(project):
+	return ' production' if project['production'] == '1' else ' debug'
+
 default_project_path = 'C:/development/xhcc/'
 
 #=====================================#
@@ -47,6 +50,6 @@ serverDir = "Z:/firmware/"
 for project in projects_array:
 	build_project.do(project)
 	pack_project.do(project)
-	push_project_to_server.do(project, serverDir + project['workingName'])
+	push_project_to_server.do(project, serverDir + project['workingName'] + getProjectDestPathPostfix(project))
 #	clear_project.do(project)
 
