@@ -17,5 +17,5 @@ def append(project):
 		'sitemenu.txt',
 		'langs.sd',
 		'dlparams.sd',
-		'update/firmware.bin',
+		'firmware.bin',
 	]
