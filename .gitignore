@@ -105,3 +105,7 @@ install_files/
 archive/
 tmp/
 subfolder
+
+#eclipse
+.project
+.pydevproject
