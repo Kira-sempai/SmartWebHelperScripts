@@ -1,4 +1,4 @@
-import os, shutil, sys
+import os, shutil, sys, copy
 sys.path.insert(0, "./scripts")
 import func
 from subprocess import Popen
@@ -34,12 +34,13 @@ def reduceFileNames(path):
 	p.communicate()
 	print colored("Done", 'blue', 'on_green')
 
-def copySDCardFiles(sd_card_src_files_list, sd_card_dest_files_list, tmp_folder):
+def copySDCardFiles(project, tmp_folder):
 	print colored("Copy SD-Card files to %s" % (tmp_folder), 'green')
 	
-	if len(sd_card_src_files_list) > 0:
-		for src, dest in zip(sd_card_src_files_list, sd_card_dest_files_list):
-			dest = os.path.join(tmp_folder, dest)
+	if len(project.sdCardData) > 0:
+		for data in project.sdCardData:
+			dest = os.path.join(tmp_folder, data.dest)
+			src  = data.src
 			if os.path.isdir(src):
 				func.copytree(src, dest)
 			elif os.path.isfile(src):
@@ -48,7 +49,7 @@ def copySDCardFiles(sd_card_src_files_list, sd_card_dest_files_list, tmp_folder)
 					os.makedirs(dest_path)
 				shutil.copy2(src, dest)
 			else:
-				print_warning("SD-Card file not found: " + src)
+				func.print_warning("SD-Card file not found: " + src)
 
 def printEndMessage():
 	warningListLen = len(WarningList)
@@ -65,7 +66,7 @@ def printEndMessage():
 	
 
 def do(project):
-	print colored("Packing project: %s" % (project['projectName']), 'white', 'on_green', attrs=['bold'])
+	print colored("Packing project: %s" % (project.name), 'white', 'on_green', attrs=['bold'])
 	
 	# prepare temp data folders
 	data_folder     = './data_files'
@@ -84,7 +85,7 @@ def do(project):
 	reset_folders(dest_folders)
 	
 	#copy sd-card data to tmp_folder
-	copySDCardFiles(project['sd_card_src_files_list'], project['sd_card_dest_files_list'], tmp_folder)
+	copySDCardFiles(project, tmp_folder)
 	
 	#convert file names
 	reduceFileNames(tmp_folder)
@@ -94,18 +95,18 @@ def do(project):
 	func.copytree(tmp_folder, data_folder)
 	
 	#copy sd-card firmware file to firmware_folder
-	SDCardFirmwareFileName = func.generateSDCardFirmwareFileName(project)
+	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
 	
-	firmwareSourcePath           = func.getProjectFirmwareDir(project)
+	firmwareSourcePath           = project.getProjectFirmwareDir()
 	SDCardFirmwareFileSourcePath = os.path.join(firmwareSourcePath, SDCardFirmwareFileName)
 	SDCardFirmwareFileDestPath   = os.path.join(firmware_folder, 'firmware.bin')
 	
 	shutil.copy2(SDCardFirmwareFileSourcePath, SDCardFirmwareFileDestPath)
 	
 	#pack firmware in several ways
-	fw_pack = project['deviceName'] + '_FW.bin'
-	sd_pack = project['deviceName'] + '_SD.bin'
-	fw_sd_pack = project['deviceName'] + '_FW_SD.bin'
+	fw_pack = project.device.name + '_FW.bin'
+	sd_pack = project.device.name + '_SD.bin'
+	fw_sd_pack = project.device.name + '_FW_SD.bin'
 	
 	print colored("Run DLPack.exe script for firmware and data folders:", 'white', 'on_green')
 	print colored("pack firmware", 'white', 'on_green')
@@ -119,13 +120,14 @@ def do(project):
 	p.communicate()
 	
 	#pack bootloader
-	bootloader_project = project.copy()
-	bootloader_project['project'] = 'loader'
-	bootloader_project['deviceName'] = 'loader'
-	bootloader_project['langkey'] = 'rom'
-	SDCardBootloaderFileName = func.generateSDCardFirmwareFileName(bootloader_project)
+	bootloader_project = copy.deepcopy(project)
+	bootloader_project.command = 'loader'
+	bootloader_project.device.name = 'loader'
+	bootloader_project.langkey = 'rom'
 	
-	bootloaderSourcePath           = func.getProjectFirmwareDir(bootloader_project)
+	SDCardBootloaderFileName = bootloader_project.generateSDCardFirmwareFileName()
+	
+	bootloaderSourcePath           = bootloader_project.getProjectFirmwareDir()
 	SDCardBootloaderFileSourcePath = os.path.join(bootloaderSourcePath, SDCardBootloaderFileName)
 	SDCardBootloaderFileDestPath   = os.path.join(firmware_folder, 'bootldr.bin')
 	
@@ -134,7 +136,7 @@ def do(project):
 	shutil.copy2(SDCardBootloaderFileSourcePath, SDCardBootloaderFileDestPath)
 	
 	print colored("Run DLPack.exe script for bootloader", 'white', 'on_green')
-	bl_pack = project['deviceName'] + '_BL.bin'
+	bl_pack = project.device.name + '_BL.bin'
 	p = Popen(["tools/DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
 	
