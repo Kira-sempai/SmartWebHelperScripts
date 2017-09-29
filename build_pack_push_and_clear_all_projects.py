@@ -112,7 +112,7 @@ if __name__ == "__main__":
 	for projectItem in projects_array:
 		projectItem.build()
 		pack_project.do(projectItem)
-		push_project_to_server.do(projectItem, serverDir + projectItem.name + getProjectDestPathPostfix(projectItem))
+		push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 	#	projectItem.clear()
 	
 
