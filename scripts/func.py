@@ -16,8 +16,6 @@ def copytree(src, dst, symlinks=False, ignore=None):
     isDir = os.path.isdir(src)
     
     if isDir:
-        myListDir = os.listdir(src)
-        print myListDir
         if not os.path.exists(dst):
             os.makedirs(dst)
             
