@@ -96,6 +96,7 @@ if __name__ == "__main__":
 	
 	#=====================================#
 	
+	
 	projects_array = [
 		dataLogger,
 		smartWeb_Disco,
@@ -107,9 +108,37 @@ if __name__ == "__main__":
 		smartWeb_N,
 	]
 	
+	
+	print 'Projects list:'
+	for p in projects_array:
+		l = len(p.workingName)
+		space = 20 - l
+		print p.workingName, ' '*space, '- ', p.name
+		
+	
+	string_input = raw_input('Please enter projects to build (a = All, e = exit): ')
+	input_list = string_input.split() #splits the input string on spaces
+	
+	projects_to_build = []
+	
+	for s in input_list:
+		if s == 'a':
+			projects_to_build = projects_array
+			break
+		if s == 'e':
+			Exit(1)
+		for p in projects_array:
+			if p.name == s:
+				projects_to_build.extend([p])
+				continue
+	
+	print 'Those projects will be build:'
+	for p in projects_to_build:
+		print p.workingName
+	
 	serverDir = "Z:/firmware/"
 	
-	for projectItem in projects_array:
+	for projectItem in projects_to_build:
 		projectItem.build()
 		pack_project.do(projectItem)
 		push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
