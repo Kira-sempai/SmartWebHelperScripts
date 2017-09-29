@@ -12,16 +12,30 @@ def print_warning(warning):
 
 #copy all files in dir and subdirs
 def copytree(src, dst, symlinks=False, ignore=None):
-    if not os.path.exists(dst):
-        os.makedirs(dst)
-    for item in os.listdir(src):
-        s = os.path.join(src, item)
-        d = os.path.join(dst, item)
-        if os.path.isdir(s):
-            copytree(s, d, symlinks, ignore)
-        else:
-            if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
-                shutil.copy2(s, d)
+    
+    isDir = os.path.isdir(src)
+    
+    if isDir:
+        myListDir = os.listdir(src)
+        print myListDir
+        if not os.path.exists(dst):
+            os.makedirs(dst)
+            
+        
+        for item in os.listdir(src):
+            s = os.path.join(src, item)
+            d = os.path.join(dst, item)
+            if os.path.isdir(s):
+                copytree(s, d, symlinks, ignore)
+            else:
+                if not os.path.exists(d) or os.stat(s).st_mtime - os.stat(d).st_mtime > 1:
+                    shutil.copy2(s, d)
+    else:
+        dstDir = os.path.dirname(dst)
+        if not os.path.exists(dstDir):
+            os.makedirs(dst)
+        shutil.copy2(src, dst)
+        
 
 def parseVersionInfoFileToDestFolderName(versionFilePath):
     versionFile = open(versionFilePath, 'r')
@@ -37,7 +51,7 @@ def parseVersionInfoFileToDestFolderName(versionFilePath):
     return versionDate + '_' + versionGU
 
 
-class SDCardData(object):
+class SrcDestData(object):
     '''
     classdocs
     '''

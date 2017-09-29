@@ -5,7 +5,7 @@ from termcolor import colored
 sys.path.insert(0, "./scripts")
 import func
 from project import Project, Device
-from func import SDCardData
+from func import SrcDestData
 import build_project
 import pack_project
 import push_project_to_server
@@ -15,7 +15,7 @@ import clear_project
 colorama.init()
 
 def getProjectDestPathPostfix(project):
-	return ' production' if project['production'] == '1' else ' debug'
+	return ' production' if project.production else ' debug'
 
 
 if __name__ == "__main__":
@@ -42,11 +42,11 @@ if __name__ == "__main__":
 	SDCardFirmwareFileName = dataLogger.generateSDCardFirmwareFileName()
 	
 	sdCardData = [
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-        SDCardData(os.path.join(buildPath, 'shared/platform/stm32/langs.sd')                , 'langs.sd'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'firmware.bin')
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
+        SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/langs.sd')                , 'langs.sd'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'firmware.bin')
 	]
 		
 	dataLogger.addSDCardData(sdCardData)
@@ -58,11 +58,11 @@ if __name__ == "__main__":
 	SDCardFirmwareFileName = smartWeb_Disco.generateSDCardFirmwareFileName()
 	
 	sdCardData = [
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-		SDCardData(os.path.join(srcPath  , 'sdcard/Disco/GUI')                              , 'GUI/'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
+		SrcDestData(os.path.join(srcPath  , 'sdcard/Disco/GUI')                              , 'GUI/'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
 	]
 		
 	smartWeb_Disco.addSDCardData(sdCardData)
@@ -73,10 +73,10 @@ if __name__ == "__main__":
 	SDCardFirmwareFileName = smartWeb_X.generateSDCardFirmwareFileName()
 	
 	sdCardData = [
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
 	]
 		
 	smartWeb_X.addSDCardData(sdCardData)
@@ -87,10 +87,10 @@ if __name__ == "__main__":
 	SDCardFirmwareFileName = smartWeb_X2.generateSDCardFirmwareFileName()
 	
 	sdCardData = [
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-		SDCardData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
-		SDCardData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
 	]
 	
 	smartWeb_X2.addSDCardData(sdCardData)
@@ -117,7 +117,7 @@ if __name__ == "__main__":
 		projectItem.build()
 		pack_project.do(projectItem)
 		push_project_to_server.do(projectItem, serverDir + projectItem.name + getProjectDestPathPostfix(projectItem))
-	#	clear_project.do(project)
+	#	projectItem.clear()
 	
 	#for project in projects_array2:
 	#	build_project.do(project)

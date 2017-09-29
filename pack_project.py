@@ -1,6 +1,7 @@
 import os, shutil, sys, copy
 sys.path.insert(0, "./scripts")
 import func
+from func import SrcDestData
 from subprocess import Popen
 from termcolor import colored
 
@@ -66,6 +67,9 @@ def printEndMessage():
 	
 
 def do(project):
+	if not project.device.sdCard:
+		return
+	
 	print colored("Packing project: %s" % (project.name), 'white', 'on_green', attrs=['bold'])
 	
 	# prepare temp data folders
@@ -140,5 +144,14 @@ def do(project):
 	p = Popen(["tools/DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
 	
+	packData = [
+		SrcDestData(data_folder, 'SD-card/'),
+		SrcDestData(os.path.join(output_folder, fw_pack)   , os.path.join('web_firmware', fw_pack)),
+		SrcDestData(os.path.join(output_folder, sd_pack)   , os.path.join('web_firmware', sd_pack)),
+		SrcDestData(os.path.join(output_folder, fw_sd_pack), os.path.join('web_firmware', fw_sd_pack)),
+		SrcDestData(os.path.join(output_folder, bl_pack)   , os.path.join('web_firmware', bl_pack))
+	]
+	
+	project.addFirmwareData(packData)
 #	printEndMessage()
 	

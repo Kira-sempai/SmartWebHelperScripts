@@ -38,6 +38,7 @@ class Project(object):
         self.device       = device
         self.langkey      = langkey
         self.sdCardData   = []
+        self.firmwareData = []
         
     def boardVariantToString(self):
         if self.device.boardVariant is None:
@@ -104,12 +105,30 @@ class Project(object):
             cwd = self.path
         )
       
-        stdout, stderr = p.communicate()
-        print stdout, stderr    
+        p.communicate()
         
+    
+    def clear(self):
+        print colored("Clearing project: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
+        
+        p = Popen(
+            [
+                "scons.bat",
+                self.command      + self.boardVariantToString(),
+                'CFG_PROJECT='    + self.name,
+                'CFG_PLATFORM='   + self.platform,
+                'CFG_PRODUCTION=' + '1' if self.production else '0',
+                '--jobs=8',
+                '-c',
+            ],
+            cwd = self.path
+        )
+    
+        p.communicate()
         
     def addSDCardData(self, sdCardData):
         self.sdCardData.extend(sdCardData)
     
-    
+    def addFirmwareData(self, firmwareData):
+        self.firmwareData.extend(firmwareData)
             
