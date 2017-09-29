@@ -31,7 +31,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
     else:
         dstDir = os.path.dirname(dst)
         if not os.path.exists(dstDir):
-            os.makedirs(dst)
+            os.makedirs(dstDir)
         shutil.copy2(src, dst)
         
 
