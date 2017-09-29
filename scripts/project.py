@@ -105,7 +105,8 @@ class Project(object):
             cwd = self.path
         )
       
-        p.communicate()
+        stdout, stderr = p.communicate()
+        print stdout, stderr
         
     
     def clear(self):
@@ -124,7 +125,8 @@ class Project(object):
             cwd = self.path
         )
     
-        p.communicate()
+        stdout, stderr = p.communicate()
+        print stdout, stderr
         
     def addSDCardData(self, sdCardData):
         self.sdCardData.extend(sdCardData)
