@@ -13,18 +13,19 @@ class Device(object):
     classdocs
     '''
     
-    def __init__(self, name, board, boardVariant, sdCard):
+    def __init__(self, name, microcontroller, board, boardVariant, sdCard):
         self.name         = name
         self.board        = board
         self.boardVariant = boardVariant
         self.sdCard       = sdCard
+        self.microcontroller = microcontroller
 
 class Project(object):
     '''
     classdocs
     '''
     
-    def __init__(self, path, command, name, workingName, platform, production, device, langkey):
+    def __init__(self, path, command, name, workingName, platform, production, device, langkey, sdk):
         '''
         Constructor
         TODO: make projectName and workingName the same
@@ -39,6 +40,7 @@ class Project(object):
         self.langkey      = langkey
         self.sdCardData   = []
         self.firmwareData = []
+        self.sdk          = sdk
         
     def boardVariantToString(self):
         if self.device.boardVariant is None:
@@ -53,8 +55,18 @@ class Project(object):
     def getDeviceBuildDir(self):
         return os.path.join(self.path, "build", self.getProjectDirName(), self.command + self.boardVariantToString())
         
+    def getSrcPath(self):
+        if self.sdk == 'old':
+            return 'shared/'
+        elif self.sdk == 'new':
+            return 'shared/sdk/'
+        
     def getProjectFirmwareDir(self):
-        return os.path.join(self.getDeviceBuildDir(), 'shared/platform/stm32/')
+        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform/', self.device.microcontroller)
+        
+    def getVersionInfoFilePath(self):
+        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'include/versionInfo.h')
+            
     
     #took from Sorel code
     def MakeFilename(self, env, postfix='', no_platform=False):
