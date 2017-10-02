@@ -35,7 +35,7 @@ if __name__ == "__main__":
 	smartWeb_L2   = Project(default_project_path2, 'device', 'ltdc_s45', 'SmartWeb L2', 'device', True, Device('LTDC_S45', 'stm32', 'S45' , 1, False), 'west', 'old')
 	smartWeb_N    = Project(default_project_path2, 'device', 'swndin'  , 'SmartWeb N' , 'device', True, Device('SWNDIN'  , 'stm32', 'S41N', 1, False), 'west', 'old')
 	
-	caleon        = Project(default_project_path3, 'device', 'caleon_clima', 'Caleon', 'device', False, Device('caleon', 'stm32n', 'RC40', None, False), 'rom', 'new')
+	caleon        = Project(default_project_path3, 'device', 'caleon_clima', 'Caleon', 'device', False, Device('caleon_clima', 'stm32n', 'RC40', None, False), 'rom', 'new')
 	
 	#=====================================#
 	
@@ -144,8 +144,8 @@ if __name__ == "__main__":
 		
 		for projectItem in projects_to_build:
 			projectItem.build()
-		#	pack_project.do(projectItem)
-		#	push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
+			pack_project.do(projectItem)
+			push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 		#	projectItem.clear()
 		
         
