@@ -35,7 +35,7 @@ if __name__ == "__main__":
 	smartWeb_L2   = Project(default_project_path2, 'device', 'ltdc_s45', 'SmartWeb L2', 'device', True, Device('LTDC_S45', 'stm32', 'S45' , 1, False), 'west', 'old')
 	smartWeb_N    = Project(default_project_path2, 'device', 'swndin'  , 'SmartWeb N' , 'device', True, Device('SWNDIN'  , 'stm32', 'S41N', 1, False), 'west', 'old')
 	
-	caleon        = Project(default_project_path3, 'device', 'caleon', 'Caleon', 'device', False, Device('caleon', 'stm32n', 'RC40', None, False), 'rom', 'new')
+	caleon        = Project(default_project_path3, 'device', 'caleon_clima', 'Caleon', 'device', False, Device('caleon', 'stm32n', 'RC40', None, False), 'rom', 'new')
 	
 	#=====================================#
 	
@@ -112,42 +112,42 @@ if __name__ == "__main__":
 		caleon,
 	]
 	
-	
-	print 'Projects list:'
-	for p in projects_array:
-		l = len(p.workingName)
-		space = 20 - l
-		print p.workingName, ' '*space, '- ', p.name
-		
-	
-	string_input = raw_input('Please enter projects to build (a = All, e = exit): ')
-	input_list = string_input.split() #splits the input string on spaces
-	
-	projects_to_build = []
-	
-	for s in input_list:
-		if s == 'a':
-			projects_to_build = projects_array
-			break
-		if s == 'e':
-			Exit(1)
+	while True:
+		print 'Projects list:'
 		for p in projects_array:
-			if p.name == s:
-				projects_to_build.extend([p])
-				continue
-	
-	print 'Those projects will be build:'
-	for p in projects_to_build:
-		print p.workingName
-	
-	serverDir = "Z:/firmware/"
-	
-	for projectItem in projects_to_build:
-		projectItem.build()
-		pack_project.do(projectItem)
-		push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
-	#	projectItem.clear()
-	
-
-	raw_input(colored("Done. Press ENTER to continue\r", 'white', 'on_green'))
+			l = len(p.workingName)
+			space = 20 - l
+			print p.workingName, ' '*space, '- ', p.name
+			
+		
+		string_input = raw_input('Please enter projects to build (a = All, e = exit): ')
+		input_list = string_input.split() #splits the input string on spaces
+		
+		projects_to_build = []
+		
+		for s in input_list:
+			if s == 'a':
+				projects_to_build = projects_array
+				break
+			if s == 'e':
+				Exit(1)
+			for p in projects_array:
+				if p.name == s:
+					projects_to_build.extend([p])
+					continue
+		
+		print 'Those projects will be build:'
+		for p in projects_to_build:
+			print p.workingName
+		
+		serverDir = "Z:/firmware/"
+		
+		for projectItem in projects_to_build:
+			projectItem.build()
+		#	pack_project.do(projectItem)
+		#	push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
+		#	projectItem.clear()
+		
+        
+		raw_input(colored("Done. Press ENTER to continue\r", 'white', 'on_green'))
 
