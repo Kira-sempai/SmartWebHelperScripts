@@ -105,15 +105,17 @@ class Project(object):
     def build(self):
         print colored("Building project: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
 
-        p = Popen(
-            [
-                "scons.bat",
-                self.command      + self.boardVariantToString(),
-                'CFG_PROJECT='    + self.name,
-                'CFG_PLATFORM='   + self.platform,
-                'CFG_PRODUCTION=' + '1' if self.production else '0',
-                '--jobs=8',
-            ],
+        argList = [
+            self.command      + self.boardVariantToString(),
+            'CFG_PROJECT='    + self.name,
+            'CFG_PLATFORM='   + self.platform,
+            'CFG_PRODUCTION=' + ('1' if self.production else '0'),
+            '--jobs=8',
+        ]
+
+        print argList
+
+        p = Popen(["scons.bat"] + argList,
             cwd = self.path
         )
       
