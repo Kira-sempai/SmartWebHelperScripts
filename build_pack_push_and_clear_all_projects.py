@@ -12,27 +12,30 @@ import push_project_to_server
 import clear_project
 
 
-colorama.init()
-
 def getProjectDestPathPostfix(project):
 	return ' production' if project.production else ' debug'
 
 
 if __name__ == "__main__":
+	colorama.init()
+
 	default_project_path = 'C:/development/xhcc/'
 	default_project_path2 = 'C:/development/stdc_clean/'
+	default_project_path3 = 'C:/development/ebielawski/'
 	
 
 	#=====================================#
-	dataLogger     = Project(default_project_path, 'device', 'DataLogger', 'DataLogger'    , 'device', True, Device('DL'      , 'L30'             , None, True), 'rom')
-	smartWeb_Disco = Project(default_project_path, 'device', 'disco'     , 'SmartWeb Disco', 'device', True, Device('DISCO'   , '32F746GDISCOVERY',    1, True), 'west')
-	smartWeb_X     = Project(default_project_path, 'device', 'xhcc'      , 'SmartWeb X'    , 'device', True, Device('XHCC'    , 'S61'             ,    2, True), 'west')
-	smartWeb_X2    = Project(default_project_path, 'device', 'xhcc_s62'  , 'SmartWeb X2'   , 'device', True, Device('XHCC-S62', 'S62'             ,    2, True), 'west')
+	dataLogger     = Project(default_project_path, 'device', 'DataLogger', 'DataLogger'    , 'device', True, Device('DL'      , 'stm32', 'L30'             , None, True), 'rom' , 'old')
+	smartWeb_Disco = Project(default_project_path, 'device', 'disco'     , 'SmartWeb Disco', 'device', True, Device('DISCO'   , 'stm32', '32F746GDISCOVERY',    1, True), 'west', 'old')
+	smartWeb_X     = Project(default_project_path, 'device', 'xhcc'      , 'SmartWeb X'    , 'device', True, Device('XHCC'    , 'stm32', 'S61'             ,    2, True), 'west', 'old')
+	smartWeb_X2    = Project(default_project_path, 'device', 'xhcc_s62'  , 'SmartWeb X2'   , 'device', True, Device('XHCC-S62', 'stm32', 'S62'             ,    2, True), 'west', 'old')
 
-	smartWeb_S    = Project(default_project_path2, 'device', 'stdc'    , 'SmartWeb S' , 'device', True, Device('STDC'    , 'S20' , 3, False), 'west')
-	smartWeb_L    = Project(default_project_path2, 'device', 'ltdc'    , 'SmartWeb L' , 'device', True, Device('LTDC'    , 'S40' , 3, False), 'west')
-	smartWeb_L2   = Project(default_project_path2, 'device', 'ltdc_s45', 'SmartWeb L2', 'device', True, Device('LTDC_S45', 'S45' , 1, False), 'west')
-	smartWeb_N    = Project(default_project_path2, 'device', 'swndin'  , 'SmartWeb N' , 'device', True, Device('SWNDIN'  , 'S41N', 1, False), 'west')
+	smartWeb_S    = Project(default_project_path2, 'device', 'stdc'    , 'SmartWeb S' , 'device', True, Device('STDC'    , 'stm32', 'S20' , 3, False), 'west', 'old')
+	smartWeb_L    = Project(default_project_path2, 'device', 'ltdc'    , 'SmartWeb L' , 'device', True, Device('LTDC'    , 'stm32', 'S40' , 3, False), 'west', 'old')
+	smartWeb_L2   = Project(default_project_path2, 'device', 'ltdc_s45', 'SmartWeb L2', 'device', True, Device('LTDC_S45', 'stm32', 'S45' , 1, False), 'west', 'old')
+	smartWeb_N    = Project(default_project_path2, 'device', 'swndin'  , 'SmartWeb N' , 'device', True, Device('SWNDIN'  , 'stm32', 'S41N', 1, False), 'west', 'old')
+	
+	caleon        = Project(default_project_path3, 'device', 'caleon', 'Caleon', 'device', False, Device('caleon', 'stm32n', 'RC40', None, False), 'rom', 'new')
 	
 	#=====================================#
 	
@@ -106,6 +109,7 @@ if __name__ == "__main__":
 		smartWeb_L,
 		smartWeb_L2,
 		smartWeb_N,
+		caleon,
 	]
 	
 	
