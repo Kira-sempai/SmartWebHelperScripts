@@ -66,7 +66,7 @@ def printEndMessage():
 				input = raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 	
 def createAutoUpdateFlagFile(firmware_folder):
-	autoUpdateFlagFileName = 'autopd.ate'
+	autoUpdateFlagFileName = 'autoupd.ate'
 	autoUpdateFlagFile = os.open(os.path.join(firmware_folder, autoUpdateFlagFileName), os.O_CREAT)
 	os.close(autoUpdateFlagFile)
 
