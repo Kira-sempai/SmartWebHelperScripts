@@ -65,6 +65,10 @@ def printEndMessage():
 				print warning
 				input = raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 	
+def createAutoUpdateFlagFile(firmware_folder):
+	autoUpdateFlagFileName = 'autopd.ate'
+	autoUpdateFlagFile = os.open(os.path.join(firmware_folder, autoUpdateFlagFileName), os.O_CREAT)
+	os.close(autoUpdateFlagFile)
 
 def do(project):
 	if not project.device.sdCard:
@@ -111,6 +115,8 @@ def do(project):
 	fw_pack = project.device.name + '_FW.bin'
 	sd_pack = project.device.name + '_SD.bin'
 	fw_sd_pack = project.device.name + '_FW_SD.bin'
+	
+	createAutoUpdateFlagFile(firmware_folder)
 	
 	print colored("Run DLPack.exe script for firmware and data folders:", 'white', 'on_green')
 	print colored("pack firmware", 'white', 'on_green')
