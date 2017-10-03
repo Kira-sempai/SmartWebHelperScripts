@@ -143,6 +143,7 @@ if __name__ == "__main__":
 		serverDir = "Z:/firmware/"
 		
 		for projectItem in projects_to_build:
+			projectItem.clearSConsOptionsCacheFile()
 			projectItem.build()
 			pack_project.do(projectItem)
 			push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
