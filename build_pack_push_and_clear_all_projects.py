@@ -19,7 +19,7 @@ def getProjectDestPathPostfix(project):
 if __name__ == "__main__":
 	colorama.init()
 
-	default_project_path = 'C:/development/xhcc/'
+	default_project_path = 'E:/development/SmartWeb_v2/'
 	default_project_path2 = 'C:/development/stdc_clean/'
 	default_project_path3 = 'C:/development/ebielawski/'
 	
