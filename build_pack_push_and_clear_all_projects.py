@@ -120,17 +120,21 @@ if __name__ == "__main__":
 			print p.workingName, ' '*space, '- ', p.name
 			
 		
-		string_input = raw_input('Please enter projects to build (a = All, e = exit): ')
+		string_input = raw_input('Please enter projects to build (-a = All, -e = exit, -d = debug): ')
 		input_list = string_input.split() #splits the input string on spaces
 		
 		projects_to_build = []
 		
+		debug = False
+		
 		for s in input_list:
-			if s == 'a':
+			if s == '-a':
 				projects_to_build = projects_array
 				break
-			if s == 'e':
+			if s == '-e':
 				Exit(1)
+			if s == '-d':
+				debug = True
 			for p in projects_array:
 				if p.name == s:
 					projects_to_build.extend([p])
@@ -139,6 +143,7 @@ if __name__ == "__main__":
 		print 'Those projects will be build:'
 		for p in projects_to_build:
 			print p.workingName
+			p.production = not debug
 		
 		serverDir = "Z:/firmware/"
 		
