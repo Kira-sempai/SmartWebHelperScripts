@@ -103,7 +103,9 @@ class Project(object):
         return self.MakeFilename(baseEnv, sdCardFirmwarePostfix)
         
     def clearSConsOptionsCacheFile(self):
-        os.remove(os.path.join(self.path, 'setup.py'))
+        cache_setup_file = os.path.join(self.path, 'setup.py')
+        if os.path.isfile(cache_setup_file):
+            os.remove(cache_setup_file)
         
     def build(self):
         print colored("Building project: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])

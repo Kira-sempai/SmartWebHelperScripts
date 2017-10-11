@@ -36,6 +36,10 @@ def copytree(src, dst, symlinks=False, ignore=None):
         
 
 def parseVersionInfoFileToDestFolderName(versionFilePath):
+    if not os.path.isfile(versionFilePath):
+        print_warning('Wrong version info file path!')
+        sys.exit()
+    
     versionFile = open(versionFilePath, 'r')
     text = versionFile.read()
     print 'version file read: ' + text
