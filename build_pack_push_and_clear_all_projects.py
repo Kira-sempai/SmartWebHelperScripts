@@ -6,10 +6,8 @@ sys.path.insert(0, "./scripts")
 import func
 from project import Project, Device
 from func import SrcDestData
-import build_project
 import pack_project
 import push_project_to_server
-import clear_project
 
 
 def getProjectDestPathPostfix(project):
@@ -20,8 +18,8 @@ if __name__ == "__main__":
 	colorama.init()
 
 	default_project_path = 'E:/development/SmartWeb_v2/'
-	default_project_path2 = 'C:/development/stdc_clean/'
-	default_project_path3 = 'C:/development/ebielawski/'
+	default_project_path2 = 'E:/development/SmartWeb_v1/'
+	default_project_path3 = 'E:/development/Caleon_clima/'
 	
 
 	#=====================================#
@@ -132,7 +130,7 @@ if __name__ == "__main__":
 				projects_to_build = projects_array
 				break
 			if s == '-e':
-				Exit(1)
+				sys.exit()
 			if s == '-d':
 				debug = True
 			for p in projects_array:
@@ -154,6 +152,5 @@ if __name__ == "__main__":
 			push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 		#	projectItem.clear()
 		
-        
 		raw_input(colored("Done. Press ENTER to continue\r", 'white', 'on_green'))
 
