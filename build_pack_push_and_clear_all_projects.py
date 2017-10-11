@@ -128,7 +128,6 @@ if __name__ == "__main__":
 		for s in input_list:
 			if s == '-a':
 				projects_to_build = projects_array
-				break
 			if s == '-e':
 				sys.exit()
 			if s == '-d':
