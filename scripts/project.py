@@ -49,7 +49,8 @@ class Project(object):
             return str(self.device.boardVariant)
         
     def getProjectDirName(self):
-        postfix = '_production' if self.production else ''
+        postfix = ''
+        #postfix = '_production' if self.production else ''
         return self.name + postfix
     
     def getDeviceBuildDir(self):
