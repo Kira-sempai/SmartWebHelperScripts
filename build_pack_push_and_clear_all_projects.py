@@ -13,12 +13,36 @@ import push_project_to_server
 def getProjectDestPathPostfix(project):
 	return ' production' if project.production else ' debug'
 
+def printAvailableProjectsList(projects_array):
+	print 'Projects list:'
+	for p in projects_array:
+		l = len(p.workingName)
+		space = 20 - l
+		print p.workingName, ' '*space, '- ', p.name
+
+def getAvailableProjectsList():
+	default_project_path1 = 'E:/development/SmartWeb_v1/'
+	default_project_path2 = 'E:/development/SmartWeb_v2/'
+	default_project_path3 = 'E:/development/Caleon_clima/'
+	
+	return [
+		Project(default_project_path1, 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3)),
+		Project(default_project_path1, 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3)),
+		Project(default_project_path1, 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1)),
+		Project(default_project_path1, 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1)),
+		Project(default_project_path2, 'device', 'DataLogger'  , 'DataLogger'    , 'device', Device('DL'      , 'L30'             , None, True), 'rom'),
+		Project(default_project_path2, 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True)),
+		Project(default_project_path2, 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True)),
+		Project(default_project_path2, 'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True)),
+		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40', None, 'stm32n'), 'rom', 'new'),
+	]
+
 def getSDCardProjectFiles(project):
 	srcPath                = project.path
 	buildPath              = project.getDeviceBuildDir()
 	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
 	
-	if project == dataLogger:
+	if project.name == 'DataLogger':
 		return [
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
@@ -26,7 +50,7 @@ def getSDCardProjectFiles(project):
 			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
 			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'firmware.bin')
 		]
-	elif project == smartWeb_Disco:
+	elif project.name == 'disco':
 		return [
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
@@ -34,7 +58,7 @@ def getSDCardProjectFiles(project):
 			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
 			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
 		]
-	elif project == smartWeb_X or project == smartWeb_X2:
+	elif (project.name == 'xhcc') or (project.name == 'xhcc_s62'):
 		return [
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
@@ -42,84 +66,72 @@ def getSDCardProjectFiles(project):
 			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
 		]
 
+def parseArguments(string_input, projects_array):
+	args = string_input.split() #splits the input string on spaces
+	
+	production  = False
+	build       = False
+	pack_n_push = False
+	clear       = False
+	clearCache  = False
+	projects_to_build = []
+	
+	for s in args:
+		if s == '-e':
+			print 'Exit'
+			sys.exit()
+		if s == '-a': projects_to_build = projects_array
+		if s == '-P': production  = True
+		if s == '-b': build       = True
+		if s == '-p': pack_n_push = True
+		if s == '-c': clear       = True
+		if s == '-C': clearCache  = True
+			
+		for p in projects_array:
+			if p.name == s:
+				projects_to_build.append(p)
+				continue
+		
+	return production, build, pack_n_push, clear, clearCache, projects_to_build
 
 if __name__ == "__main__":
 	colorama.init()
-
-	default_project_path = 'E:/development/SmartWeb_v2/'
-	default_project_path2 = 'E:/development/SmartWeb_v1/'
-	default_project_path3 = 'E:/development/Caleon_clima/'
-	
-
-	#=====================================#
-	dataLogger     = Project(default_project_path, 'device', 'DataLogger', 'DataLogger'    , 'device', True, Device('DL'      , 'stm32', 'L30'             , None, True), 'rom' , 'old')
-	smartWeb_Disco = Project(default_project_path, 'device', 'disco'     , 'SmartWeb Disco', 'device', True, Device('DISCO'   , 'stm32', '32F746GDISCOVERY',    1, True), 'west', 'old')
-	smartWeb_X     = Project(default_project_path, 'device', 'xhcc'      , 'SmartWeb X'    , 'device', True, Device('XHCC'    , 'stm32', 'S61'             ,    2, True), 'west', 'old')
-	smartWeb_X2    = Project(default_project_path, 'device', 'xhcc_s62'  , 'SmartWeb X2'   , 'device', True, Device('XHCC-S62', 'stm32', 'S62'             ,    2, True), 'west', 'old')
-
-	smartWeb_S    = Project(default_project_path2, 'device', 'stdc'    , 'SmartWeb S' , 'device', True, Device('STDC'    , 'stm32', 'S20' , 3, False), 'west', 'old')
-	smartWeb_L    = Project(default_project_path2, 'device', 'ltdc'    , 'SmartWeb L' , 'device', True, Device('LTDC'    , 'stm32', 'S40' , 3, False), 'west', 'old')
-	smartWeb_L2   = Project(default_project_path2, 'device', 'ltdc_s45', 'SmartWeb L2', 'device', True, Device('LTDC_S45', 'stm32', 'S45' , 1, False), 'west', 'old')
-	smartWeb_N    = Project(default_project_path2, 'device', 'swndin'  , 'SmartWeb N' , 'device', True, Device('SWNDIN'  , 'stm32', 'S41N', 1, False), 'west', 'old')
-	
-	caleon        = Project(default_project_path3, 'device', 'caleon_clima', 'Caleon', 'device', False, Device('caleon_clima', 'stm32n', 'RC40', None, False), 'rom', 'new')
-	
-	#=====================================#
-	
-	
-	projects_array = [
-		dataLogger,
-		smartWeb_Disco,
-		smartWeb_X,
-		smartWeb_X2,
-		smartWeb_S,
-		smartWeb_L,
-		smartWeb_L2,
-		smartWeb_N,
-		caleon,
-	]
 	
 	while True:
-		print 'Projects list:'
-		for p in projects_array:
-			l = len(p.workingName)
-			space = 20 - l
-			print p.workingName, ' '*space, '- ', p.name
-			
-		string_input = raw_input('Please enter projects to build (-a = All, -e = exit, -d = debug): ')
-		input_list = string_input.split() #splits the input string on spaces
+		projects_array = getAvailableProjectsList()
+		printAvailableProjectsList(projects_array)
 		
-		projects_to_build = []
+		string_input = raw_input(
+			colored('Please enter projects to build (-a = All, -e = exit, -P = production and so on): ',
+				'white',
+				'on_green',
+				attrs=['bold']))
+		#TODO: add "real" console
 		
-		debug = False
+		(
+		production  ,
+		build       ,
+		pack_n_push ,
+		clear       ,
+		clearCache  ,
+		projects_to_build) = parseArguments(string_input, projects_array)
 		
-		for s in input_list:
-			if s == '-a':
-				projects_to_build = projects_array
-			if s == '-e':
-				print 'Exit'
-				sys.exit()
-			if s == '-d':
-				debug = True
-			for p in projects_array:
-				if p.name == s:
-					projects_to_build.extend([p])
-					continue
 		
-		print 'Those projects will be build:'
+		print 'Those projects will be used:'
 		for p in projects_to_build:
 			print p.workingName
-			p.production = not debug
 		
 		serverDir = "Z:/firmware/"
 		
 		for projectItem in projects_to_build:
-			projectItem.clearSConsOptionsCacheFile()
-			projectItem.build()
-			projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
-			pack_project.do(projectItem)
-			push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
-		#	projectItem.clear()
+			projectItem.production = production
+			if clearCache: projectItem.clearSConsOptionsCacheFile()
+			if build     : projectItem.build()
+			if pack_n_push:
+				projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
+				pack_project.do(projectItem)
+				push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
+			if clear: projectItem.clear()
 		
 		raw_input(colored("Done. Press ENTER to continue\r", 'white', 'on_green'))
 

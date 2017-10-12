@@ -13,7 +13,7 @@ class Device(object):
     classdocs
     '''
     
-    def __init__(self, name, microcontroller, board, boardVariant, sdCard):
+    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32'):
         self.name         = name
         self.board        = board
         self.boardVariant = boardVariant
@@ -25,7 +25,7 @@ class Project(object):
     classdocs
     '''
     
-    def __init__(self, path, command, name, workingName, platform, production, device, langkey, sdk):
+    def __init__(self, path, command, name, workingName, platform, device, langkey = 'west', sdk = 'old', production = False):
         '''
         Constructor
         TODO: make projectName and workingName the same
@@ -38,9 +38,9 @@ class Project(object):
         self.production   = production
         self.device       = device
         self.langkey      = langkey
+        self.sdk          = sdk
         self.sdCardData   = []
         self.firmwareData = []
-        self.sdk          = sdk
         
     def boardVariantToString(self):
         if self.device.boardVariant is None:
