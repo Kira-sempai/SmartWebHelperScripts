@@ -147,6 +147,8 @@ class Project(object):
         print stdout, stderr
         
     def addSDCardData(self, sdCardData):
+        if sdCardData is None:
+            return;
         self.sdCardData.extend(sdCardData)
     
     def addFirmwareData(self, firmwareData):
