@@ -1,6 +1,4 @@
 import sys
-import shutil
-import glob
 import os
 sys.path.insert(0, "./scripts")
 import func
@@ -21,7 +19,6 @@ def do(project, dest):
 
 	firmwareFolderName  = func.parseVersionInfoFileToDestFolderName(versionFilePath)
 	firmwareDestPath    = os.path.join(dest, firmwareFolderName)
-	firmwareDestPathBin = os.path.join(firmwareDestPath, 'firmware/')
 
 	copyProjectBinaryFiles(project, 'firmware/')
 	
