@@ -8,6 +8,17 @@ import os
 from subprocess import Popen
 from termcolor import colored
 
+def runSCons(args, path):
+    print args
+    
+    p = Popen(["scons.bat"] + args,
+        cwd = path
+    )
+    
+    stdout, stderr = p.communicate()
+    print stdout, stderr
+    
+
 class Device(object):
     '''
     classdocs
@@ -41,13 +52,13 @@ class Project(object):
         self.sdk          = sdk
         self.sdCardData   = []
         self.firmwareData = []
-        
+    
     def boardVariantToString(self):
         if self.device.boardVariant is None:
             return ''
         else:
             return str(self.device.boardVariant)
-        
+    
     def getProjectDirName(self):
         postfix = ''
         #postfix = '_production' if self.production else ''
@@ -55,19 +66,19 @@ class Project(object):
     
     def getDeviceBuildDir(self):
         return os.path.join(self.path, "build", self.getProjectDirName(), self.command + self.boardVariantToString())
-        
+    
     def getSrcPath(self):
         if self.sdk == 'old':
             return 'shared/'
         elif self.sdk == 'new':
             return 'shared/sdk/'
-        
+    
     def getProjectFirmwareDir(self):
         return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform/', self.device.microcontroller)
-        
+    
     def getVersionInfoFilePath(self):
         return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'include/versionInfo.h')
-            
+    
     
     #took from Sorel code
     def MakeFilename(self, env, postfix='', no_platform=False):
@@ -82,7 +93,7 @@ class Project(object):
             platformstring = env['TARGET_PLATFORM_FRIENDLY_NAME']
         else:
             platformstring = env['TARGET_PLATFORM']
-
+            
         subststring = env['CFG_DEVICENAME'] + oemstring
         if not no_platform:
             subststring = subststring + '-' + env['BOARD'] + 'v' + env['CFG_BOARD_VARIANT'] + 'r' + env['CFG_BOARD_REVISION'] + '-' + platformstring
@@ -102,15 +113,15 @@ class Project(object):
             sdCardFirmwarePostfix = self.langkey + '-' + sdCardFirmwarePostfix
             
         return self.MakeFilename(baseEnv, sdCardFirmwarePostfix)
-        
+    
     def clearSConsOptionsCacheFile(self):
         cache_setup_file = os.path.join(self.path, 'setup.py')
         if os.path.isfile(cache_setup_file):
             os.remove(cache_setup_file)
-        
+    
     def build(self):
         print colored("Building project: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
-
+        
         argList = [
             self.command      + self.boardVariantToString(),
             'CFG_PROJECT='    + self.name,
@@ -118,35 +129,23 @@ class Project(object):
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
             '--jobs=8',
         ]
-
-        print argList
-
-        p = Popen(["scons.bat"] + argList,
-            cwd = self.path
-        )
-      
-        stdout, stderr = p.communicate()
-        print stdout, stderr
+        
+        runSCons(argList, self.path)
     
     def clear(self):
         print colored("Clearing project: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
         
-        p = Popen(
-            [
-                "scons.bat",
+        argList = [
                 self.command      + self.boardVariantToString(),
                 'CFG_PROJECT='    + self.name,
                 'CFG_PLATFORM='   + self.platform,
-                'CFG_PRODUCTION=' + '1' if self.production else '0',
+                'CFG_PRODUCTION=' + ('1' if self.production else '0'),
                 '--jobs=8',
                 '-c',
-            ],
-            cwd = self.path
-        )
-    
-        stdout, stderr = p.communicate()
-        print stdout, stderr
+        ]
         
+        runSCons(argList, self.path)
+    
     def addSDCardData(self, sdCardData):
         if sdCardData is None:
             return;
@@ -154,41 +153,30 @@ class Project(object):
     
     def addFirmwareData(self, firmwareData):
         self.firmwareData.extend(firmwareData)
-        
+    
     def flashLoader(self):
         print colored("Flashing loader: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
         
-        p = Popen(
-            [
-                "scons.bat",
+        argList = [
                 'flash_loader',
                 'CFG_PROJECT='    + self.name,
                 'CFG_PLATFORM='   + self.platform,
-                'CFG_PRODUCTION=' + '1' if self.production else '0',
+                'CFG_PRODUCTION=' + ('1' if self.production else '0'),
                 '--jobs=1',
-            ],
-            cwd = self.path
-        )
-    
-        stdout, stderr = p.communicate()
-        print stdout, stderr
+        ]
+        
+        runSCons(argList, self.path)
     
     def flashDevice(self):
         print colored("Flashing device: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
         
-        p = Popen(
-            [
-                "scons.bat",
+        argList = [
                 'flash_' + self.command + self.boardVariantToString(),
                 'CFG_PROJECT='    + self.name,
                 'CFG_PLATFORM='   + self.platform,
-                'CFG_PRODUCTION=' + '1' if self.production else '0',
+                'CFG_PRODUCTION=' + ('1' if self.production else '0'),
                 '--jobs=1',
-            ],
-            cwd = self.path
-        )
-    
-        stdout, stderr = p.communicate()
-        print stdout, stderr
+        ]
         
-            
+        runSCons(argList, self.path)
+        
