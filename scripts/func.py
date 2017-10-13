@@ -18,7 +18,12 @@ def copytree(src, dst, symlinks=False, ignore=None):
     
     if isDir:
         if not os.path.exists(dst):
-            os.makedirs(dst)
+            try:
+                os.makedirs(dst)
+            except OSError as e:
+                print_warning('Error %d: Can\'t create folder at "%s"' %(e.errno, dst))
+                sys.exit()
+                 
             
         
         for item in os.listdir(src):
