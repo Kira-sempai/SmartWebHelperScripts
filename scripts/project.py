@@ -154,4 +154,41 @@ class Project(object):
     
     def addFirmwareData(self, firmwareData):
         self.firmwareData.extend(firmwareData)
+        
+    def flashLoader(self):
+        print colored("Flashing loader: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
+        
+        p = Popen(
+            [
+                "scons.bat",
+                'flash_loader',
+                'CFG_PROJECT='    + self.name,
+                'CFG_PLATFORM='   + self.platform,
+                'CFG_PRODUCTION=' + '1' if self.production else '0',
+                '--jobs=1',
+            ],
+            cwd = self.path
+        )
+    
+        stdout, stderr = p.communicate()
+        print stdout, stderr
+    
+    def flashDevice(self):
+        print colored("Flashing device: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
+        
+        p = Popen(
+            [
+                "scons.bat",
+                'flash_' + self.command + self.boardVariantToString(),
+                'CFG_PROJECT='    + self.name,
+                'CFG_PLATFORM='   + self.platform,
+                'CFG_PRODUCTION=' + '1' if self.production else '0',
+                '--jobs=1',
+            ],
+            cwd = self.path
+        )
+    
+        stdout, stderr = p.communicate()
+        print stdout, stderr
+        
             
