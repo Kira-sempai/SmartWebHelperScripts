@@ -3,7 +3,6 @@ import os
 import colorama
 from termcolor import colored
 sys.path.insert(0, "./scripts")
-import func
 from project import Project, Device
 from func import SrcDestData
 import pack_project
@@ -74,6 +73,8 @@ def parseArguments(string_input, projects_array):
 	pack_n_push = False
 	clear       = False
 	clearCache  = False
+	flashLoader = False
+	flashDevice = False
 	projects_to_build = []
 	
 	for s in args:
@@ -86,13 +87,15 @@ def parseArguments(string_input, projects_array):
 		if s == '-p': pack_n_push = True
 		if s == '-c': clear       = True
 		if s == '-C': clearCache  = True
+		if s == '-f': flashLoader = True
+		if s == '-F': flashDevice = True
 			
 		for p in projects_array:
 			if p.name == s:
 				projects_to_build.append(p)
 				continue
 		
-	return production, build, pack_n_push, clear, clearCache, projects_to_build
+	return production, build, pack_n_push, clear, clearCache, flashLoader, flashDevice, projects_to_build
 
 if __name__ == "__main__":
 	colorama.init()
@@ -114,6 +117,8 @@ if __name__ == "__main__":
 		pack_n_push ,
 		clear       ,
 		clearCache  ,
+		flashLoader ,
+		flashDevice ,
 		projects_to_build) = parseArguments(string_input, projects_array)
 		
 		
@@ -127,6 +132,8 @@ if __name__ == "__main__":
 			projectItem.production = production
 			if clearCache: projectItem.clearSConsOptionsCacheFile()
 			if build     : projectItem.build()
+			if flashLoader : projectItem.flashLoader()
+			if flashDevice : projectItem.flashDevice()
 			if pack_n_push:
 				projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
 				pack_project.do(projectItem)
