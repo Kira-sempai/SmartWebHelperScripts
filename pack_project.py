@@ -53,17 +53,19 @@ def copySDCardFiles(project, tmp_folder):
 				func.print_warning("SD-Card file not found: " + src)
 
 def printEndMessage():
+	#TODO: can be used for logs
+	WarningList = []
 	warningListLen = len(WarningList)
 	endColor = 'green'
 	
 	if warningListLen > 0:
 		endColor = 'red'
 		print colored("You have %d warning/s!!" % (warningListLen), 'red')
-		input = raw_input(colored("Want to see it? (y/n) ", 'red', 'on_white'))
-		if input != 'n':
+		inputString = raw_input(colored("Want to see it? (y/n) ", 'red', 'on_white'))
+		if inputString != 'n':
 			for warning in WarningList:
 				print warning
-				input = raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
+				raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 	
 def createAutoUpdateFlagFile(firmware_folder):
 	autoUpdateFlagFileName = 'autoupd.ate'
