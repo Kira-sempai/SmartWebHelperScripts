@@ -75,6 +75,7 @@ def parseArguments(string_input, projects_array):
 	clearCache  = False
 	flashLoader = False
 	flashDevice = False
+	simulator   = False
 	projects_to_build = []
 	
 	for s in args:
@@ -89,13 +90,23 @@ def parseArguments(string_input, projects_array):
 		if s == '-C': clearCache  = True
 		if s == '-f': flashLoader = True
 		if s == '-F': flashDevice = True
+		if s == '-s': simulator   = True
 			
 		for p in projects_array:
 			if p.name == s:
 				projects_to_build.append(p)
 				continue
 		
-	return production, build, pack_n_push, clear, clearCache, flashLoader, flashDevice, projects_to_build
+	return (
+		production,
+		build,
+		pack_n_push,
+		clear,
+		clearCache,
+		flashLoader,
+		flashDevice,
+		simulator,
+		projects_to_build)
 
 if __name__ == "__main__":
 	colorama.init()
@@ -119,6 +130,7 @@ if __name__ == "__main__":
 		clearCache  ,
 		flashLoader ,
 		flashDevice ,
+		simulator   ,
 		projects_to_build) = parseArguments(string_input, projects_array)
 		
 		
@@ -131,6 +143,9 @@ if __name__ == "__main__":
 		for projectItem in projects_to_build:
 			projectItem.production = production
 			if clearCache: projectItem.clearSConsOptionsCacheFile()
+			if simulator :
+				projectItem.command = 'qtsim'
+				projectItem.platform = 'qtsim'
 			if build     : projectItem.build()
 			if flashLoader : projectItem.flashLoader()
 			if flashDevice : projectItem.flashDevice()
