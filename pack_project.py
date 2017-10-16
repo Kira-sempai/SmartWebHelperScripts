@@ -114,8 +114,8 @@ def do(project):
 	shutil.copy2(SDCardFirmwareFileSourcePath, SDCardFirmwareFileDestPath)
 	
 	#pack firmware in several ways
-	fw_pack = project.device.name + '_FW.bin'
-	sd_pack = project.device.name + '_SD.bin'
+	fw_pack    = project.device.name + '_FW.bin'
+	sd_pack    = project.device.name + '_SD.bin'
 	fw_sd_pack = project.device.name + '_FW_SD.bin'
 	
 	createAutoUpdateFlagFile(firmware_folder)
