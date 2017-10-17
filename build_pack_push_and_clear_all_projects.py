@@ -155,5 +155,7 @@ if __name__ == "__main__":
 				push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 			if clear: projectItem.clear()
 		
-		raw_input(colored("Done. Press ENTER to continue\r", 'white', 'on_green'))
+		print(colored("Done", 'white', 'on_green'))
+		print '\r\n\n'
+		
 
