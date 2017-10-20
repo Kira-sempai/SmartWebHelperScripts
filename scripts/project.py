@@ -128,6 +128,7 @@ class Project(object):
             'CFG_PLATFORM='   + self.platform,
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
             '--jobs=8',
+#           '--debug=pdb',
         ]
         
         runSCons(argList, self.path)
