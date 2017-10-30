@@ -62,10 +62,10 @@ class Project(object):
     def getProjectDirName(self):
         postfix = ''
         #postfix = '_production' if self.production else ''
-        return self.name + postfix
+        return self.name + postfix + '/'
     
     def getDeviceBuildDir(self):
-        return os.path.join(self.path, "build", self.getProjectDirName(), self.command + self.boardVariantToString())
+        return os.path.join(self.path, "build/", self.getProjectDirName(), self.command + self.boardVariantToString()) + '/'
     
     def getSrcPath(self):
         if self.sdk == 'old':
@@ -74,7 +74,7 @@ class Project(object):
             return 'shared/sdk/'
     
     def getProjectFirmwareDir(self):
-        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform/', self.device.microcontroller)
+        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform/', self.device.microcontroller) + '/'
     
     def getVersionInfoFilePath(self):
         return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'include/versionInfo.h')
@@ -99,7 +99,12 @@ class Project(object):
             subststring = subststring + '-' + env['BOARD'] + 'v' + env['CFG_BOARD_VARIANT'] + 'r' + env['CFG_BOARD_REVISION'] + '-' + platformstring
         return subststring + '-' + postfix
     
-    def generateSDCardFirmwareFileName(self):
+    def getFirmwareLangPostfix(self):
+        if not self.langkey == 'rom':
+            return self.langkey + '-'
+        return ''
+        
+    def generateFirmwareName(self):
         baseEnv = dict()
         baseEnv['CFG_OEM_ID']           = 'OID_SOREL'
         baseEnv['CFG_DEVICENAME']       = self.device.name
@@ -108,11 +113,24 @@ class Project(object):
         baseEnv['CFG_BOARD_REVISION']   = '1'
         baseEnv['CFG_BOARD_VARIANT']    = self.boardVariantToString()
         
-        sdCardFirmwarePostfix = 'sdcard.bin'
-        if not self.langkey == 'rom':
-            sdCardFirmwarePostfix = self.langkey + '-' + sdCardFirmwarePostfix
-            
-        return self.MakeFilename(baseEnv, sdCardFirmwarePostfix)
+        return self.MakeFilename(baseEnv, self.getFirmwareLangPostfix())
+        
+    def generateSDCardFirmwareFileName(self):
+        return self.generateFirmwareName() + 'sdcard.bin'
+    
+    def generateFirmwareFileName(self):
+        return self.generateFirmwareName() + 'merged.hex'
+    
+    def getProjectBinaries(self):
+        binaries = []
+        
+        firmwareFileName = self.generateFirmwareFileName()
+        
+        binaries.append(firmwareFileName)
+        binaries.append(self.getFirmwareLangPostfix() + 'app.map')
+        binaries.append(self.getFirmwareLangPostfix() + 'app.elf')
+        
+        return binaries
     
     def clearSConsOptionsCacheFile(self):
         cache_setup_file = os.path.join(self.path, 'setup.py')
@@ -120,7 +138,7 @@ class Project(object):
             os.remove(cache_setup_file)
     
     def build(self):
-        print colored("Building project: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
+        print colored("Building project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
             self.command      + self.boardVariantToString(),
@@ -134,7 +152,7 @@ class Project(object):
         runSCons(argList, self.path)
     
     def clear(self):
-        print colored("Clearing project: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
+        print colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
                 self.command      + self.boardVariantToString(),
@@ -156,7 +174,7 @@ class Project(object):
         self.firmwareData.extend(firmwareData)
     
     def flashLoader(self):
-        print colored("Flashing loader: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
+        print colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
                 'flash_loader',
@@ -169,15 +187,28 @@ class Project(object):
         runSCons(argList, self.path)
     
     def flashDevice(self):
-        print colored("Flashing device: %s" % (self.getProjectDirName()), 'white', 'on_green', attrs=['bold'])
+        print colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
+        
+        firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName())
+        settings = os.path.join(self.path, 'src/', self.getSrcPath(), 'platform/stm32/', 'flash_stm32.cfg')
+        #command = '-c "flash_and_quit %s"' % (firmware)
+        #command = '-c "' + 'flash_and_quit ' + firmware + '"' 
+        #OPENOCD_SCRIPTS = os.environ['OPENOCD_SCRIPTS']
         
         argList = [
-                'flash_' + self.command + self.boardVariantToString(),
-                'CFG_PROJECT='    + self.name,
-                'CFG_PLATFORM='   + self.platform,
-                'CFG_PRODUCTION=' + ('1' if self.production else '0'),
-                '--jobs=1',
+                '-f', 'interface/ftdi/olimex-arm-usb-tiny-h.cfg',
+                '-c', 'transport select jtag',
+                #'-f', 'target/stm32f1x.cfg',
+                '-f', settings,
+                '-c', 'flash_and_quit ' + firmware,
         ]
         
-        runSCons(argList, self.path)
+        print argList
+        
+        p = Popen(["openocd"] + argList,
+        cwd = self.path)
+        
+        stdout, stderr = p.communicate()
+        print stdout, stderr
+        
         

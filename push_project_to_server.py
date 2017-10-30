@@ -6,12 +6,8 @@ from func import SrcDestData
 
 def copyProjectBinaryFiles(project, dest):
 	firmwareSourcePath = project.getProjectFirmwareDir()
-	sourceExtensionList = ['map','s19','hex','bin']
-	items = []
-	for extension in sourceExtensionList:
-		items += [each for each in os.listdir(firmwareSourcePath) if each.endswith(extension)]
 	
-	for item in items:
+	for item in project.getProjectBinaries():
 		project.addFirmwareData([SrcDestData(os.path.join(firmwareSourcePath, item), os.path.join(dest, item))])
 
 def do(project, dest):

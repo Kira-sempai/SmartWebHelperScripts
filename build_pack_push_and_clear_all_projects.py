@@ -138,7 +138,6 @@ if __name__ == "__main__":
 		for p in projects_to_build:
 			print p.workingName
 		
-		serverDir = "Z:/firmware/"
 		
 		for projectItem in projects_to_build:
 			projectItem.production = production
@@ -150,6 +149,7 @@ if __name__ == "__main__":
 			if flashLoader : projectItem.flashLoader()
 			if flashDevice : projectItem.flashDevice()
 			if pack_n_push:
+				serverDir = "Z:/firmware/"
 				projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
 				pack_project.do(projectItem)
 				push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
