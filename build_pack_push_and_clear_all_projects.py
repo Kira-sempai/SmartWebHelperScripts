@@ -23,17 +23,19 @@ def getAvailableProjectsList():
 	default_project_path1 = 'E:/development/SmartWeb_v1/'
 	default_project_path2 = 'E:/development/SmartWeb_v2/'
 	default_project_path3 = 'E:/development/Caleon_clima/'
+	default_project_path4 = 'E:/development/Caleon_brv/'
 	
 	return [
-		Project(default_project_path1, 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3)),
-		Project(default_project_path1, 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3)),
-		Project(default_project_path1, 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1)),
-		Project(default_project_path1, 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1)),
+		Project(default_project_path1, 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
+		Project(default_project_path1, 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
+		Project(default_project_path1, 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
+		Project(default_project_path1, 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
 		Project(default_project_path2, 'device', 'DataLogger'  , 'DataLogger'    , 'device', Device('DL'      , 'L30'             , None, True), 'rom'),
 		Project(default_project_path2, 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True)),
 		Project(default_project_path2, 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True)),
 		Project(default_project_path2, 'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True)),
-		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40', None, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40', None, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path4, 'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 	]
 
 def getSDCardProjectFiles(project):
@@ -150,8 +152,9 @@ if __name__ == "__main__":
 			if flashDevice : projectItem.flashDevice()
 			if pack_n_push:
 				serverDir = "Z:/firmware/"
-				projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
-				pack_project.do(projectItem)
+				if projectItem.device.sdCard:
+					projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
+					pack_project.do(projectItem)
 				push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 			if clear: projectItem.clear()
 		
