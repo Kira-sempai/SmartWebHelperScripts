@@ -30,7 +30,7 @@ def getAvailableProjectsList():
 		Project(default_project_path1, 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
 		Project(default_project_path1, 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
 		Project(default_project_path1, 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
-		Project(default_project_path2, 'device', 'DataLogger'  , 'DataLogger'    , 'device', Device('DL' , 'L30', None, True), 'rom'),
+		Project(default_project_path2, 'device', 'DataLogger'   , 'DataLogger'    , 'device', Device('DL', 'L30', None, True), 'rom'),
 		Project(default_project_path2, 'device', 'DataLoggerSW' , 'DataLogger SW' , 'device', Device('DL', 'L30', None, True), 'rom'),
 		Project(default_project_path2, 'device', 'DataLoggerKSE', 'DataLogger KSE', 'device', Device('DL', 'L30', None, True), 'rom'),
 		Project(default_project_path2, 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True)),
@@ -46,12 +46,12 @@ def getSDCardProjectFiles(project):
 	buildPath              = project.getDeviceBuildDir()
 	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
 	
-	if project.name == 'DataLogger':
+	if  ((project.name == 'DataLogger')   or
+		(project.name == 'DataLoggerKSE') or
+		(project.name == 'DataLoggerSW')):
 		return [
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
 			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/langs.sd')                , 'langs.sd'),
-			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/dlparams.sd')             , 'dlparams.sd'),
 			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'firmware.bin')
 		]
 	elif project.name == 'disco':
