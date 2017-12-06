@@ -146,8 +146,7 @@ class Project(object):
             'CFG_PLATFORM='   + self.platform,
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
             '--jobs=8',
-            'CFG_DEBUG_LOG_KSE=3',
-            'CFG_DEBUG_LOG_MASK=1',
+            'CFG_LOG_MASK=' + ('0' if self.production else '1'),
 #           '--debug=pdb',
         ]
         
