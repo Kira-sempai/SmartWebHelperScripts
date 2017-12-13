@@ -10,12 +10,21 @@ def copyProjectBinaryFiles(project, dest):
 	for item in project.getProjectBinaries():
 		project.addFirmwareData([SrcDestData(os.path.join(firmwareSourcePath, item), os.path.join(dest, item))])
 
+def addVersionInfoFile(project, firmwareDestPath):
+	f1=open(os.path.join(firmwareDestPath, 'versionLog.txt'), 'w+')
+	f1.write('List of changes:\n\n'
+			+ project.getVersionLog())
+	f1.close()
+	
+
 def do(project, dest):
 	versionFilePath = project.getVersionInfoFilePath()
 
 	firmwareFolderName  = func.parseVersionInfoFileToDestFolderName(versionFilePath)
 	firmwareDestPath    = os.path.join(dest, firmwareFolderName)
 
+	addVersionInfoFile(project, firmwareDestPath)
+	
 	copyProjectBinaryFiles(project, 'firmware/')
 	
 	for firmwareData in project.firmwareData:
