@@ -212,4 +212,19 @@ class Project(object):
         stdout, stderr = p.communicate()
         print stdout, stderr
         
+    def getVersionLog(self):
+        import subprocess
+        VCS_PROGRAM = 'git'
+        
+        p = subprocess.Popen([VCS_PROGRAM, 'tag', '-l', '-n10', '--sort=-taggerdate', '--merged'],
+                             cwd = self.path,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        
+        stdout, stderr = p.communicate()
+        if p.returncode > 1:
+            print 'git show failed:'+stderr
+            return 1
+
+        return stdout
         
