@@ -11,9 +11,14 @@ def copyProjectBinaryFiles(project, dest):
 		project.addFirmwareData([SrcDestData(os.path.join(firmwareSourcePath, item), os.path.join(dest, item))])
 
 def addVersionInfoFile(project, firmwareDestPath):
-	f1=open(os.path.join(firmwareDestPath, 'versionLog.txt'), 'w+')
-	f1.write('List of changes:\n\n'
-			+ project.getVersionLog())
+	fileName = os.path.join(firmwareDestPath, 'versionLog.txt')
+	
+	dirname = os.path.dirname(fileName)
+	if not os.path.exists(dirname):
+		os.makedirs(dirname)
+	
+	f1 = open(fileName, 'w+')
+	f1.write('List of changes:\n\n' + project.getVersionLog())
 	f1.close()
 	
 
