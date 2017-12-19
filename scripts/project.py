@@ -137,7 +137,7 @@ class Project(object):
         if os.path.isfile(cache_setup_file):
             os.remove(cache_setup_file)
     
-    def build(self):
+    def build(self, extraArgs = []):
         print colored("Building project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
@@ -146,9 +146,10 @@ class Project(object):
             'CFG_PLATFORM='   + self.platform,
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
             '--jobs=8',
-            'CFG_LOG_MASK=' + ('0' if self.production else '1'),
 #           '--debug=pdb',
         ]
+        
+        argList.extend(extraArgs)
         
         runSCons(argList, self.path)
     
