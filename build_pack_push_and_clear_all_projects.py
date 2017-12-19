@@ -80,6 +80,7 @@ def parseArguments(string_input, projects_array):
 	flashLoader = False
 	flashDevice = False
 	simulator   = False
+	buildWithSpecialArgs = False
 	projects_to_build = []
 	
 	for s in args:
@@ -89,6 +90,7 @@ def parseArguments(string_input, projects_array):
 		if s == '-a': projects_to_build = projects_array
 		if s == '-P': production  = True
 		if s == '-b': build       = True
+		if s == '-B': buildWithSpecialArgs = True
 		if s == '-p': pack_n_push = True
 		if s == '-c': clear       = True
 		if s == '-C': clearCache  = True
@@ -110,6 +112,7 @@ def parseArguments(string_input, projects_array):
 		flashLoader,
 		flashDevice,
 		simulator,
+		buildWithSpecialArgs,
 		projects_to_build)
 
 if __name__ == "__main__":
@@ -135,6 +138,7 @@ if __name__ == "__main__":
 		flashLoader ,
 		flashDevice ,
 		simulator   ,
+		buildWithSpecialArgs,
 		projects_to_build) = parseArguments(string_input, projects_array)
 		
 		
@@ -149,7 +153,16 @@ if __name__ == "__main__":
 			if simulator :
 				projectItem.command = 'qtsim'
 				projectItem.platform = 'qtsim'
-			if build     : projectItem.build()
+			if buildWithSpecialArgs :
+				extraArgs = []
+				extraArgsFile = 'setup.py'
+				if os.path.isfile(extraArgsFile):
+					for line in open(extraArgsFile, 'r'):
+						extraArgs.append(line.rstrip())
+
+				projectItem.build(extraArgs)
+			else:
+				if build     : projectItem.build()
 			if flashLoader : projectItem.flashLoader()
 			if flashDevice : projectItem.flashDevice()
 			if pack_n_push:
