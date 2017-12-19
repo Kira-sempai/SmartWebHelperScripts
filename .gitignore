@@ -160,3 +160,6 @@ local.properties
 
 #currently not needed
 .project
+
+#extra args for scons functions
+setup.py
