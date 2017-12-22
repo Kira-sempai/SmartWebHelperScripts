@@ -237,4 +237,14 @@ class Project(object):
             return 1
 
         return stdout
+    
+    def getSconsBuildArgs(self):
+        setupFile = os.path.join(self.path, 'setup.py')
         
+        with open(setupFile) as f:
+            content = f.readlines()
+        
+        content = [x.strip() for x in content] 
+        return content
+
+
