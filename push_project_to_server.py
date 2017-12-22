@@ -21,6 +21,19 @@ def addVersionInfoFile(project, firmwareDestPath):
 	f1.write('List of changes:\n\n' + project.getVersionLog())
 	f1.close()
 	
+def addBuildArgsListFile(project, firmwareDestPath):
+	fileName = os.path.join(firmwareDestPath, 'buildArgs.txt')
+	
+	dirname = os.path.dirname(fileName)
+	if not os.path.exists(dirname):
+		os.makedirs(dirname)
+		
+	f1 = open(fileName, 'w+')
+	f1.write('Project built with following args:\n\n')
+	for item in project.getSconsBuildArgs():
+		f1.write("%s\n" % item)
+	f1.close()
+	
 
 def do(project, dest):
 	versionFilePath = project.getVersionInfoFilePath()
@@ -29,6 +42,7 @@ def do(project, dest):
 	firmwareDestPath    = os.path.join(dest, firmwareFolderName)
 
 	addVersionInfoFile(project, firmwareDestPath)
+	addBuildArgsListFile(project, firmwareDestPath)
 	
 	copyProjectBinaryFiles(project, 'firmware/')
 	
