@@ -36,7 +36,7 @@ def getAvailableProjectsList():
 		Project(default_project_path2, 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True)),
 		Project(default_project_path2, 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True)),
 		Project(default_project_path2, 'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True)),
-		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40', None, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40', 1, False, 'stm32n'), 'rom', 'new'),
 		Project(default_project_path4, 'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		Project(default_project_path4, 'device', 'domus'       , 'Domus'         , 'device', Device('Domus'   , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 	]
