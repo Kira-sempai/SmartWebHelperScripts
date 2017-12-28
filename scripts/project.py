@@ -108,7 +108,7 @@ class Project(object):
         baseEnv = dict()
         baseEnv['CFG_OEM_ID']           = 'OID_SOREL'
         baseEnv['CFG_DEVICENAME']       = self.device.name
-        baseEnv['TARGET_PLATFORM']      = 'STM32'
+        baseEnv['TARGET_PLATFORM']      = self.device.microcontroller.upper()
         baseEnv['BOARD']                = self.device.board
         baseEnv['CFG_BOARD_REVISION']   = '1'
         baseEnv['CFG_BOARD_VARIANT']    = self.boardVariantToString()
@@ -116,19 +116,31 @@ class Project(object):
         return self.MakeFilename(baseEnv, self.getFirmwareLangPostfix())
         
     def generateSDCardFirmwareFileName(self):
-        return self.generateFirmwareName() + 'sdcard.bin'
+        firmwareFile = self.generateFirmwareName() + 'sdcard.bin'
+        
+        
+        return firmwareFile
     
     def generateFirmwareFileName(self):
-        return self.generateFirmwareName() + 'merged.hex'
+        firmwareName = self.generateFirmwareName()
+        firmwareFile = firmwareName + 'merged.hex'
+        firmwareDir  = self.getProjectFirmwareDir()
+        
+        firmwareFilePath = os.path.join(firmwareDir, firmwareFile)
+        if not os.path.isfile(firmwareFilePath):
+            firmwareFile = firmwareName + 'app.s19'
+        
+        return firmwareFile
     
     def getProjectBinaries(self):
         binaries = []
         
         firmwareFileName = self.generateFirmwareFileName()
+        postfix = self.getFirmwareLangPostfix()
         
         binaries.append(firmwareFileName)
-        binaries.append(self.getFirmwareLangPostfix() + 'app.map')
-        binaries.append(self.getFirmwareLangPostfix() + 'app.elf')
+        binaries.append(postfix + 'app.map')
+        binaries.append(postfix + 'app.elf')
         
         return binaries
     
