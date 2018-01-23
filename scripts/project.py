@@ -24,12 +24,13 @@ class Device(object):
     classdocs
     '''
     
-    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32'):
+    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32', olimex_target = 'stm32f1x.cfg'):
         self.name         = name
         self.board        = board
         self.boardVariant = boardVariant
         self.sdCard       = sdCard
         self.microcontroller = microcontroller
+        self.olimex_target = olimex_target
 
 class Project(object):
     '''
@@ -214,14 +215,16 @@ class Project(object):
         
         firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName())
         settings = os.path.join(self.path, 'src/', self.getSrcPath(), 'platform/stm32/', 'flash_stm32.cfg')
+        interface = 'ftdi/olimex-arm-usb-tiny-h.cfg'
+        target    = self.device.olimex_target
         #command = '-c "flash_and_quit %s"' % (firmware)
         #command = '-c "' + 'flash_and_quit ' + firmware + '"' 
         #OPENOCD_SCRIPTS = os.environ['OPENOCD_SCRIPTS']
         
         argList = [
-                '-f', 'interface/ftdi/olimex-arm-usb-tiny-h.cfg',
+                '-f', 'interface/' + interface,
+                '-f', 'target/' + target, 
                 '-c', 'transport select jtag',
-                #'-f', 'target/stm32f1x.cfg',
                 '-f', settings,
                 '-c', 'flash_and_quit ' + firmware,
         ]
