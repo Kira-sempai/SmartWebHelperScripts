@@ -223,8 +223,8 @@ class Project(object):
         
         argList = [
                 '-f', 'interface/' + interface,
-                '-f', 'target/' + target, 
                 '-c', 'transport select jtag',
+                '-f', 'target/' + target, 
                 '-f', settings,
                 '-c', 'flash_and_quit ' + firmware,
         ]
