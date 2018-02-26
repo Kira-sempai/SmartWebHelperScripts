@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import sys
 import os
 import colorama
@@ -84,6 +85,9 @@ def parseArguments(string_input, projects_array):
 	flashDevice = False
 	simulator   = False
 	buildWithSpecialArgs = False
+	programmingAdapterSerialNumber = None
+	programmingAdapterVID_PID = None
+	programmingAdapterDescription = None
 	projects_to_build = []
 	
 	for s in args:
@@ -100,7 +104,22 @@ def parseArguments(string_input, projects_array):
 		if s == '-f': flashLoader = True
 		if s == '-F': flashDevice = True
 		if s == '-s': simulator   = True
-			
+		if s.count('--adapter_serial'):
+			programmingAdapterSerialNumber = s[17:]
+			if	programmingAdapterSerialNumber == '1':
+				programmingAdapterSerialNumber = 'OLUUKDU둭'
+		if s.count('--adapter_vid_pid'):
+			programmingAdapterVID_PID = s[18:]
+			if  programmingAdapterVID_PID == '1':
+				programmingAdapterVID_PID = '0x15BA 0x002A'
+			elif programmingAdapterVID_PID == '2':
+				programmingAdapterVID_PID = '0x0403 0x6010'
+		if s.count('--adapter_description'):
+			programmingAdapterDescription  = s[22:23]
+			if  programmingAdapterDescription == '1':
+				programmingAdapterDescription = '"Olimex OpenOCD JTAG ARM-USB-TINY-H"'
+			if  programmingAdapterDescription == '2':
+				programmingAdapterDescription = '"Dual RS232-HS"'
 		for p in projects_array:
 			if p.name == s:
 				projects_to_build.append(p)
@@ -116,6 +135,9 @@ def parseArguments(string_input, projects_array):
 		flashDevice,
 		simulator,
 		buildWithSpecialArgs,
+		programmingAdapterSerialNumber,
+		programmingAdapterVID_PID,
+		programmingAdapterDescription,
 		projects_to_build)
 
 if __name__ == "__main__":
@@ -142,6 +164,9 @@ if __name__ == "__main__":
 		flashDevice ,
 		simulator   ,
 		buildWithSpecialArgs,
+		programmingAdapterSerialNumber,
+		programmingAdapterVID_PID,
+		programmingAdapterDescription,
 		projects_to_build) = parseArguments(string_input, projects_array)
 		
 		
@@ -166,8 +191,8 @@ if __name__ == "__main__":
 				projectItem.build(extraArgs)
 			else:
 				if build     : projectItem.build()
-			if flashLoader : projectItem.flashLoader()
-			if flashDevice : projectItem.flashDevice()
+			if flashLoader : projectItem.flashLoader(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
+			if flashDevice : projectItem.flashDevice(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if pack_n_push:
 				serverDir = "Z:/firmware/"
 				if projectItem.device.sdCard:

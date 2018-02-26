@@ -7,6 +7,7 @@ Created on 28 sept. 2017.
 import os
 from subprocess import Popen
 from termcolor import colored
+from symbol import arglist
 
 def runSCons(args, path):
     print args
@@ -197,7 +198,7 @@ class Project(object):
     def addFirmwareData(self, firmwareData):
         self.firmwareData.extend(firmwareData)
     
-    def flashLoader(self):
+    def flashLoader(self, programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription):
         print colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
@@ -210,26 +211,36 @@ class Project(object):
         
         runSCons(argList, self.path)
     
-    def flashDevice(self):
+    def flashDevice(self, programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription):
         print colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName())
         settings = os.path.join(self.path, 'src/', self.getSrcPath(), 'platform/stm32/', 'flash_stm32.cfg')
         interface = 'ftdi/olimex-arm-usb-tiny-h.cfg'
         target    = self.device.olimex_target
-        #command = '-c "flash_and_quit %s"' % (firmware)
-        #command = '-c "' + 'flash_and_quit ' + firmware + '"' 
-        #OPENOCD_SCRIPTS = os.environ['OPENOCD_SCRIPTS']
+        transport = 'jtag'
         
         argList = [
                 '-f', 'interface/' + interface,
-                '-c', 'transport select jtag',
+        ]
+        
+        if programmingAdapterSerialNumber:
+            argList.extend(['-c', 'ftdi_serial ' + programmingAdapterSerialNumber])
+            
+        if programmingAdapterVID_PID:
+            argList.extend(['-c', 'ftdi_vid_pid ' + programmingAdapterVID_PID])
+            
+        if programmingAdapterDescription:
+            argList.extend(['-c', 'ftdi_device_desc ' + programmingAdapterDescription])
+        
+        argList.extend([
+                '-c', 'transport select ' + transport,
                 '-f', 'target/' + target, 
                 '-f', settings,
                 '-c', 'flash_and_quit ' + firmware,
-        ]
+        ])
         
-        print argList
+        print("\n".join(argList))
         
         p = Popen(["openocd"] + argList,
         cwd = self.path)
