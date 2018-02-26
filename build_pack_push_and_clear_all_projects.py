@@ -28,6 +28,7 @@ def getAvailableProjectsList():
 	
 	return [
 		Project(default_project_path1, 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
+		Project(default_project_path1, 'device', 'stdc_lin'    , 'SmartWeb S LIN', 'device', Device('STDC_LIN', 'S28' , 3), 'rom'),
 		Project(default_project_path1, 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
 		Project(default_project_path1, 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
 		Project(default_project_path1, 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
