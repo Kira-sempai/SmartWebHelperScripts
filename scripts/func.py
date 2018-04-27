@@ -1,6 +1,5 @@
 import os
 import sys
-import re
 import shutil
 from termcolor import colored
 #################################################
@@ -40,23 +39,6 @@ def copytree(src, dst, symlinks=False, ignore=None):
             os.makedirs(dstDir)
         shutil.copy2(src, dst)
         
-
-def parseVersionInfoFileToDestFolderName(versionFilePath):
-    if not os.path.isfile(versionFilePath):
-        print_warning('Wrong version info file path!')
-        sys.exit()
-    
-    versionFile = open(versionFilePath, 'r')
-    text = versionFile.read()
-    print 'version file read: ' + text
-
-    versionFile.close()
-
-    versionGU  = re.search(r'SHORT_VERSION.*"(.*)"', text).group(1)
-    versionDate = re.search(r'VERSION_DATE.*"(.*)"', text).group(1)
-    versionDate = versionDate.replace('/', '_')
-    
-    return versionDate + '_' + versionGU
 
 
 class SrcDestData(object):

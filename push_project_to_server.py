@@ -36,9 +36,10 @@ def addBuildArgsListFile(project, firmwareDestPath):
 	
 
 def do(project, dest):
-	versionFilePath = project.getVersionInfoFilePath()
-
-	firmwareFolderName  = func.parseVersionInfoFileToDestFolderName(versionFilePath)
+	firmwareFolderName  = project.version.name
+	if project.version.unstable:
+		dest = dest + ' unstable'
+		
 	firmwareDestPath    = os.path.join(dest, firmwareFolderName)
 
 	addVersionInfoFile(project, firmwareDestPath)

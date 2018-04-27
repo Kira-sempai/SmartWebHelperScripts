@@ -5,9 +5,12 @@ Created on 28 sept. 2017.
 '''
 
 import os
+import re
+import sys
 from subprocess import Popen
 from termcolor import colored
-from symbol import arglist
+from func import print_warning
+
 
 def runSCons(args, path):
     print args
@@ -19,6 +22,30 @@ def runSCons(args, path):
     stdout, stderr = p.communicate()
     print stdout, stderr
     
+
+class Version(object):
+    '''
+    classdocs
+    '''
+    
+    def __init__(self, versionFilePath):
+        if not os.path.isfile(versionFilePath):
+            return
+        
+        versionFile = open(versionFilePath, 'r')
+        text = versionFile.read()
+       
+        versionFile.close()
+        
+        versionGU   = re.search(r'SHORT_VERSION.*"(.*)"', text).group(1)
+        versionDate = re.search(r'VERSION_DATE.*"(.*)"', text).group(1)
+        versionDate = versionDate.replace('/', '_')
+        
+        self.date = versionDate
+        self.name = self.date + '_' + versionGU
+        self.modified = versionGU.endswith('m')
+        self.unstable = (versionGU[-2:-1] == 'u') if self.modified else versionGU.endswith('u')
+
 
 class Device(object):
     '''
@@ -54,6 +81,7 @@ class Project(object):
         self.sdk          = sdk
         self.sdCardData   = []
         self.firmwareData = []
+        self.version      = Version(self.getVersionInfoFilePath())
     
     def boardVariantToString(self):
         if self.device.boardVariant is None:
