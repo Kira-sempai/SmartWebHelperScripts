@@ -6,10 +6,8 @@ Created on 28 sept. 2017.
 
 import os
 import re
-import sys
 from subprocess import Popen
 from termcolor import colored
-from func import print_warning
 
 
 def runSCons(args, path):
@@ -203,6 +201,8 @@ class Project(object):
         argList.extend(extraArgs)
         
         runSCons(argList, self.path)
+        
+        self.version = Version(self.getVersionInfoFilePath())
     
     def clear(self):
         print colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
