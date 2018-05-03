@@ -3,6 +3,7 @@ import os
 sys.path.insert(0, "./scripts")
 import func
 from func import SrcDestData
+from termcolor import colored
 
 def copyProjectBinaryFiles(project, dest):
 	firmwareSourcePath = project.getProjectFirmwareDir()
@@ -41,6 +42,10 @@ def do(project, dest):
 		dest = dest + ' unstable'
 		
 	firmwareDestPath    = os.path.join(dest, firmwareFolderName)
+	print colored("pushing project to " + firmwareDestPath,
+				'white',
+				'on_green',
+				attrs=['bold'])
 
 	addVersionInfoFile(project, firmwareDestPath)
 	addBuildArgsListFile(project, firmwareDestPath)
