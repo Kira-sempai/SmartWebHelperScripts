@@ -25,6 +25,7 @@ def getAvailableProjectsList():
 	default_project_path2 = 'E:/development/SmartWeb_v2/'
 	default_project_path3 = 'E:/development/Caleon_clima/'
 	default_project_path4 = 'E:/development/Caleon_brv/'
+	default_project_path5 = 'E:/development/pdellwig/'
 	
 	return [
 		Project(default_project_path1, 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
@@ -44,6 +45,10 @@ def getAvailableProjectsList():
 		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
 		Project(default_project_path4, 'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		Project(default_project_path4, 'device', 'domus'       , 'Domus'         , 'device', Device('Domus'       , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
+		
+		Project(default_project_path5, 'device', 'lfwc'        , 'LFWC', 'device', Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'device', 'lfwc_mt_v01' , 'LFWC', 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'device', 'lfwc_mt_v02' , 'LFWC', 'device', Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
 	]
 
 def getSDCardProjectFiles(project):
