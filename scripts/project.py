@@ -63,7 +63,7 @@ class Project(object):
     classdocs
     '''
     
-    def __init__(self, path, command, name, workingName, platform, device, langkey = 'west', sdk = 'old', production = False):
+    def __init__(self, path, command, name, workingName, platform, device, langkey = 'west', sdk = 'old', production = False, oem_id = 'OID_SOREL'):
         '''
         Constructor
         TODO: make projectName and workingName the same
@@ -80,6 +80,7 @@ class Project(object):
         self.sdCardData   = []
         self.firmwareData = []
         self.version      = Version(self.getVersionInfoFilePath())
+        self.oem_id       = oem_id
     
     def boardVariantToString(self):
         if self.device.boardVariant is None:
@@ -134,7 +135,7 @@ class Project(object):
         
     def generateFirmwareName(self):
         baseEnv = dict()
-        baseEnv['CFG_OEM_ID']           = 'OID_SOREL'
+        baseEnv['CFG_OEM_ID']           = self.oem_id
         baseEnv['CFG_DEVICENAME']       = self.device.name
         baseEnv['TARGET_PLATFORM']      = self.device.microcontroller.upper()
         baseEnv['BOARD']                = self.device.board
