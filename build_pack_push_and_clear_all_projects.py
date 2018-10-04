@@ -45,7 +45,7 @@ def getAvailableProjectsList():
 		
 		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
 		Project(default_project_path4, 'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
-		Project(default_project_path4, 'device', 'domus'       , 'Domus'         , 'device', Device('Domus'       , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path4, 'device', 'domvs'       , 'Domvs'         , 'device', Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
 		
 		Project(default_project_path5, 'device', 'lfwc'        , 'LFWC', 'device', Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'device', 'lfwc_mt_v01' , 'LFWC', 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
