@@ -51,6 +51,7 @@ def getAvailableProjectsList():
 		Project(default_project_path5, 'device', 'lfwc_mt_v01' , 'LFWC', 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'device', 'lfwc_mt_v02' , 'LFWC', 'device', Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'device', 'lfwc_mt_s47' , 'LFWC', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
 	]
 
 def getSDCardProjectFiles(project):
