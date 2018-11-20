@@ -54,35 +54,44 @@ def getAvailableProjectsList():
 		Project(default_project_path5, 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
 	]
 
+def getSDCardFirmwarePath(project):
+	name = project.name
+	
+	if ((name == 'xhcc')   or
+		(name == 'xhcc_s62') or
+		(name == 'disco') or
+		(name == 'swk')):
+		return 'update'
+	
+	return ''
+	
+
 def getSDCardProjectFiles(project):
+	if not projectItem.device.sdCard:
+		return
+	
 	srcPath                = project.path
 	buildPath              = project.getDeviceBuildDir()
 	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
 	
-	if  ((project.name == 'DataLogger')   or
-		(project.name == 'DataLoggerKSE') or
-		(project.name == 'DataLoggerSW')):
-		return [
-			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/langs.sd')                , 'langs.sd'),
-			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'firmware.bin')
-		]
-	elif project.name == 'disco':
-		return [
-			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-			SrcDestData(os.path.join(srcPath  , 'sdcard/Disco/GUI')                              , 'GUI/'),
-			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
-		]
-	elif ((project.name == 'xhcc') or
-		(project.name == 'xhcc_s62') or
-		(project.name == 'swk')):
-		return [
-			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-			SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
-			SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), 'update/firmware.bin')
-		]
+	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
+	
+	files = [
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
+		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
+		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), firmwarePathOnSdCard)
+	]
+	
+	name = project.name
+	
+	if ((name == 'DataLogger')    or
+		(name == 'DataLoggerKSE') or
+		(name == 'DataLoggerSW')):
+		files.append(SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/langs.sd'), 'langs.sd'))
+	elif name == 'disco':
+		files.append(SrcDestData(os.path.join(srcPath, 'sdcard/Disco/GUI'), 'GUI/'))
+	
+	return files
 
 def parseArguments(string_input, projects_array):
 	args = string_input.split() #splits the input string on spaces
