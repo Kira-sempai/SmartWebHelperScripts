@@ -17,8 +17,10 @@ def printAvailableProjectsList(projects_array):
 	print 'Projects list:'
 	for p in projects_array:
 		l = len(p.workingName)
-		space = 20 - l
-		print p.workingName, ' '*space, '- ', p.name
+		l2 = len(p.name)
+		space = 15 - l
+		space2 = 20 - l2
+		print p.workingName, ' '*space, '- ', p.name, ' '*space2, '(' + p.group + ')'
 
 def getAvailableProjectsList():
 	default_project_path1 = 'E:/development/SmartWeb_v1/'
@@ -28,30 +30,30 @@ def getAvailableProjectsList():
 	default_project_path5 = 'E:/development/pdellwig/'
 	
 	return [
-		Project(default_project_path1, 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
-		Project(default_project_path1, 'device', 'stdc_lin'    , 'SmartWeb S LIN', 'device', Device('STDC_LIN', 'S28' , 3), 'rom'),
-		Project(default_project_path1, 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
-		Project(default_project_path1, 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
-		Project(default_project_path1, 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
+		Project(default_project_path1, 'SW1', 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
+		Project(default_project_path1, 'SW1', 'device', 'stdc_lin'    , 'SmartWeb S LIN', 'device', Device('STDC_LIN', 'S28' , 3), 'rom'),
+		Project(default_project_path1, 'SW1', 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
+		Project(default_project_path1, 'SW1', 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
+		Project(default_project_path1, 'SW1', 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
 		
-		Project(default_project_path2, 'device', 'DataLogger'   , 'DataLogger'    , 'device', Device('DL'    , 'L30', None, True), 'rom'),
-		Project(default_project_path2, 'device', 'DataLoggerSW' , 'DataLogger SW' , 'device', Device('DL_SW' , 'L30', None, True), 'rom'),
-		Project(default_project_path2, 'device', 'DataLoggerKSE', 'DataLogger KSE', 'device', Device('DL_KSE', 'L30', None, True), 'rom'),
+		Project(default_project_path2, 'SW2', 'device', 'DataLogger'   , 'DataLogger'    , 'device', Device('DL'    , 'L30', None, True), 'rom'),
+		Project(default_project_path2, 'SW2', 'device', 'DataLoggerSW' , 'DataLogger SW' , 'device', Device('DL_SW' , 'L30', None, True), 'rom'),
+		Project(default_project_path2, 'SW2', 'device', 'DataLoggerKSE', 'DataLogger KSE', 'device', Device('DL_KSE', 'L30', None, True), 'rom'),
 		
-		Project(default_project_path2, 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
-		Project(default_project_path2, 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'device', 'swk'         , 'SmartWeb K'    , 'device', Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project(default_project_path2, 'SW2', 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
+		Project(default_project_path2, 'SW2', 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project(default_project_path2, 'SW2', 'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project(default_project_path2, 'SW2', 'device', 'swk'         , 'SmartWeb K'    , 'device', Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
-		Project(default_project_path3, 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
-		Project(default_project_path4, 'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
-		Project(default_project_path4, 'device', 'domvs'       , 'Domvs'         , 'device', Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path3, 'Caleon', 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path4, 'Other',  'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path4, 'Other',  'device', 'domvs'       , 'Domvs'         , 'device', Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
 		
-		Project(default_project_path5, 'device', 'lfwc'        , 'LFWC', 'device', Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'device', 'lfwc_mt_v01' , 'LFWC', 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'device', 'lfwc_mt_v02' , 'LFWC', 'device', Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'device', 'lfwc_mt_s47' , 'LFWC', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc'        , 'LFWC', 'device', Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v01' , 'LFWC', 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v02' , 'LFWC', 'device', Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47' , 'LFWC', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
 	]
 
 def getSDCardFirmwarePath(project):
@@ -141,7 +143,7 @@ def parseArguments(string_input, projects_array):
 			if  programmingAdapterDescription == '2':
 				programmingAdapterDescription = '"Dual RS232-HS"'
 		for p in projects_array:
-			if p.name == s:
+			if p.name == s or p.group == s:
 				projects_to_build.append(p)
 				continue
 		
