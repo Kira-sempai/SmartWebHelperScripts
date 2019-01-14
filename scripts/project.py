@@ -63,12 +63,12 @@ class Project(object):
     classdocs
     '''
     
-    def __init__(self, path, command, name, workingName, platform, device, langkey = 'west', sdk = 'old', production = False, oem_id = 'OID_SOREL'):
+    def __init__(self, path, group, command, name, workingName, platform, device, langkey = 'west', sdk = 'old', production = False, oem_id = 'OID_SOREL'):
         '''
         Constructor
-        TODO: make projectName and workingName the same
         '''
         self.path         = path
+        self.group        = group
         self.command      = command
         self.name         = name
         self.workingName  = workingName
@@ -179,7 +179,7 @@ class Project(object):
             os.remove(cache_setup_file)
     
     def build(self, extraArgs = []):
-        print colored("Building project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
+        print colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
             self.command      + self.boardVariantToString(),
