@@ -30,11 +30,11 @@ def getAvailableProjectsList():
 	default_project_path5 = 'E:/development/pdellwig/'
 	
 	return [
-		Project(default_project_path1, 'SW1', 'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
-		Project(default_project_path1, 'SW1', 'device', 'stdc_lin'    , 'SmartWeb S LIN', 'device', Device('STDC_LIN', 'S28' , 3), 'rom'),
-		Project(default_project_path1, 'SW1', 'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
-		Project(default_project_path1, 'SW1', 'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
-		Project(default_project_path1, 'SW1', 'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
+		Project(default_project_path1, 'SW1',         'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
+		Project(default_project_path1, 'SW1_special', 'device', 'stdc_lin'    , 'SmartWeb S LIN', 'device', Device('STDC_LIN', 'S28' , 3), 'rom'),
+		Project(default_project_path1, 'SW1',         'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
+		Project(default_project_path1, 'SW1',         'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
+		Project(default_project_path1, 'SW1',         'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
 		
 		Project(default_project_path2, 'SW2_deprecated', 'device', 'DataLogger'   , 'DataLogger'    , 'device', Device('DL'    , 'L30', None, True), 'rom'),
 		Project(default_project_path2, 'SW2',            'device', 'DataLoggerSW' , 'DataLogger SW' , 'device', Device('DL_SW' , 'L30', None, True), 'rom'),
