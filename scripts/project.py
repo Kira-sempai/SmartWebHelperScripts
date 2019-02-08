@@ -264,7 +264,8 @@ class Project(object):
         
         argList.extend([
                 '-c', 'transport select ' + transport,
-                '-f', 'target/' + target, 
+                '-f', 'target/' + target,
+                '-c', 'adapter_nsrst_delay 1000',
                 '-f', settings,
                 '-c', 'flash_and_quit ' + firmware,
         ])
