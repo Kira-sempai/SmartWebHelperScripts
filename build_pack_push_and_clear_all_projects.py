@@ -2,6 +2,7 @@
 import sys
 import os
 import colorama
+from subprocess import Popen
 from termcolor import colored
 sys.path.insert(0, "./scripts")
 from project import Project, Device
@@ -67,6 +68,44 @@ def getSDCardFirmwarePath(project):
 	
 	return ''
 	
+class cd:
+	"""Context manager for changing the current working directory"""
+	def __init__(self, newPath):
+		self.newPath = os.path.expanduser(newPath)
+
+	def __enter__(self):
+		self.savedPath = os.getcwd()
+		os.chdir(self.newPath)
+
+	def __exit__(self, etype, value, traceback):
+		os.chdir(self.savedPath)
+
+def buildWebPages(webPagesPath):
+	packerPath = os.path.join(webPagesPath, 'less')
+	
+	with cd(packerPath):
+		p = Popen(['python', 'build.py', 'datalogger'])
+		p.communicate()
+	
+	destPath = os.path.join(webPagesPath, 'dist')
+	
+	indexFileName = 'index.html'
+	andexFileName = 'andex.html'
+	indexFilePath = os.path.join(destPath, indexFileName)
+	andexFilePath = os.path.join(destPath, andexFileName)
+	
+	
+	p = Popen(['gzip', indexFilePath])
+	p.communicate()
+	
+	p = Popen(['gzip', andexFilePath])
+	p.communicate()
+	
+	indexGzippedFilePath = os.path.join(destPath, indexFileName + '.gz')
+	andexGzippedFilePath = os.path.join(destPath, andexFileName + '.gz')
+	
+	os.rename(indexGzippedFilePath, indexFilePath)
+	os.rename(andexGzippedFilePath, andexFilePath)
 
 def getSDCardProjectFiles(project):
 	if not projectItem.device.sdCard:
@@ -75,12 +114,15 @@ def getSDCardProjectFiles(project):
 	srcPath                = project.path
 	buildPath              = project.getDeviceBuildDir()
 	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
+	webPagesPath           = os.path.join(srcPath, 'web/teplomonitor-server')
+	
+	buildWebPages(webPagesPath)
 	
 	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
 	
 	files = [
-		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/server')                , 'WEB/'),
-		SrcDestData(os.path.join(srcPath  , 'web/teplomonitor-server/sitemenu.txt')          , 'sitemenu.txt'),
+		SrcDestData(os.path.join(webPagesPath, 'dist')        , 'WEB/'),
+		SrcDestData(os.path.join(webPagesPath, 'sitemenu.txt'), 'sitemenu.txt'),
 		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), firmwarePathOnSdCard)
 	]
 	
@@ -217,6 +259,12 @@ if __name__ == "__main__":
 			if flashDevice : projectItem.flashDevice(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if pack_n_push:
 				serverDir = "Z:/firmware/"
+				
+				if not os.path.exists(serverDir):
+					print(colored("Can't find server: " + serverDir, 'white', 'on_red'))
+					print '\r\n\n'
+					break
+					
 				if projectItem.device.sdCard:
 					projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
 					pack_project.do(projectItem)
