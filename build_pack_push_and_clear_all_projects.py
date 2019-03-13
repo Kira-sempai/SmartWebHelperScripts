@@ -116,12 +116,16 @@ def getSDCardProjectFiles(project):
 	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
 	webPagesPath           = os.path.join(srcPath, 'web/teplomonitor-server')
 	
-	buildWebPages(webPagesPath)
+	if True:
+		buildWebPages(webPagesPath)
+		webPagesSrcFolder = 'dist'
+	else:
+		webPagesSrcFolder = 'server'
 	
 	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
 	
 	files = [
-		SrcDestData(os.path.join(webPagesPath, 'dist')        , 'WEB/'),
+		SrcDestData(os.path.join(webPagesPath, webPagesSrcFolder), 'WEB/'),
 		SrcDestData(os.path.join(webPagesPath, 'sitemenu.txt'), 'sitemenu.txt'),
 		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), firmwarePathOnSdCard)
 	]
