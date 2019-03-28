@@ -282,7 +282,7 @@ class Project(object):
         import subprocess
         VCS_PROGRAM = 'git'
         
-        p = subprocess.Popen([VCS_PROGRAM, 'tag', '-l', '-n10', '--sort=-version:refname', '--merged'],
+        p = subprocess.Popen([VCS_PROGRAM, 'tag', '-l', '-n40', '--sort=-version:refname', '--merged'],
                              cwd = self.path,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
