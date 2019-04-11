@@ -83,6 +83,10 @@ class cd:
 def buildWebPages(webPagesPath):
 	packerPath = os.path.join(webPagesPath, 'less')
 	
+	
+	if not os.path.exists(os.path.join(packerPath, 'build.py')):
+		return False
+	
 	with cd(packerPath):
 		p = Popen(['python', 'build.py', 'datalogger'])
 		p.communicate()
@@ -106,6 +110,8 @@ def buildWebPages(webPagesPath):
 	
 	os.rename(indexGzippedFilePath, indexFilePath)
 	os.rename(andexGzippedFilePath, andexFilePath)
+	
+	return True
 
 def getSDCardProjectFiles(project):
 	if not projectItem.device.sdCard:
@@ -116,8 +122,8 @@ def getSDCardProjectFiles(project):
 	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
 	webPagesPath           = os.path.join(srcPath, 'web/teplomonitor-server')
 	
-	if True:
-		buildWebPages(webPagesPath)
+	if buildWebPages(webPagesPath):
+		
 		webPagesSrcFolder = 'dist'
 	else:
 		webPagesSrcFolder = 'server'
