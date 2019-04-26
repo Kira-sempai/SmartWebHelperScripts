@@ -3,7 +3,7 @@ Created on 28 sept. 2017.
 
 @author: andrey.vinogradov
 '''
-
+import sys
 import os
 import re
 from subprocess import Popen
@@ -19,6 +19,11 @@ def runSCons(args, path):
     
     stdout, stderr = p.communicate()
     print stdout, stderr
+	
+	result = p.returncode
+	if result:
+		print 'Scons failed: ' + stderr
+		sys.exit()
     
 
 class Version(object):
