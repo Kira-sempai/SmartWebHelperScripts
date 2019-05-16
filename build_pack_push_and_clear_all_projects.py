@@ -262,7 +262,9 @@ if __name__ == "__main__":
 					for line in open(extraArgsFile, 'r'):
 						extraArgs.append(line.rstrip())
 
-				projectItem.build(extraArgs)
+				result = projectItem.build(extraArgs)
+				if result != 0:
+					break
 			else:
 				if build     : projectItem.build()
 			if flashLoader : projectItem.flashLoader(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)

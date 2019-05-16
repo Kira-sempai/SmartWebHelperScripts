@@ -3,7 +3,7 @@ Created on 28 sept. 2017.
 
 @author: andrey.vinogradov
 '''
-import sys
+
 import os
 import re
 from subprocess import Popen
@@ -19,11 +19,14 @@ def runSCons(args, path):
     
     stdout, stderr = p.communicate()
     print stdout, stderr
-	
-	result = p.returncode
-	if result:
-		print 'Scons failed: ' + stderr
-		sys.exit()
+
+    result = p.returncode
+
+    if result:
+        print colored('Scons failed: ' + str(result), 'white', 'on_red', attrs=['bold'])
+        return 1
+    
+    return 0
     
 
 class Version(object):
@@ -206,9 +209,14 @@ class Project(object):
         
         argList.extend(extraArgs)
         
-        runSCons(argList, self.path)
+        result = runSCons(argList, self.path)
+        
+        if result != 0:
+            return result
         
         self.version = Version(self.getVersionInfoFilePath())
+        
+        return result
     
     def clear(self):
         print colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
