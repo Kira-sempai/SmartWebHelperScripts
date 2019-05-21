@@ -24,9 +24,8 @@ def runSCons(args, path):
 
     if result:
         print colored('Scons failed: ' + str(result), 'white', 'on_red', attrs=['bold'])
-        return 1
     
-    return 0
+    return result
     
 
 class Version(object):
