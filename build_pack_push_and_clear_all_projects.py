@@ -83,33 +83,12 @@ class cd:
 def buildWebPages(webPagesPath):
 	packerPath = os.path.join(webPagesPath, 'less')
 	
-	
 	if not os.path.exists(os.path.join(packerPath, 'build.py')):
 		return False
 	
 	with cd(packerPath):
 		p = Popen(['python', 'build.py', 'datalogger'])
 		p.communicate()
-	
-	destPath = os.path.join(webPagesPath, 'dist')
-	
-	indexFileName = 'index.html'
-	andexFileName = 'andex.html'
-	indexFilePath = os.path.join(destPath, indexFileName)
-	andexFilePath = os.path.join(destPath, andexFileName)
-	
-	
-	p = Popen(['gzip', indexFilePath])
-	p.communicate()
-	
-	p = Popen(['gzip', andexFilePath])
-	p.communicate()
-	
-	indexGzippedFilePath = os.path.join(destPath, indexFileName + '.gz')
-	andexGzippedFilePath = os.path.join(destPath, andexFileName + '.gz')
-	
-	os.rename(indexGzippedFilePath, indexFilePath)
-	os.rename(andexGzippedFilePath, andexFilePath)
 	
 	return True
 
