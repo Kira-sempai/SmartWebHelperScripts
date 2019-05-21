@@ -245,7 +245,10 @@ if __name__ == "__main__":
 				if result != 0:
 					break
 			else:
-				if build     : projectItem.build()
+				if build     :
+					result =  projectItem.build()
+					if result != 0:
+						break
 			if flashLoader : projectItem.flashLoader(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if flashDevice : projectItem.flashDevice(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if pack_n_push:
