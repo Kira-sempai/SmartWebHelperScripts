@@ -41,10 +41,10 @@ def getAvailableProjectsList():
 		Project(default_project_path2, 'SW2',            'device', 'DataLoggerSW' , 'DataLogger SW' , 'device', Device('DL_SW' , 'L30', None, True), 'rom'),
 		Project(default_project_path2, 'SW2',            'device', 'DataLoggerKSE', 'DataLogger KSE', 'device', Device('DL_KSE', 'L30', None, True), 'rom'),
 		
-		Project(default_project_path2, 'SW2',         'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
-		Project(default_project_path2, 'SW2',         'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'SW2',         'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'SW2_special', 'device', 'swk'         , 'SmartWeb K'    , 'device', Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project(default_project_path2, 'SW2', 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
+		Project(default_project_path2, 'SW2', 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project(default_project_path2, 'SW2', 'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project(default_project_path2, 'SW2', 'device', 'swk'         , 'SmartWeb K'    , 'device', Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
 		Project(default_project_path3, 'Caleon', 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
 		Project(default_project_path4, 'Other',  'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
