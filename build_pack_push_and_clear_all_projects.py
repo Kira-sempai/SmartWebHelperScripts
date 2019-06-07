@@ -50,11 +50,12 @@ def getAvailableProjectsList():
 		Project(default_project_path4, 'Other',  'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		Project(default_project_path4, 'Other',  'device', 'domvs'       , 'Domvs'         , 'device', Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
 		
-		Project(default_project_path5, 'Other', 'device', 'lfwc'        , 'LFWC', 'device', Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v01' , 'LFWC', 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v02' , 'LFWC', 'device', Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47' , 'LFWC', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc'        , 'LFWC'   , 'device', Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v01' , 'LFWC'   , 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v02' , 'LFWC'   , 'device', Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47' , 'LFWC'   , 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'charlie'     , 'CHARLIE', 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test', 'device', Device('CHARLIE-Kemper-S47', 'S47', None, False, 'stm32'), 'rom'),
 	]
 
 def getSDCardFirmwarePath(project):
