@@ -103,6 +103,10 @@ class Project(object):
     def getDeviceBuildDir(self):
         return os.path.join(self.path, "build/", self.getProjectDirName(), self.command + self.boardVariantToString()) + '/'
     
+    def getDeviceBinDir(self):
+        return os.path.join(self.path, "bin/", self.getProjectDirName()) + '/'
+    
+    
     def getSrcPath(self):
         if self.sdk == 'old':
             return 'shared/'
@@ -151,6 +155,19 @@ class Project(object):
         
         return self.MakeFilename(baseEnv, self.getFirmwareLangPostfix())
         
+    def generateSimulatorName(self):
+        baseEnv = dict()
+        baseEnv['CFG_OEM_ID']           = self.oem_id
+        baseEnv['CFG_DEVICENAME']       = self.device.name
+        baseEnv['TARGET_PLATFORM']      = 'QT'
+        baseEnv['BOARD']                = self.device.board
+        baseEnv['CFG_BOARD_REVISION']   = '1'
+        baseEnv['CFG_BOARD_VARIANT']    = self.boardVariantToString()
+        
+        prefix = ''
+        
+        return self.MakeFilename(baseEnv, prefix+'sim')
+        
     def generateSDCardFirmwareFileName(self):
         firmwareFile = self.generateFirmwareName() + 'sdcard.bin'
         
@@ -184,6 +201,12 @@ class Project(object):
         cache_setup_file = os.path.join(self.path, 'setup.py')
         if os.path.isfile(cache_setup_file):
             os.remove(cache_setup_file)
+    
+    def runSimulator(self):
+        firmwareName = self.generateSimulatorName() + '.exe'
+        simulator_file = os.path.join(self.getDeviceBinDir(), firmwareName)
+        print(firmwareName)
+        Popen([simulator_file])
     
     def build(self, extraArgs = []):
         print colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
