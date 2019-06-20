@@ -205,8 +205,8 @@ class Project(object):
     def runSimulator(self):
         firmwareName = self.generateSimulatorName() + '.exe'
         simulator_file = os.path.join(self.getDeviceBinDir(), firmwareName)
-        print(firmwareName)
-        Popen([simulator_file])
+        
+        os.system('start '  + simulator_file)
     
     def build(self, extraArgs = []):
         print colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
