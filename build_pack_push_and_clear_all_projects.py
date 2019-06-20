@@ -55,8 +55,8 @@ def getAvailableProjectsList():
 		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v02'          , 'LFWC'             , 'device', Device('LFWC-MT-V02'       , 'S40', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47'          , 'LFWC'             , 'device', Device('LFWC-MT-S47'       , 'S47', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'   , 'device', Device('LFWC-MT-S47'       , 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'charlie'              , 'CHARLIE'          , 'device', Device('CHARLIE-Kemper-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'charlie_unitTest'     , 'CHARLIE Unit Test', 'device', Device('CHARLIE-Kemper-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'device', 'charlie'              , 'CHARLIE'          , 'device', Device('CHARLIE', 'S47', 1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project(default_project_path5, 'Other', 'device', 'charlie_unitTest'     , 'CHARLIE Unit Test', 'device', Device('CHARLIE', 'S47', 1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
 	]
 
 def getSDCardFirmwarePath(project):
@@ -139,6 +139,7 @@ def parseArguments(string_input, projects_array):
 	flashLoader = False
 	flashDevice = False
 	simulator   = False
+	runSimulator = False
 	buildWithSpecialArgs = False
 	programmingAdapterSerialNumber = None
 	programmingAdapterVID_PID = None
@@ -159,6 +160,9 @@ def parseArguments(string_input, projects_array):
 		if s == '-f': flashLoader = True
 		if s == '-F': flashDevice = True
 		if s == '-s': simulator   = True
+		if s == '-S':
+			simulator    = True
+			runSimulator = True
 		if s.count('--adapter_serial'):
 			programmingAdapterSerialNumber = s[17:]
 			if	programmingAdapterSerialNumber == '1':
@@ -189,6 +193,7 @@ def parseArguments(string_input, projects_array):
 		flashLoader,
 		flashDevice,
 		simulator,
+		runSimulator,
 		buildWithSpecialArgs,
 		programmingAdapterSerialNumber,
 		programmingAdapterVID_PID,
@@ -218,6 +223,7 @@ if __name__ == "__main__":
 		flashLoader ,
 		flashDevice ,
 		simulator   ,
+		runSimulator,
 		buildWithSpecialArgs,
 		programmingAdapterSerialNumber,
 		programmingAdapterVID_PID,
@@ -236,6 +242,8 @@ if __name__ == "__main__":
 			if simulator :
 				projectItem.command = 'qtsim'
 				projectItem.platform = 'qtsim'
+			if runSimulator:
+				projectItem.runSimulator()
 			if buildWithSpecialArgs :
 				extraArgs = []
 				extraArgsFile = 'setup.py'
