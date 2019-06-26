@@ -242,8 +242,6 @@ if __name__ == "__main__":
 			if simulator :
 				projectItem.command = 'qtsim'
 				projectItem.platform = 'qtsim'
-			if runSimulator:
-				projectItem.runSimulator()
 			if buildWithSpecialArgs :
 				extraArgs = []
 				extraArgsFile = 'setup.py'
@@ -259,6 +257,8 @@ if __name__ == "__main__":
 					result =  projectItem.build()
 					if result != 0:
 						break
+			if runSimulator:
+				projectItem.runSimulator()
 			if flashLoader : projectItem.flashLoader(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if flashDevice : projectItem.flashDevice(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if pack_n_push:
