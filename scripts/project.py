@@ -212,7 +212,7 @@ class Project(object):
         print colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
-            self.command      + self.boardVariantToString(),
+            self.command,
             'CFG_PROJECT='    + self.name,
             'CFG_PLATFORM='   + self.platform,
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
