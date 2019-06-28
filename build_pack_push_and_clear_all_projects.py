@@ -55,8 +55,8 @@ def getAvailableProjectsList():
 		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v02'          , 'LFWC'             , 'device', Device('LFWC-MT-V02'       , 'S40', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47'          , 'LFWC'             , 'device', Device('LFWC-MT-S47'       , 'S47', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'   , 'device', Device('LFWC-MT-S47'       , 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'charlie'              , 'CHARLIE'          , 'device', Device('CHARLIE', 'S47', 1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-		Project(default_project_path5, 'Other', 'device', 'charlie_unitTest'     , 'CHARLIE Unit Test', 'device', Device('CHARLIE', 'S47', 1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project(default_project_path5, 'Other', 'device', 'charlie'              , 'CHARLIE'          , 'device', Device('CHARLIE', 'S48', 1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project(default_project_path5, 'Other', 'device', 'charlie_unitTest'     , 'CHARLIE Unit Test', 'device', Device('CHARLIE', 'S48', 1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
 	]
 
 def getSDCardFirmwarePath(project):
