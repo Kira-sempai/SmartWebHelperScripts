@@ -86,7 +86,6 @@ class Project(object):
         self.sdk          = sdk
         self.sdCardData   = []
         self.firmwareData = []
-        self.version      = Version(self.getVersionInfoFilePath())
         self.oem_id       = oem_id
     
     def boardVariantToString(self):
@@ -119,6 +118,8 @@ class Project(object):
     def getVersionInfoFilePath(self):
         return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'include/versionInfo.h')
     
+    def getVersion(self):
+        return Version(self.getVersionInfoFilePath())
     
     #took from Sorel code
     def MakeFilename(self, env, postfix='', no_platform=False):
@@ -232,11 +233,6 @@ class Project(object):
         argList.extend(extraArgs)
         
         result = runSCons(argList, self.path)
-        
-        if result != 0:
-            return result
-        
-        self.version = Version(self.getVersionInfoFilePath())
         
         return result
     
