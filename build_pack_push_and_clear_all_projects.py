@@ -29,7 +29,7 @@ def getAvailableProjectsList():
 	default_project_path3 = 'E:/development/Caleon_clima/'
 	default_project_path4 = 'E:/development/Caleon_brv/'
 	default_project_path5 = 'E:/development/pdellwig/'
-#	default_project_path6 = 'E:/development/hcc/'
+	default_project_path6 = 'E:/development/hcc/'
 	
 	return [
 		Project(default_project_path1, 'SW1',         'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
@@ -41,7 +41,7 @@ def getAvailableProjectsList():
 		Project(default_project_path2, 'SW2_deprecated', 'device', 'DataLogger'       , 'DataLogger'        , 'device', Device('DL'    , 'L30', None, True), 'rom'),
 		Project(default_project_path2, 'SW2',            'device', 'DataLoggerSW'     , 'DataLogger SW'     , 'device', Device('DL_SW' , 'L30', None, True), 'rom'),
 		Project(default_project_path2, 'SW2',            'device', 'DataLoggerKSE'    , 'DataLogger KSE'    , 'device', Device('DL_KSE', 'L30', None, True), 'rom'),
-		Project(default_project_path2, 'SW2',            'device', 'DataLoggerCharlie', 'DataLogger Charlie', 'device', Device('DL_C'  , 'L30', None, True), 'rom'),
+#		Project(default_project_path2, 'SW2',            'device', 'DataLoggerCharlie', 'DataLogger Charlie', 'device', Device('DL_C'  , 'L30', None, True), 'rom'),
 		
 		Project(default_project_path2, 'SW2', 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
 		Project(default_project_path2, 'SW2', 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
@@ -59,7 +59,7 @@ def getAvailableProjectsList():
 		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'Other', 'device', 'charlie'              , 'CHARLIE'           , 'device', Device('CHARLIE'    , 'S48', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
 		Project(default_project_path5, 'Other', 'device', 'charlie_unitTest'     , 'CHARLIE Unit Test' , 'device', Device('CHARLIE'    , 'S48', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-#		Project(default_project_path6, 'Other', 'device', 'DataLoggerCharlie'    , 'DataLogger Charlie', 'device', Device('DATALOGGER' , 'L30', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project(default_project_path6, 'Other', 'device', 'DataLoggerCharlie'    , 'DataLogger Charlie', 'device', Device('DATALOGGER' , 'L30', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
 	]
 
 def getSDCardFirmwarePath(project):
