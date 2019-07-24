@@ -70,16 +70,15 @@ class Project(object):
     classdocs
     '''
     
-    def __init__(self, path, group, command, name, workingName, platform, device, langkey = 'west', sdk = 'old', production = False, oem_id = 'OID_SOREL'):
+    def __init__(self, path, group, name, workingName, device, langkey = 'west', sdk = 'old', production = False, oem_id = 'OID_SOREL'):
         '''
         Constructor
         '''
         self.path         = path
         self.group        = group
-        self.command      = command
         self.name         = name
         self.workingName  = workingName
-        self.platform     = platform
+        self.platform     = 'device'
         self.production   = production
         self.device       = device
         self.langkey      = langkey
@@ -99,8 +98,15 @@ class Project(object):
         postfix = '_production' if self.production else ''
         return self.name + postfix + '/'
     
+    def getTarget(self):
+        target = 'qtsim' if (self.platform == 'qtsim') else 'device'
+        target = target + self.boardVariantToString()
+        
+        return target
+    
+    
     def getDeviceBuildDir(self):
-        return os.path.join(self.path, "build/", self.getProjectDirName(), self.command + self.boardVariantToString()) + '/'
+        return os.path.join(self.path, "build/", self.getProjectDirName(), self.getTarget()) + '/'
     
     def getDeviceBinDir(self):
         return os.path.join(self.path, "bin/", self.getProjectDirName()) + '/'
@@ -212,8 +218,9 @@ class Project(object):
     def build(self, extraArgs = []):
         print colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
+
         argList = [
-            self.command,
+            self.getTarget(),
             'CFG_PROJECT='    + self.name,
             'CFG_PLATFORM='   + self.platform,
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
@@ -240,7 +247,7 @@ class Project(object):
         print colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         argList = [
-                self.command      + self.boardVariantToString(),
+                self.getTarget(),
                 'CFG_PROJECT='    + self.name,
                 'CFG_PLATFORM='   + self.platform,
                 'CFG_PRODUCTION=' + ('1' if self.production else '0'),
