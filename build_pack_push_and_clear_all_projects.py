@@ -32,34 +32,36 @@ def getAvailableProjectsList():
 	default_project_path6 = 'E:/development/hcc/'
 	
 	return [
-		Project(default_project_path1, 'SW1',         'device', 'stdc'        , 'SmartWeb S'    , 'device', Device('STDC'    , 'S20' , 3), 'rom'),
-		Project(default_project_path1, 'SW1_special', 'device', 'stdc_lin'    , 'SmartWeb S LIN', 'device', Device('STDC_LIN', 'S28' , 3), 'rom'),
-		Project(default_project_path1, 'SW1',         'device', 'ltdc'        , 'SmartWeb L'    , 'device', Device('LTDC'    , 'S40' , 3), 'rom'),
-		Project(default_project_path1, 'SW1',         'device', 'ltdc_s45'    , 'SmartWeb L2'   , 'device', Device('LTDC_S45', 'S45' , 1), 'rom'),
-		Project(default_project_path1, 'SW1',         'device', 'swndin'      , 'SmartWeb N'    , 'device', Device('SWNDIN'  , 'S41N', 1), 'rom'),
+		Project(default_project_path1, 'SW1',         'stdc'        , 'SmartWeb S'    , Device('STDC'    , 'S20' , 3), 'rom'),
+		Project(default_project_path1, 'SW1_special', 'stdc_lin'    , 'SmartWeb S LIN', Device('STDC_LIN', 'S28' , 3), 'rom'),
+		Project(default_project_path1, 'SW1',         'ltdc'        , 'SmartWeb L'    , Device('LTDC'    , 'S40' , 3), 'rom'),
+		Project(default_project_path1, 'SW1',         'ltdc_s45'    , 'SmartWeb L2'   , Device('LTDC_S45', 'S45' , 1), 'rom'),
+		Project(default_project_path1, 'SW1',         'swndin'      , 'SmartWeb N'    , Device('SWNDIN'  , 'S41N', 1), 'rom'),
 		
-		Project(default_project_path2, 'SW2_deprecated', 'device', 'DataLogger'       , 'DataLogger'        , 'device', Device('DL'    , 'L30', None, True), 'rom'),
-		Project(default_project_path2, 'SW2',            'device', 'DataLoggerSW'     , 'DataLogger SW'     , 'device', Device('DL_SW' , 'L30', None, True), 'rom'),
-		Project(default_project_path2, 'SW2',            'device', 'DataLoggerKSE'    , 'DataLogger KSE'    , 'device', Device('DL_KSE', 'L30', None, True), 'rom'),
-#		Project(default_project_path2, 'SW2',            'device', 'DataLoggerCharlie', 'DataLogger Charlie', 'device', Device('DL_C'  , 'L30', None, True), 'rom'),
+		Project(default_project_path2, 'SW2_deprecated', 'DataLogger'       , 'DataLogger'        , Device('DL'    , 'L30', None, True), 'rom'),
+		Project(default_project_path2, 'SW2',            'DataLoggerSW'     , 'DataLogger SW'     , Device('DL_SW' , 'L30', None, True), 'rom'),
+		Project(default_project_path2, 'SW2',            'DataLoggerKSE'    , 'DataLogger KSE'    , Device('DL_KSE', 'L30', None, True), 'rom'),
+#		Project(default_project_path2, 'SW2',            'DataLoggerCharlie', 'DataLogger Charlie', Device('DL_C'  , 'L30', None, True), 'rom'),
 		
-		Project(default_project_path2, 'SW2', 'device', 'disco'       , 'SmartWeb Disco', 'device', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
-		Project(default_project_path2, 'SW2', 'device', 'xhcc'        , 'SmartWeb X'    , 'device', Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'SW2', 'device', 'xhcc_s62'    , 'SmartWeb X2'   , 'device', Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'SW2', 'device', 'swk'         , 'SmartWeb K'    , 'device', Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project(default_project_path2, 'SW2', 'disco'       , 'SmartWeb Disco', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
+		Project(default_project_path2, 'SW2', 'xhcc'        , 'SmartWeb X'    , Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project(default_project_path2, 'SW2', 'xhcc_s62'    , 'SmartWeb X2'   , Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project(default_project_path2, 'SW2', 'swk'         , 'SmartWeb K'    , Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
-		Project(default_project_path3, 'Caleon', 'device', 'caleon_clima', 'Caleon'        , 'device', Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
-		Project(default_project_path4, 'Other',  'device', 'caleon_brv'  , 'Caleon BRV'    , 'device', Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
-		Project(default_project_path4, 'Other',  'device', 'domvs'       , 'Domvs'         , 'device', Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path3, 'Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path4, 'Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
+		Project(default_project_path4, 'Other',  'domvs'       , 'Domvs'         , Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
 		
-		Project(default_project_path5, 'Other', 'device', 'lfwc'                 , 'LFWC'              , 'device', Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v01'          , 'LFWC'              , 'device', Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_v02'          , 'LFWC'              , 'device', Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47'          , 'LFWC'              , 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , 'device', Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'device', 'charlie'              , 'CHARLIE'           , 'device', Device('CHARLIE'    , 'S48', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-		Project(default_project_path5, 'Other', 'device', 'charlie_unitTest'     , 'CHARLIE Unit Test' , 'device', Device('CHARLIE'    , 'S48', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-		Project(default_project_path6, 'Other', 'device', 'DataLoggerCharlie'    , 'DataLogger Charlie', 'device', Device('DATALOGGER' , 'L30', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project(default_project_path5, 'Other', 'lfwc'                 , 'LFWC'              , Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'lfwc_mt_v01'          , 'LFWC'              , Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'lfwc_mt_v02'          , 'LFWC'              , Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'lfwc_mt_s47'          , 'LFWC'              , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project(default_project_path5, 'Other', 'charlie'              , 'CHARLIE'           , Device('CHARLIE'    , 'S48', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project(default_project_path5, 'Other', 'charlie_unitTest'     , 'CHARLIE Unit Test' , Device('CHARLIE'    , 'S48', 1   , False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+
+		Project(default_project_path6, 'Other', 'DataLoggerCharlie'         , 'DataLogger Charlie'          , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project(default_project_path6, 'Other', 'DataLoggerCharlie_unitTest', 'DataLogger Charlie Unit Test', Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
 	]
 
 def getSDCardFirmwarePath(project):
@@ -243,7 +245,6 @@ if __name__ == "__main__":
 			projectItem.production = production
 			if clearCache: projectItem.clearSConsOptionsCacheFile()
 			if simulator :
-				projectItem.command = 'qtsim'
 				projectItem.platform = 'qtsim'
 			if buildWithSpecialArgs :
 				extraArgs = []
