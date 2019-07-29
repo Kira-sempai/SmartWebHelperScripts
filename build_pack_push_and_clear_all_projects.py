@@ -57,8 +57,8 @@ def getAvailableProjectsList():
 		Project(default_project_path5, 'Other', 'lfwc_mt_v02'          , 'LFWC'              , Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'Other', 'lfwc_mt_s47'          , 'LFWC'              , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
 		Project(default_project_path5, 'Other', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'charlie'              , 'CHARLIE'           , Device('CHARLIE'    , 'S48', None, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-		Project(default_project_path5, 'Other', 'charlie_unitTest'     , 'CHARLIE Unit Test' , Device('CHARLIE'    , 'S48', None, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project(default_project_path5, 'Other', 'charlie'              , 'CHARLIE'           , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project(default_project_path5, 'Other', 'charlie_unitTest'     , 'CHARLIE Unit Test' , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
 
 		Project(default_project_path6, 'Other', 'DataLoggerCharlie'         , 'DataLogger Charlie'          , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
 		Project(default_project_path6, 'Other', 'DataLoggerCharlie_unitTest', 'DataLogger Charlie Unit Test', Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
