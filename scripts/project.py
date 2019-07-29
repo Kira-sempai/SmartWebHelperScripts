@@ -86,6 +86,7 @@ class Project(object):
         self.sdCardData   = []
         self.firmwareData = []
         self.oem_id       = oem_id
+        self.target       = 'device'
     
     def boardVariantToString(self):
         if self.device.boardVariant is None:
@@ -99,7 +100,7 @@ class Project(object):
         return self.name + postfix + '/'
     
     def getTarget(self):
-        target = 'qtsim' if (self.platform == 'qtsim') else 'device'
+        target = self.target
         target = target + self.boardVariantToString()
         
         return target
