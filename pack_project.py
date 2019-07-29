@@ -133,9 +133,9 @@ def do(project):
 	
 	#pack bootloader
 	bootloader_project = copy.deepcopy(project)
-	bootloader_project.command = 'loader'
 	bootloader_project.device.name = 'loader'
-	bootloader_project.langkey = 'rom'
+	bootloader_project.target      = 'loader'
+	bootloader_project.langkey     = 'rom'
 	
 	SDCardBootloaderFileName = bootloader_project.generateSDCardFirmwareFileName()
 	
