@@ -97,7 +97,7 @@ class Project(object):
     def getProjectDirName(self):
         #postfix = ''
         postfix = '_production' if self.production else ''
-        return self.name + postfix + '/'
+        return self.name + postfix
     
     def getTarget(self):
         target = self.target
@@ -107,20 +107,20 @@ class Project(object):
     
     
     def getDeviceBuildDir(self):
-        return os.path.join(self.path, "build/", self.getProjectDirName(), self.getTarget()) + '/'
+        return os.path.join(self.path, 'build', self.getProjectDirName(), self.getTarget())
     
     def getDeviceBinDir(self):
-        return os.path.join(self.path, "bin/", self.getProjectDirName()) + '/'
+        return os.path.join(self.path, 'bin', self.getProjectDirName())
     
     
     def getSrcPath(self):
         if self.sdk == 'old':
-            return 'shared/'
+            return 'shared'
         elif self.sdk == 'new':
-            return 'shared/sdk/'
+            return 'shared/sdk'
     
     def getProjectFirmwareDir(self):
-        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform/', self.device.microcontroller) + '/'
+        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
     
     def getVersionInfoFilePath(self):
         return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'include/versionInfo.h')
@@ -283,7 +283,7 @@ class Project(object):
         print colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
         firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName())
-        settings = os.path.join(self.path, 'src/', self.getSrcPath(), 'platform/stm32/', 'flash_stm32.cfg')
+        settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg')
         interface = 'ftdi/olimex-arm-usb-tiny-h.cfg'
         target    = self.device.olimex_target
         transport = 'jtag'

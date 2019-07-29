@@ -52,7 +52,7 @@ def do(project, dest):
 	addVersionInfoFile(project, firmwareDestPath)
 	addBuildArgsListFile(project, firmwareDestPath)
 	
-	copyProjectBinaryFiles(project, 'firmware/')
+	copyProjectBinaryFiles(project, 'firmware')
 	
 	for firmwareData in project.firmwareData:
 		func.copytree(firmwareData.src, os.path.join(firmwareDestPath, firmwareData.dest))

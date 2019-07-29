@@ -153,7 +153,7 @@ def do(project):
 	p.communicate()
 	
 	packData = [
-		SrcDestData(data_folder, 'SD-card/'),
+		SrcDestData(data_folder, 'SD-card'),
 		SrcDestData(os.path.join(output_folder, fw_pack)   , os.path.join('web_firmware', fw_pack)),
 		SrcDestData(os.path.join(output_folder, sd_pack)   , os.path.join('web_firmware', sd_pack)),
 		SrcDestData(os.path.join(output_folder, fw_sd_pack), os.path.join('web_firmware', fw_sd_pack)),
