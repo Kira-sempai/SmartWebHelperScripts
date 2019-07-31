@@ -282,8 +282,8 @@ class Project(object):
     def flashDevice(self, programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription):
         print colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
         
-        firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName())
-        settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg')
+        firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName()).replace("\\","/")
+        settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg').replace("\\","/")
         interface = 'ftdi/olimex-arm-usb-tiny-h.cfg'
         target    = self.device.olimex_target
         transport = 'jtag'
