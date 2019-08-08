@@ -15,13 +15,13 @@ def getProjectDestPathPostfix(project):
 	return ' production' if project.production else ' debug'
 
 def printAvailableProjectsList(projects_array):
-	print 'Projects list:'
+	print('Projects list:')
 	for p in projects_array:
 		l = len(p.workingName)
 		l2 = len(p.name)
 		space = 15 - l
 		space2 = 20 - l2
-		print p.workingName, ' '*space, '- ', p.name, ' '*space2, '(' + p.group + ')'
+		print(p.workingName, ' '*space, '- ', p.name, ' '*space2, '(' + p.group + ')')
 
 def getAvailableProjectsList():
 	default_project_path1 = 'E:/development/SmartWeb_v1/'
@@ -153,7 +153,7 @@ def parseArguments(string_input, projects_array):
 	
 	for s in args:
 		if s == '-e':
-			print 'Exit'
+			print('Exit')
 			sys.exit()
 		if s == '-a': projects_to_build = projects_array
 		if s == '-P': production  = True
@@ -212,7 +212,7 @@ if __name__ == "__main__":
 		projects_array = getAvailableProjectsList()
 		printAvailableProjectsList(projects_array)
 		
-		string_input = raw_input(
+		string_input = input(
 			colored('Please enter projects to build (-a = All, -e = exit, -P = production and so on): ',
 				'white',
 				'on_green',
@@ -236,9 +236,9 @@ if __name__ == "__main__":
 		projects_to_build) = parseArguments(string_input, projects_array)
 		
 		
-		print 'Those projects will be used:'
+		print('Those projects will be used:')
 		for p in projects_to_build:
-			print p.workingName
+			print(p.workingName)
 		
 		
 		for projectItem in projects_to_build:
@@ -271,7 +271,7 @@ if __name__ == "__main__":
 				
 				if not os.path.exists(serverDir):
 					print(colored("Can't find server: " + serverDir, 'white', 'on_red'))
-					print '\r\n\n'
+					print('\r\n\n')
 					break
 					
 				if projectItem.device.sdCard:
@@ -281,6 +281,6 @@ if __name__ == "__main__":
 			if clear: projectItem.clear()
 		
 		print(colored("Done", 'white', 'on_green'))
-		print '\r\n\n'
+		print('\r\n\n')
 		
 

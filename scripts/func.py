@@ -7,7 +7,7 @@ from termcolor import colored
 
 def print_warning(warning):
     warning = colored(warning, 'white', 'on_red')
-    print warning
+    print(warning)
     raw_input(colored("Press ENTER to continue\r", 'red', 'on_white'))
 
 #copy all files in dir and subdirs

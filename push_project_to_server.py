@@ -44,10 +44,10 @@ def do(project, dest):
 		dest = dest + ' unstable'
 		
 	firmwareDestPath    = os.path.join(dest, firmwareFolderName)
-	print colored("pushing project to " + firmwareDestPath,
+	print(colored("pushing project to " + firmwareDestPath,
 				'white',
 				'on_green',
-				attrs=['bold'])
+				attrs=['bold']))
 
 	addVersionInfoFile(project, firmwareDestPath)
 	addBuildArgsListFile(project, firmwareDestPath)

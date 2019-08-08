@@ -11,19 +11,19 @@ from termcolor import colored
 
 
 def runSCons(args, path):
-    print args
+    print(args)
     
     p = Popen(["scons.bat"] + args,
         cwd = path
     )
     
     stdout, stderr = p.communicate()
-    print stdout, stderr
+    print(stdout, stderr)
 
     result = p.returncode
 
     if result:
-        print colored('Scons failed: ' + str(result), 'white', 'on_red', attrs=['bold'])
+        print( colored('Scons failed: ' + str(result), 'white', 'on_red', attrs=['bold']))
     
     return result
     
@@ -217,7 +217,7 @@ class Project(object):
         os.system('start '  + simulator_file)
     
     def build(self, extraArgs = []):
-        print colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
+        print( colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
 
         argList = [
@@ -245,7 +245,7 @@ class Project(object):
         return result
     
     def clear(self):
-        print colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
+        print( colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
         argList = [
                 self.getTarget(),
@@ -267,7 +267,7 @@ class Project(object):
         self.firmwareData.extend(firmwareData)
     
     def flashLoader(self, programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription):
-        print colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
+        print(colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
         argList = [
                 'flash_loader',
@@ -280,7 +280,7 @@ class Project(object):
         runSCons(argList, self.path)
     
     def flashDevice(self, programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription):
-        print colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold'])
+        print(colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
         firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName()).replace("\\","/")
         settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg').replace("\\","/")
@@ -315,7 +315,7 @@ class Project(object):
         cwd = self.path)
         
         stdout, stderr = p.communicate()
-        print stdout, stderr
+        print(stdout, stderr)
         
     def getVersionLog(self):
         import subprocess
@@ -328,7 +328,7 @@ class Project(object):
         
         stdout, stderr = p.communicate()
         if p.returncode > 1:
-            print 'git tag failed:'+stderr
+            print('git tag failed:'+stderr)
             return 1
 
         return stdout

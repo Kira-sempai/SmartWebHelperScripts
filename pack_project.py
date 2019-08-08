@@ -13,30 +13,30 @@ def clear_folder(folder):
 		try:
 			if os.path.isfile(file_path):
 				os.unlink(file_path)
-				print colored("clear file: " + file_path, 'yellow')
+				print(colored("clear file: " + file_path, 'yellow'))
 			elif os.path.isdir(file_path):
 				shutil.rmtree(file_path)
-				print colored("clear path: " + file_path, 'yellow')
+				print(colored("clear path: " + file_path, 'yellow'))
 		except Exception as e:
 			print(e)
 
 def reset_folders(folders):
-	print colored("Reset working dirs", 'magenta', 'on_green')
+	print(colored("Reset working dirs", 'magenta', 'on_green'))
 	for folder in folders:
 		if os.path.exists(folder):
 			clear_folder(folder)
 		else:
 			os.makedirs(folder)
-			print colored("make new dir: " + folder, 'magenta', 'on_green')
+			print(colored("make new dir: " + folder, 'magenta', 'on_green'))
 
 def reduceFileNames(path):
-	print colored("Run hashren.exe script for %s" % (path) , 'blue', 'on_green')
+	print(colored("Run hashren.exe script for %s" % (path) , 'blue', 'on_green'))
 	p = Popen(["tools/hashren.exe", path])
 	p.communicate()
-	print colored("Done", 'blue', 'on_green')
+	print(colored("Done", 'blue', 'on_green'))
 
 def copySDCardFiles(project, tmp_folder):
-	print colored("Copy SD-Card files to %s" % (tmp_folder), 'green')
+	print(colored("Copy SD-Card files to %s" % (tmp_folder), 'green'))
 	
 	if len(project.sdCardData) > 0:
 		for data in project.sdCardData:
@@ -60,11 +60,11 @@ def printEndMessage():
 	
 	if warningListLen > 0:
 		endColor = 'red'
-		print colored("You have %d warning/s!!" % (warningListLen), 'red')
+		print(colored("You have %d warning/s!!" % (warningListLen), 'red'))
 		inputString = raw_input(colored("Want to see it? (y/n) ", 'red', 'on_white'))
 		if inputString != 'n':
 			for warning in WarningList:
-				print warning
+				print(warning)
 				raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 	
 def createAutoUpdateFlagFile(firmware_folder):
@@ -76,7 +76,7 @@ def do(project):
 	if not project.device.sdCard:
 		return
 	
-	print colored("Packing project: %s" % (project.name), 'white', 'on_green', attrs=['bold'])
+	print(colored("Packing project: %s" % (project.name), 'white', 'on_green', attrs=['bold']))
 	
 	# prepare temp data folders
 	data_folder     = './data_files'
@@ -101,7 +101,7 @@ def do(project):
 	reduceFileNames(tmp_folder)
 	
 	#copy data from tmp_folder to data_folder
-	print colored("Copy tmp folder to data folder", 'green')
+	print(colored("Copy tmp folder to data folder", 'green'))
 	func.copytree(tmp_folder, data_folder)
 	
 	#copy sd-card firmware file to firmware_folder
@@ -120,14 +120,14 @@ def do(project):
 	
 	createAutoUpdateFlagFile(firmware_folder)
 	
-	print colored("Run DLPack.exe script for firmware and data folders:", 'white', 'on_green')
-	print colored("pack firmware", 'white', 'on_green')
+	print(colored("Run DLPack.exe script for firmware and data folders:", 'white', 'on_green'))
+	print(colored("pack firmware", 'white', 'on_green'))
 	p = Popen(["tools/DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, fw_pack)])
 	p.communicate()
-	print colored("pack data", 'white', 'on_green')
+	print(colored("pack data", 'white', 'on_green'))
 	p = Popen(["tools/DLPack.exe", data_folder, 'null', os.path.join(output_folder, sd_pack)])
 	p.communicate()
-	print colored("pack firmware and data", 'white', 'on_green')
+	print(colored("pack firmware and data", 'white', 'on_green'))
 	p = Popen(["tools/DLPack.exe", firmware_folder, data_folder, os.path.join(output_folder, fw_sd_pack)])
 	p.communicate()
 	
@@ -147,7 +147,7 @@ def do(project):
 	
 	shutil.copy2(SDCardBootloaderFileSourcePath, SDCardBootloaderFileDestPath)
 	
-	print colored("Run DLPack.exe script for bootloader", 'white', 'on_green')
+	print(colored("Run DLPack.exe script for bootloader", 'white', 'on_green'))
 	bl_pack = project.device.name + '_BL.bin'
 	p = Popen(["tools/DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
