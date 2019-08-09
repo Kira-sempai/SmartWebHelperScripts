@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+import configparser
 import sys
 import os
 import colorama
@@ -205,8 +207,26 @@ def parseArguments(string_input, projects_array):
 		programmingAdapterDescription,
 		projects_to_build)
 
+def createConfig(path):
+	"""
+	Create a config file
+	"""
+	config = configparser.ConfigParser()
+	config.add_section("Settings")
+	config.set("Settings", "font", "Courier")
+	config.set("Settings", "font_size", "10")
+	config.set("Settings", "font_style", "Normal")
+	config.set("Settings", "font_info",
+				"You are using %(font)s at %(font_size)s pt")
+	
+	with open(path, "w") as config_file:
+		config.write(config_file)
+
 if __name__ == "__main__":
 	colorama.init()
+	
+	path = "settings.ini"
+	createConfig(path)
 	
 	while True:
 		projects_array = getAvailableProjectsList()
