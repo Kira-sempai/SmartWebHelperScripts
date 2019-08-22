@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import configparser
+
+try:
+	import configparser
+except ImportError:
+	import ConfigParser as configparser
+
 import sys
 import os
 import colorama
@@ -23,47 +28,41 @@ def printAvailableProjectsList(projects_array):
 		l2 = len(p.name)
 		space = 15 - l
 		space2 = 20 - l2
-		print(p.workingName, ' '*space, '- ', p.name, ' '*space2, '(' + p.group + ')')
+		print (p.workingName + ' '*space + '- ' + p.name + ' '*space2 + '(' + p.group + ')')
 
 def getAvailableProjectsList():
-	default_project_path1 = 'E:/development/SmartWeb_v1/'
-	default_project_path2 = 'E:/development/SmartWeb_v2/'
-	default_project_path3 = 'E:/development/Caleon_clima/'
-	default_project_path4 = 'E:/development/Caleon_brv/'
-	default_project_path5 = 'E:/development/pdellwig/'
-	default_project_path6 = 'E:/development/hcc/'
-	
 	return [
-		Project(default_project_path1, 'SW1',         'stdc'        , 'SmartWeb S'    , Device('STDC'    , 'S20' , 3), 'rom'),
-		Project(default_project_path1, 'SW1_special', 'stdc_lin'    , 'SmartWeb S LIN', Device('STDC_LIN', 'S28' , 3), 'rom'),
-		Project(default_project_path1, 'SW1',         'ltdc'        , 'SmartWeb L'    , Device('LTDC'    , 'S40' , 3), 'rom'),
-		Project(default_project_path1, 'SW1',         'ltdc_s45'    , 'SmartWeb L2'   , Device('LTDC_S45', 'S45' , 1), 'rom'),
-		Project(default_project_path1, 'SW1',         'swndin'      , 'SmartWeb N'    , Device('SWNDIN'  , 'S41N', 1), 'rom'),
+		Project('SW1',         'stdc'        , 'SmartWeb S'    , Device('STDC'    , 'S20' , 3), 'rom'),
+		Project('SW1_special', 'stdc_lin'    , 'SmartWeb S LIN', Device('STDC_LIN', 'S28' , 3), 'rom'),
+		Project('SW1',         'ltdc'        , 'SmartWeb L'    , Device('LTDC'    , 'S40' , 3), 'rom'),
+		Project('SW1',         'ltdc_s45'    , 'SmartWeb L2'   , Device('LTDC_S45', 'S45' , 1), 'rom'),
+		Project('SW1',         'swndin'      , 'SmartWeb N'    , Device('SWNDIN'  , 'S41N', 1), 'rom'),
 		
-		Project(default_project_path2, 'SW2_deprecated', 'DataLogger'       , 'DataLogger'        , Device('DL'    , 'L30', None, True), 'rom'),
-		Project(default_project_path2, 'SW2',            'DataLoggerSW'     , 'DataLogger SW'     , Device('DL_SW' , 'L30', None, True), 'rom'),
-		Project(default_project_path2, 'SW2',            'DataLoggerKSE'    , 'DataLogger KSE'    , Device('DL_KSE', 'L30', None, True), 'rom'),
-#		Project(default_project_path2, 'SW2',            'DataLoggerCharlie', 'DataLogger Charlie', Device('DL_C'  , 'L30', None, True), 'rom'),
+		Project('SW2_deprecated', 'DataLogger'       , 'DataLogger'        , Device('DL'    , 'L30', None, True), 'rom'),
+		Project('SW2',            'DataLoggerSW'     , 'DataLogger SW'     , Device('DL_SW' , 'L30', None, True), 'rom'),
+		Project('SW2',            'DataLoggerKSE'    , 'DataLogger KSE'    , Device('DL_KSE', 'L30', None, True), 'rom'),
+#		Project('SW2',            'DataLoggerCharlie', 'DataLogger Charlie', Device('DL_C'  , 'L30', None, True), 'rom'),
 		
-		Project(default_project_path2, 'SW2', 'disco'       , 'SmartWeb Disco', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
-		Project(default_project_path2, 'SW2', 'xhcc'        , 'SmartWeb X'    , Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'SW2', 'xhcc_s62'    , 'SmartWeb X2'   , Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project(default_project_path2, 'SW2', 'swk'         , 'SmartWeb K'    , Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2', 'disco'       , 'SmartWeb Disco', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
+		Project('SW2', 'xhcc'        , 'SmartWeb X'    , Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project('SW2', 'xhcc_s62'    , 'SmartWeb X2'   , Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
+		Project('SW2', 'swk'         , 'SmartWeb K'    , Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
-		Project(default_project_path3, 'Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
-		Project(default_project_path4, 'Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
-		Project(default_project_path4, 'Other',  'domvs'       , 'Domvs'         , Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
+		Project('Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
+		Project('Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
+		Project('Other',  'domvs'       , 'Domvs'         , Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
+		Project('Other',  'caleon_clima_smart_web_controller', 'Caleon SW', Device('CALEON_CLIMA_SMART_WEB_CONTROLLER', 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		
-		Project(default_project_path5, 'Other', 'lfwc'                 , 'LFWC'              , Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'lfwc_mt_v01'          , 'LFWC'              , Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'lfwc_mt_v02'          , 'LFWC'              , Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'lfwc_mt_s47'          , 'LFWC'              , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project(default_project_path5, 'Other', 'charlie'              , 'CHARLIE'           , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-		Project(default_project_path5, 'Other', 'charlie_unitTest'     , 'CHARLIE Unit Test' , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project('Other', 'lfwc'                 , 'LFWC'              , Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
+		Project('Other', 'lfwc_mt_v01'          , 'LFWC'              , Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
+		Project('Other', 'lfwc_mt_v02'          , 'LFWC'              , Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
+		Project('Other', 'lfwc_mt_s47'          , 'LFWC'              , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project('Other', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
+		Project('Other', 'charlie'              , 'CHARLIE'           , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project('Other', 'charlie_unitTest'     , 'CHARLIE Unit Test' , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
 
-		Project(default_project_path6, 'Other', 'DataLoggerCharlie'         , 'DataLogger Charlie'          , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
-		Project(default_project_path6, 'Other', 'DataLoggerCharlie_unitTest', 'DataLogger Charlie Unit Test', Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project('Other', 'DataLoggerCharlie'         , 'DataLogger Charlie'          , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project('Other', 'DataLoggerCharlie_unitTest', 'DataLogger Charlie Unit Test', Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
 	]
 
 def getSDCardFirmwarePath(project):
@@ -212,26 +211,37 @@ def createConfig(path):
 	Create a config file
 	"""
 	config = configparser.ConfigParser()
-	config.add_section("Settings")
-	config.set("Settings", "font", "Courier")
-	config.set("Settings", "font_size", "10")
-	config.set("Settings", "font_style", "Normal")
-	config.set("Settings", "font_info",
-				"You are using %(font)s at %(font_size)s pt")
+	
+	projects_array = getAvailableProjectsList()
+	
+	config.set('DEFAULT', 'path', 'E:/development/SmartWeb_v1/')
+	
+	for p in projects_array:
+		config.add_section(p.name)
+	
 	
 	with open(path, "w") as config_file:
 		config.write(config_file)
+
+	return config
 
 if __name__ == "__main__":
 	colorama.init()
 	
 	path = "settings.ini"
-	createConfig(path)
+	
+	if not os.path.exists(path):
+		createConfig(path)
+	
+	config = configparser.ConfigParser()
+	config.read(path)
 	
 	while True:
 		projects_array = getAvailableProjectsList()
 		printAvailableProjectsList(projects_array)
 		
+		try: input = raw_input
+		except NameError: pass
 		string_input = input(
 			colored('Please enter projects to build (-a = All, -e = exit, -P = production and so on): ',
 				'white',
@@ -253,15 +263,16 @@ if __name__ == "__main__":
 		programmingAdapterSerialNumber,
 		programmingAdapterVID_PID,
 		programmingAdapterDescription,
-		projects_to_build) = parseArguments(string_input, projects_array)
+		projects_to_work_with) = parseArguments(string_input, projects_array)
 		
 		
 		print('Those projects will be used:')
-		for p in projects_to_build:
+		for p in projects_to_work_with:
 			print(p.workingName)
+			p.setPath(config.get(p.name, 'path'))
 		
 		
-		for projectItem in projects_to_build:
+		for projectItem in projects_to_work_with:
 			projectItem.production = production
 			if clearCache: projectItem.clearSConsOptionsCacheFile()
 			if simulator :
