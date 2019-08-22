@@ -70,11 +70,10 @@ class Project(object):
     classdocs
     '''
     
-    def __init__(self, path, group, name, workingName, device, langkey = 'west', sdk = 'old', production = False, oem_id = 'OID_SOREL'):
+    def __init__(self, group, name, workingName, device, langkey = 'west', sdk = 'old', production = False, oem_id = 'OID_SOREL'):
         '''
         Constructor
         '''
-        self.path         = path
         self.group        = group
         self.name         = name
         self.workingName  = workingName
@@ -87,6 +86,9 @@ class Project(object):
         self.firmwareData = []
         self.oem_id       = oem_id
         self.target       = 'device'
+    
+    def setPath(self, path):
+        self.path = path
     
     def boardVariantToString(self):
         if self.device.boardVariant is None:
