@@ -51,6 +51,7 @@ def getAvailableProjectsList():
 		Project('Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'domvs'       , 'Domvs'         , Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
+		Project('Other',  'caleon_clima_smart_controller'    , 'Caleon SW', Device('caleon_clima_smart_controller'    , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'caleon_clima_smart_web_controller', 'Caleon SW', Device('caleon_clima_smart_web_controller', 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		
 		Project('Other', 'lfwc'                 , 'LFWC'              , Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
