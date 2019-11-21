@@ -163,3 +163,7 @@ local.properties
 
 #extra args for scons functions
 setup.py
+
+#project specific settings
+settings.ini
+
