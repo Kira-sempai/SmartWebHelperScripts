@@ -227,6 +227,7 @@ class Project(object):
             'CFG_PROJECT='    + self.name,
             'CFG_PLATFORM='   + self.platform,
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
+#            'features=dbgmcu',
             '--jobs=8',
 #           '--debug=pdb',
         ]
