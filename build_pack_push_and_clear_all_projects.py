@@ -60,10 +60,12 @@ def getAvailableProjectsList():
 		Project('Other', 'lfwc_mt_s47'          , 'LFWC'              , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
 		Project('Other', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
 		Project('Other', 'charlie'              , 'CHARLIE'           , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
+		Project('Other', 'charlie_runTimeTest'  , 'CHARLIE Runtime Test', Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
 		Project('Other', 'charlie_unitTest'     , 'CHARLIE Unit Test' , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
 
-		Project('Other', 'DataLoggerCharlie'         , 'DataLogger Charlie'          , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
-		Project('Other', 'DataLoggerCharlie_unitTest', 'DataLogger Charlie Unit Test', Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project('Other', 'DataLoggerCharlie'            , 'DataLogger Charlie'             , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project('Other', 'DataLoggerCharlie_unitTest'   , 'DataLogger Charlie Unit Test'   , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
+		Project('Other', 'DataLoggerCharlie_runTimeTest', 'DataLogger Charlie Runtime Test', Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
 	]
 
 def getSDCardFirmwarePath(project):
