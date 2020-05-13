@@ -176,6 +176,11 @@ def parseArguments(string_input, projects_array):
 			programmingAdapterSerialNumber = s[17:]
 			if	programmingAdapterSerialNumber == '1':
 				programmingAdapterSerialNumber = 'OLUUKDU둭'
+			elif programmingAdapterSerialNumber == '2':
+				programmingAdapterSerialNumber = 'OLYKF0UM'
+			elif programmingAdapterSerialNumber == '3':
+				programmingAdapterSerialNumber = 'OLZ4APP8'
+				
 		if s.count('--adapter_vid_pid'):
 			programmingAdapterVID_PID = s[18:]
 			if  programmingAdapterVID_PID == '1':
