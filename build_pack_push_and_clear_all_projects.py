@@ -1,17 +1,32 @@
 # -*- coding: utf-8 -*-
 
 
+import sys
+import os
+import subprocess
+from subprocess import Popen
+
 try:
 	import configparser
 except ImportError:
 	import ConfigParser as configparser
 
-import sys
-import os
-import colorama
-from subprocess import Popen
-from termcolor import colored
+sys.path.insert(0, ".")
+
+try:
+	import colorama
+except ImportError:
+	from scripts import colorama 
+	print('colorama is missing: use "pip install colorama" to add it to Python')
+
+try:
+	from termcolor import colored
+except ImportError:
+	from scripts import termcolor
+	print('termcolor is missing: use "pip install termcolor" to add it to Python')
+
 sys.path.insert(0, "./scripts")
+
 from project import Project, Device
 from func import SrcDestData
 import pack_project
@@ -220,10 +235,10 @@ def createConfig(path):
 	"""
 	config = configparser.ConfigParser()
 	
+	config.set('DEFAULT', 'projectDir', 'E:/development/SmartWeb_v1/')
+	config.set('DEFAULT', 'archiveDir', 'Z:/firmware/')
+	
 	projects_array = getAvailableProjectsList()
-	
-	config.set('DEFAULT', 'path', 'E:/development/SmartWeb_v1/')
-	
 	for p in projects_array:
 		config.add_section(p.name)
 	
@@ -234,6 +249,11 @@ def createConfig(path):
 	return config
 
 if __name__ == "__main__":
+	
+	# fix console lang
+	subprocess.run([os.path.join('C:\Windows\system32','chcp.com'), '437'])
+	
+	
 	colorama.init()
 	
 	path = "settings.ini"
@@ -277,7 +297,7 @@ if __name__ == "__main__":
 		print('Those projects will be used:')
 		for p in projects_to_work_with:
 			print(p.workingName)
-			p.setPath(config.get(p.name, 'path'))
+			p.setPath(config.get(p.name, 'projectDir'))
 		
 		
 		for projectItem in projects_to_work_with:
@@ -306,17 +326,20 @@ if __name__ == "__main__":
 			if flashLoader : projectItem.flashLoader(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if flashDevice : projectItem.flashDevice(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if pack_n_push:
-				serverDir = "Z:/firmware/"
+				archiveDir = config.get(p.name, 'archiveDir')
 				
-				if not os.path.exists(serverDir):
-					print(colored("Can't find server: " + serverDir, 'white', 'on_red'))
-					print('\r\n\n')
-					break
-					
+				if not os.path.exists(archiveDir):
+					try:
+						os.makedirs(archiveDir)
+					except OSError as e:
+						func.print_warning('Error %d: Can\'t create folder for archive dir at "%s"' %(e.errno, archiveDir))
+						print('\r\n\n')
+						break
+
 				if projectItem.device.sdCard:
 					projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
 					pack_project.do(projectItem)
-				push_project_to_server.do(projectItem, serverDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
+				push_project_to_server.do(projectItem, archiveDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 			if clear: projectItem.clear()
 		
 		print(colored("Done", 'white', 'on_green'))
