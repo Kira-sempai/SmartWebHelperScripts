@@ -6,6 +6,8 @@ Created on 28 sept. 2017.
 
 import os
 import re
+
+import func
 from subprocess import Popen
 from termcolor import colored
 
@@ -34,7 +36,13 @@ class Version(object):
     '''
     
     def __init__(self, versionFilePath):
+        self.date = '0000-00-00'
+        self.name = 'undefined'
+        self.modified = False
+        self.unstable = False
+        
         if not os.path.isfile(versionFilePath):
+            func.print_warning('Version file %s not found' %(versionFilePath))
             return
         
         versionFile = open(versionFilePath, 'r')
@@ -134,12 +142,12 @@ class Project(object):
     def MakeFilename(self, env, postfix='', no_platform=False):
         """Build a filename string with platform/board/etc with postfix appended"""
         # convert OEM id to string
-        if env.has_key('CFG_OEM_ID'):
+        if 'CFG_OEM_ID' in env:
             oemstring = '-' + env['CFG_OEM_ID'][4:].title()
         else:
             oemstring = ''
         # get platform name
-        if env.has_key('TARGET_PLATFORM_FRIENDLY_NAME'):
+        if 'TARGET_PLATFORM_FRIENDLY_NAME' in env:
             platformstring = env['TARGET_PLATFORM_FRIENDLY_NAME']
         else:
             platformstring = env['TARGET_PLATFORM']
@@ -334,7 +342,7 @@ class Project(object):
             print('git tag failed:'+stderr)
             return 1
 
-        return stdout
+        return stdout.decode('utf-8')
     
     def getSconsBuildArgs(self):
         setupFile = os.path.join(self.path, 'setup.py')
