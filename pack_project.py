@@ -61,11 +61,13 @@ def printEndMessage():
 	if warningListLen > 0:
 		endColor = 'red'
 		print(colored("You have %d warning/s!!" % (warningListLen), 'red'))
-		inputString = raw_input(colored("Want to see it? (y/n) ", 'red', 'on_white'))
+		try: input = raw_input
+		except NameError: pass
+		inputString = input(colored("Want to see it? (y/n) ", 'red', 'on_white'))
 		if inputString != 'n':
 			for warning in WarningList:
 				print(warning)
-				raw_input(colored("Press ENTER to continue\r", endColor, 'on_white'))
+				input(colored("Press ENTER to continue\r", endColor, 'on_white'))
 	
 def createAutoUpdateFlagFile(firmware_folder):
 	autoUpdateFlagFileName = 'autoupd.ate'
@@ -110,6 +112,13 @@ def do(project):
 	firmwareSourcePath           = project.getProjectFirmwareDir()
 	SDCardFirmwareFileSourcePath = os.path.join(firmwareSourcePath, SDCardFirmwareFileName)
 	SDCardFirmwareFileDestPath   = os.path.join(firmware_folder, 'firmware.bin')
+	
+	
+	if not os.path.exists(SDCardFirmwareFileSourcePath):
+		func.print_warning(
+			'%s file missing! can\'t add project binary files to SD-card'
+			 % (SDCardFirmwareFileSourcePath))
+		return 1
 	
 	shutil.copy2(SDCardFirmwareFileSourcePath, SDCardFirmwareFileDestPath)
 	
@@ -161,5 +170,7 @@ def do(project):
 	]
 	
 	project.addFirmwareData(packData)
+	
+	return 0
 #	printEndMessage()
 	
