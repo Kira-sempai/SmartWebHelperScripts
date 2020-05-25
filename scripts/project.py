@@ -248,6 +248,7 @@ class Project(object):
 #            'features=dbgmcu',
             '--jobs=8',
 #           '--debug=pdb',
+#           '--debug=time',
         ]
         
         
