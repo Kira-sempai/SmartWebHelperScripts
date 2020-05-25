@@ -33,6 +33,8 @@ from func import SrcDestData
 import pack_project
 import push_project_to_server
 
+settingsPath = 'settings.ini'
+configParserInstance = configparser.ConfigParser()
 
 def getProjectDestPathPostfix(project):
 	return ' production' if project.production else ' debug'
@@ -234,36 +236,40 @@ def createConfig(path):
 	"""
 	Create a config file
 	"""
-	config = configparser.ConfigParser()
 	
-	config.set('DEFAULT', 'projectDir', 'E:/development/SmartWeb_v1/')
-	config.set('DEFAULT', 'archiveDir', 'Z:/firmware/')
+	configParserInstance.set('DEFAULT', 'projectDir', 'E:/development/SmartWeb_v1/')
+	configParserInstance.set('DEFAULT', 'archiveDir', 'Z:/firmware/')
+	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts')
 	
 	projects_array = getAvailableProjectsList()
 	for p in projects_array:
-		config.add_section(p.name)
+		configParserInstance.add_section(p.name)
 	
 	
 	with open(path, "w") as config_file:
-		config.write(config_file)
+		configParserInstance.write(config_file)
 
-	return config
+	return configParserInstance
+
+def getSconsDir():
+	configParserInstance.read(settingsPath)
+	return configParserInstance.get('DEFAULT', 'sconsDir')
+
+
+def fixConsoleLang():
+	subprocess.run([os.path.join('C:\Windows\system32','chcp.com'), '437'])
 
 if __name__ == "__main__":
 	
-	# fix console lang
-	subprocess.run([os.path.join('C:\Windows\system32','chcp.com'), '437'])
-	
+	fixConsoleLang()
 	
 	colorama.init()
+		
+	if not os.path.exists(settingsPath):
+		createConfig(settingsPath)
 	
-	path = "settings.ini"
 	
-	if not os.path.exists(path):
-		createConfig(path)
-	
-	config = configparser.ConfigParser()
-	config.read(path)
+	configParserInstance.read(settingsPath)
 	
 	while True:
 		projects_array = getAvailableProjectsList()
@@ -298,7 +304,7 @@ if __name__ == "__main__":
 		print('Those projects will be used:')
 		for p in projects_to_work_with:
 			print(p.workingName)
-			p.setPath(config.get(p.name, 'projectDir'))
+			p.setPath(configParserInstance.get(p.name, 'projectDir'))
 		
 		
 		for projectItem in projects_to_work_with:
@@ -327,7 +333,7 @@ if __name__ == "__main__":
 			if flashLoader : projectItem.flashLoader(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if flashDevice : projectItem.flashDevice(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
 			if pack_n_push:
-				archiveDir = config.get(p.name, 'archiveDir')
+				archiveDir = configParserInstance.get(p.name, 'archiveDir')
 				
 				if not os.path.exists(archiveDir):
 					try:
