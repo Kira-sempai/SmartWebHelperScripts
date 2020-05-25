@@ -13,12 +13,22 @@ from termcolor import colored
 
 
 def runSCons(args, path):
+    from build_pack_push_and_clear_all_projects import getSconsDir
     print(args)
     
-    p = Popen(["scons.bat"] + args,
-        cwd = path
-    )
     
+    scons = os.path.join(getSconsDir(), 'scons.bat')
+    
+    try:
+        p = Popen([scons] + args,
+            cwd = path
+        )
+    except FileNotFoundError:
+        scons = 'scons.bat'
+        p = Popen([scons] + args,
+            cwd = path
+        )
+        
     stdout, stderr = p.communicate()
     print(stdout, stderr)
 
