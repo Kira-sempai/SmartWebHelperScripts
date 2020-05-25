@@ -1,17 +1,19 @@
 # -*- coding: utf-8 -*-
 
-
 import sys
 import os
 import subprocess
 from subprocess import Popen
 
+PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(PROJECT_DIR)
+
+sys.path.insert(0, PROJECT_DIR + "/scripts")
+
 try:
 	import configparser
 except ImportError:
 	import ConfigParser as configparser
-
-sys.path.insert(0, ".")
 
 try:
 	import colorama
@@ -25,7 +27,6 @@ except ImportError:
 	from scripts import termcolor
 	print('termcolor is missing: use "pip install termcolor" to add it to Python')
 
-sys.path.insert(0, "./scripts")
 
 from project import Project, Device
 from func import SrcDestData
