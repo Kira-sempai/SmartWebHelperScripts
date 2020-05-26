@@ -222,12 +222,7 @@ class Project(object):
     def generateFirmwareFileName(self, deviceName):
         firmwareName = self.generateFirmwareName(deviceName)
         firmwareFile = firmwareName+ 'app.s19'
-        firmwareDir  = self.getProjectFirmwareDir()
-        
-        firmwareFilePath = os.path.join(firmwareDir, firmwareFile)
-        if not os.path.isfile(firmwareFilePath):
-            firmwareFile = firmwareName + 'merged.hex'
-        
+
         return firmwareFile
     
     def getProjectBinaries(self):
