@@ -55,7 +55,7 @@ class Version(object):
             func.print_warning('Version file %s not found' %(versionFilePath))
             return
         
-        versionFile = open(versionFilePath, 'r')
+        versionFile = open(versionFilePath, 'r', encoding='utf-8')
         text = versionFile.read()
        
         versionFile.close()
@@ -75,13 +75,13 @@ class Device(object):
     classdocs
     '''
     
-    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32', olimex_target = 'stm32f1x.cfg'):
+    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32', configFile = 'stm32f1x.cfg'):
         self.name         = name
         self.board        = board
         self.boardVariant = boardVariant
         self.sdCard       = sdCard
         self.microcontroller = microcontroller
-        self.olimex_target = olimex_target
+        self.configFile   = configFile
 
 class Project(object):
     '''
@@ -118,16 +118,24 @@ class Project(object):
         #postfix = ''
         postfix = '_production' if self.production else ''
         return self.name + postfix
-    
+       
     def getTarget(self):
         target = self.target
         target = target + self.boardVariantToString()
         
         return target
     
+    def getBootloaderTarget(self):
+        target = 'loader'
+        target = target + self.boardVariantToString()
+        
+        return target
     
     def getDeviceBuildDir(self):
         return os.path.join(self.path, 'build', self.getProjectDirName(), self.getTarget())
+    
+    def getBootloaderBuildDir(self):
+        return os.path.join(self.path, 'build', self.getProjectDirName(), self.getBootloaderTarget())
     
     def getDeviceBinDir(self):
         return os.path.join(self.path, 'bin', self.getProjectDirName())
@@ -141,6 +149,9 @@ class Project(object):
     
     def getProjectFirmwareDir(self):
         return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
+    
+    def getProjectBootloaderDir(self):
+        return os.path.join(self.getBootloaderBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
     
     def getVersionInfoFilePath(self):
         return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'include/versionInfo.h')
@@ -167,21 +178,27 @@ class Project(object):
             subststring = subststring + '-' + env['BOARD'] + 'v' + env['CFG_BOARD_VARIANT'] + 'r' + env['CFG_BOARD_REVISION'] + '-' + platformstring
         return subststring + '-' + postfix
     
-    def getFirmwareLangPostfix(self):
+    def getFirmwareLangPostfix(self, noLangs = False):
+        if noLangs:
+            return ''
+        
         if not self.langkey == 'rom':
             return self.langkey + '-'
         return ''
         
-    def generateFirmwareName(self):
+    def generateFirmwareName(self, deviceName):
         baseEnv = dict()
         baseEnv['CFG_OEM_ID']           = self.oem_id
-        baseEnv['CFG_DEVICENAME']       = self.device.name
+        baseEnv['CFG_DEVICENAME']       = deviceName
         baseEnv['TARGET_PLATFORM']      = self.device.microcontroller.upper()
         baseEnv['BOARD']                = self.device.board
         baseEnv['CFG_BOARD_REVISION']   = '1'
         baseEnv['CFG_BOARD_VARIANT']    = self.boardVariantToString()
         
-        return self.MakeFilename(baseEnv, self.getFirmwareLangPostfix())
+        #work around
+        noLangs = deviceName == 'loader'
+        
+        return self.MakeFilename(baseEnv, self.getFirmwareLangPostfix(noLangs))
         
     def generateSimulatorName(self):
         baseEnv = dict()
@@ -197,26 +214,26 @@ class Project(object):
         return self.MakeFilename(baseEnv, prefix+'sim')
         
     def generateSDCardFirmwareFileName(self):
-        firmwareFile = self.generateFirmwareName() + 'sdcard.bin'
+        firmwareFile = self.generateFirmwareName(self.device.name) + 'sdcard.bin'
         
         
         return firmwareFile
     
-    def generateFirmwareFileName(self):
-        firmwareName = self.generateFirmwareName()
-        firmwareFile = firmwareName + 'merged.hex'
+    def generateFirmwareFileName(self, deviceName):
+        firmwareName = self.generateFirmwareName(deviceName)
+        firmwareFile = firmwareName+ 'app.s19'
         firmwareDir  = self.getProjectFirmwareDir()
         
         firmwareFilePath = os.path.join(firmwareDir, firmwareFile)
         if not os.path.isfile(firmwareFilePath):
-            firmwareFile = firmwareName + 'app.s19'
+            firmwareFile = firmwareName + 'merged.hex'
         
         return firmwareFile
     
     def getProjectBinaries(self):
         binaries = []
         
-        firmwareFileName = self.generateFirmwareFileName()
+        firmwareFileName = self.generateFirmwareFileName(self.device.name)
         postfix = self.getFirmwareLangPostfix()
         
         binaries.append(firmwareFileName)
@@ -288,43 +305,37 @@ class Project(object):
     def addFirmwareData(self, firmwareData):
         self.firmwareData.extend(firmwareData)
     
-    def flashLoader(self, programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription):
-        print(colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
-        
-        argList = [
-                'flash_loader',
-                'CFG_PROJECT='    + self.name,
-                'CFG_PLATFORM='   + self.platform,
-                'CFG_PRODUCTION=' + ('1' if self.production else '0'),
-                '--jobs=1',
-        ]
-        
-        runSCons(argList, self.path)
+    def flashCommon(self,
+            firmware,
+            programmingAdapterFtdi,
+            programmingAdapterVID_PID,
+            programmingAdapterSerialNumber,
+            programmingAdapterDescription,
+            programmingAdapterInterface,
+            programmingAdapterTransport):
     
-    def flashDevice(self, programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription):
-        print(colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
-        
-        firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName()).replace("\\","/")
+        from build_pack_push_and_clear_all_projects import getOpenOcdDir
+        openOcdDir = getOpenOcdDir()
         settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg').replace("\\","/")
-        interface = 'ftdi/olimex-arm-usb-tiny-h.cfg'
-        target    = self.device.olimex_target
-        transport = 'jtag'
+        interface = programmingAdapterInterface
+        target	= self.device.configFile
+        transport = programmingAdapterTransport
+        
+        interfacePrefix = 'ftdi/' if programmingAdapterFtdi else ''
         
         argList = [
-                '-f', 'interface/' + interface,
-        ]
+			'-s', openOcdDir + 'scripts',
+			'-f', 'interface/' + interfacePrefix + programmingAdapterInterface,
+			]
         
-        if programmingAdapterSerialNumber:
-            argList.extend(['-c', 'ftdi_serial ' + programmingAdapterSerialNumber])
-            
-        if programmingAdapterVID_PID:
-            argList.extend(['-c', 'ftdi_vid_pid ' + programmingAdapterVID_PID])
-            
-        if programmingAdapterDescription:
-            argList.extend(['-c', 'ftdi_device_desc ' + programmingAdapterDescription])
+        propertiesPrefix = 'ftdi_' if programmingAdapterFtdi else ''
+        
+        if programmingAdapterSerialNumber:   argList.extend(['-c', propertiesPrefix + 'serial '	  + programmingAdapterSerialNumber])
+        if programmingAdapterVID_PID	 :   argList.extend(['-c', propertiesPrefix + 'vid_pid '	 + programmingAdapterVID_PID])
+        if programmingAdapterDescription :   argList.extend(['-c', propertiesPrefix + 'device_desc ' + programmingAdapterDescription])
         
         argList.extend([
-                '-c', 'transport select ' + transport,
+                '-c', 'transport select ' + programmingAdapterTransport,
                 '-f', 'target/' + target,
                 '-c', 'adapter_nsrst_delay 1000',
                 '-f', settings,
@@ -333,11 +344,57 @@ class Project(object):
         
         print("\n".join(argList))
         
-        p = Popen(["openocd"] + argList,
+        
+        
+        p = Popen([openOcdDir + "bin/openocd"] + argList,
         cwd = self.path)
         
         stdout, stderr = p.communicate()
         print(stdout, stderr)
+        
+        
+        
+    def flashLoader(self,
+            programmingAdapterFtdi,
+            programmingAdapterVID_PID,
+            programmingAdapterSerialNumber,
+            programmingAdapterDescription,
+            programmingAdapterInterface,
+            programmingAdapterTransport):
+        print(colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
+        
+        firmware = os.path.join(self.getProjectBootloaderDir(), self.generateFirmwareFileName('loader')).replace("\\","/")
+        
+        self.flashCommon(
+            firmware,
+            programmingAdapterFtdi,
+            programmingAdapterVID_PID,
+            programmingAdapterSerialNumber,
+            programmingAdapterDescription,
+            programmingAdapterInterface,
+            programmingAdapterTransport)
+            
+    
+    def flashDevice(self,
+            programmingAdapterFtdi,
+            programmingAdapterVID_PID,
+            programmingAdapterSerialNumber,
+            programmingAdapterDescription,
+            programmingAdapterInterface,
+            programmingAdapterTransport):
+        print(colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
+        
+        firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName(self.device.name)).replace("\\","/")
+        
+        self.flashCommon(
+            firmware,
+            programmingAdapterFtdi,
+            programmingAdapterVID_PID,
+            programmingAdapterSerialNumber,
+            programmingAdapterDescription,
+            programmingAdapterInterface,
+            programmingAdapterTransport)
+        
         
     def getVersionLog(self):
         import subprocess
@@ -358,7 +415,7 @@ class Project(object):
     def getSconsBuildArgs(self):
         setupFile = os.path.join(self.path, 'setup.py')
         
-        with open(setupFile) as f:
+        with open(setupFile, 'r', encoding='utf-8') as f:
             content = f.readlines()
         
         content = [x.strip() for x in content] 

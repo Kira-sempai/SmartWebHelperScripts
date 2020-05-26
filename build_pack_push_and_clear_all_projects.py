@@ -59,7 +59,6 @@ def getAvailableProjectsList():
 		Project('SW2_deprecated', 'DataLogger'       , 'DataLogger'        , Device('DL'    , 'L30', None, True), 'rom'),
 		Project('SW2',            'DataLoggerSW'     , 'DataLogger SW'     , Device('DL_SW' , 'L30', None, True), 'rom'),
 		Project('SW2',            'DataLoggerKSE'    , 'DataLogger KSE'    , Device('DL_KSE', 'L30', None, True), 'rom'),
-#		Project('SW2',            'DataLoggerCharlie', 'DataLogger Charlie', Device('DL_C'  , 'L30', None, True), 'rom'),
 		
 		Project('SW2', 'disco'       , 'SmartWeb Disco', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f4x.cfg')),
 		Project('SW2', 'xhcc'        , 'SmartWeb X'    , Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
@@ -168,9 +167,6 @@ def parseArguments(string_input, projects_array):
 	simulator   = False
 	runSimulator = False
 	buildWithSpecialArgs = False
-	programmingAdapterSerialNumber = None
-	programmingAdapterVID_PID = None
-	programmingAdapterDescription = None
 	projects_to_build = []
 	
 	for s in args:
@@ -190,27 +186,6 @@ def parseArguments(string_input, projects_array):
 		if s == '-S':
 			simulator    = True
 			runSimulator = True
-		if s.count('--adapter_serial'):
-			programmingAdapterSerialNumber = s[17:]
-			if	programmingAdapterSerialNumber == '1':
-				programmingAdapterSerialNumber = 'OLUUKDU둭'
-			elif programmingAdapterSerialNumber == '2':
-				programmingAdapterSerialNumber = 'OLYKF0UM'
-			elif programmingAdapterSerialNumber == '3':
-				programmingAdapterSerialNumber = 'OLZ4APP8'
-				
-		if s.count('--adapter_vid_pid'):
-			programmingAdapterVID_PID = s[18:]
-			if  programmingAdapterVID_PID == '1':
-				programmingAdapterVID_PID = '0x15BA 0x002A'
-			elif programmingAdapterVID_PID == '2':
-				programmingAdapterVID_PID = '0x0403 0x6010'
-		if s.count('--adapter_description'):
-			programmingAdapterDescription  = s[22:23]
-			if  programmingAdapterDescription == '1':
-				programmingAdapterDescription = '"Olimex OpenOCD JTAG ARM-USB-TINY-H"'
-			if  programmingAdapterDescription == '2':
-				programmingAdapterDescription = '"Dual RS232-HS"'
 		for p in projects_array:
 			if p.name == s or p.group == s:
 				projects_to_build.append(p)
@@ -227,9 +202,6 @@ def parseArguments(string_input, projects_array):
 		simulator,
 		runSimulator,
 		buildWithSpecialArgs,
-		programmingAdapterSerialNumber,
-		programmingAdapterVID_PID,
-		programmingAdapterDescription,
 		projects_to_build)
 
 def createConfig(path):
@@ -240,13 +212,20 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'projectDir', 'E:/development/SmartWeb_v1/')
 	configParserInstance.set('DEFAULT', 'archiveDir', 'Z:/firmware/')
 	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts')
+	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
+	
+	configParserInstance.set('DEFAULT', 'programming_Adapter_Ftdi'         , 'yes')            # 'yes', 'no', 'true', 'false' 
+	configParserInstance.set('DEFAULT', 'programming_Adapter_Serial_Number', 'OLUUKDU둭')       # 'OLUUKDU둭', 'OLYKF0UM' or 'OLZ4APP8' for known Olimex adapters
+	configParserInstance.set('DEFAULT', 'programming_Adapter_VID_PID'      , '0x15BA 0x002A')  # '0x15BA 0x002A', '0x0403 0x6010' for known Olimex adapters
+	configParserInstance.set('DEFAULT', 'programming_Adapter_Description'  , '"Olimex OpenOCD JTAG ARM-USB-TINY-H"')
+	configParserInstance.set('DEFAULT', 'programming_Adapter_Interface'    , 'olimex-arm-usb-tiny-h.cfg')
+	configParserInstance.set('DEFAULT', 'programming_Adapter_Transport'    , 'jtag') # 'jtag', 'swd' and so on
 	
 	projects_array = getAvailableProjectsList()
 	for p in projects_array:
 		configParserInstance.add_section(p.name)
 	
-	
-	with open(path, "w") as config_file:
+	with open(path, "w", encoding='utf-8') as config_file:
 		configParserInstance.write(config_file)
 
 	return configParserInstance
@@ -254,6 +233,10 @@ def createConfig(path):
 def getSconsDir():
 	configParserInstance.read(settingsPath)
 	return configParserInstance.get('DEFAULT', 'sconsDir')
+
+def getOpenOcdDir():
+	configParserInstance.read(settingsPath)
+	return configParserInstance.get('DEFAULT', 'openOcdDir')
 
 
 def fixConsoleLang():
@@ -267,9 +250,6 @@ if __name__ == "__main__":
 		
 	if not os.path.exists(settingsPath):
 		createConfig(settingsPath)
-	
-	
-	configParserInstance.read(settingsPath)
 	
 	while True:
 		projects_array = getAvailableProjectsList()
@@ -295,11 +275,9 @@ if __name__ == "__main__":
 		simulator   ,
 		runSimulator,
 		buildWithSpecialArgs,
-		programmingAdapterSerialNumber,
-		programmingAdapterVID_PID,
-		programmingAdapterDescription,
 		projects_to_work_with) = parseArguments(string_input, projects_array)
 		
+		configParserInstance.read(settingsPath)
 		
 		print('Those projects will be used:')
 		for p in projects_to_work_with:
@@ -317,7 +295,7 @@ if __name__ == "__main__":
 				extraArgs = []
 				extraArgsFile = 'setup.py'
 				if os.path.isfile(extraArgsFile):
-					for line in open(extraArgsFile, 'r'):
+					for line in open(extraArgsFile, 'r', encoding='utf-8'):
 						extraArgs.append(line.rstrip())
 
 				result = projectItem.build(extraArgs)
@@ -330,8 +308,17 @@ if __name__ == "__main__":
 						break
 			if runSimulator:
 				projectItem.runSimulator()
-			if flashLoader : projectItem.flashLoader(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
-			if flashDevice : projectItem.flashDevice(programmingAdapterVID_PID, programmingAdapterSerialNumber, programmingAdapterDescription)
+			if flashLoader or flashDevice:
+				Ftdi         = configParserInstance.getboolean(p.name, 'programming_Adapter_Ftdi')
+				VID_PID      = configParserInstance.get       (p.name, 'programming_Adapter_VID_PID')
+				SerialNumber = configParserInstance.get       (p.name, 'programming_Adapter_Serial_Number')
+				Description  = configParserInstance.get       (p.name, 'programming_Adapter_Description')
+				Interface    = configParserInstance.get       (p.name, 'programming_Adapter_Interface')
+				Transport    = configParserInstance.get       (p.name, 'programming_Adapter_Transport')
+				
+				if flashLoader: projectItem.flashLoader(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
+				if flashDevice: projectItem.flashDevice(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
+
 			if pack_n_push:
 				archiveDir = configParserInstance.get(p.name, 'archiveDir')
 				
