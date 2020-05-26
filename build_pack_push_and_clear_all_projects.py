@@ -245,7 +245,7 @@ def fixConsoleLang():
 if __name__ == "__main__":
 	
 	fixConsoleLang()
-	
+	os.system('color')
 	colorama.init()
 		
 	if not os.path.exists(settingsPath):
