@@ -12,34 +12,6 @@ from subprocess import Popen
 from termcolor import colored
 
 
-def runSCons(args, path):
-    from build_pack_push_and_clear_all_projects import getSconsDir
-    print(args)
-    
-    
-    scons = os.path.join(getSconsDir(), 'scons.bat')
-    
-    try:
-        p = Popen([scons] + args,
-            cwd = path
-        )
-    except FileNotFoundError:
-        scons = 'scons.bat'
-        p = Popen([scons] + args,
-            cwd = path
-        )
-        
-    stdout, stderr = p.communicate()
-    print(stdout, stderr)
-
-    result = p.returncode
-
-    if result:
-        print( colored('Scons failed: ' + str(result), 'white', 'on_red', attrs=['bold']))
-    
-    return result
-    
-
 class Version(object):
     '''
     classdocs
@@ -248,10 +220,38 @@ class Project(object):
         
         os.system('start '  + simulator_file)
     
+    def runSCons(self, args, path):
+        from build_pack_push_and_clear_all_projects import getSconsDir
+        from build_pack_push_and_clear_all_projects import getPythonDir
+        print(args)
+        
+        scons  = os.path.join(getSconsDir (self.name), 'scons')
+        python = os.path.join(getPythonDir(self.name), 'python.exe')
+        
+        try:
+            p = Popen([python, scons] + args,
+                cwd = path
+            )
+        except FileNotFoundError:
+            scons = 'scons.bat'
+            p = Popen([scons] + args,
+                cwd = path
+            )
+        
+        stdout, stderr = p.communicate()
+        print(stdout, stderr)
+        
+        result = p.returncode
+        
+        if result:
+            print( colored('Scons failed: ' + str(result), 'white', 'on_red', attrs=['bold']))
+        
+        return result
+    
+    
     def build(self, extraArgs = []):
         print( colored("\n\rBuilding project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
-
         argList = [
             self.getTarget(),
             'CFG_PROJECT='    + self.name,
@@ -274,7 +274,7 @@ class Project(object):
         
         argList.extend(extraArgs)
         
-        result = runSCons(argList, self.path)
+        result = self.runSCons(argList, self.path)
         
         return result
     
@@ -290,7 +290,7 @@ class Project(object):
                 '-c',
         ]
         
-        runSCons(argList, self.path)
+        self.runSCons(argList, self.path)
     
     def addSDCardData(self, sdCardData):
         if sdCardData is None:
@@ -310,7 +310,7 @@ class Project(object):
             programmingAdapterTransport):
     
         from build_pack_push_and_clear_all_projects import getOpenOcdDir
-        openOcdDir = getOpenOcdDir()
+        openOcdDir = getOpenOcdDir(self.name)
         settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg').replace("\\","/")
         interface = programmingAdapterInterface
         target	= self.device.configFile
@@ -319,14 +319,14 @@ class Project(object):
         interfacePrefix = 'ftdi/' if programmingAdapterFtdi else ''
         
         argList = [
-			'-s', openOcdDir + 'scripts',
-			'-f', 'interface/' + interfacePrefix + programmingAdapterInterface,
-			]
+            '-s', openOcdDir + 'scripts',
+            '-f', 'interface/' + interfacePrefix + programmingAdapterInterface,
+            ]
         
         propertiesPrefix = 'ftdi_' if programmingAdapterFtdi else ''
         
-        if programmingAdapterSerialNumber:   argList.extend(['-c', propertiesPrefix + 'serial '	  + programmingAdapterSerialNumber])
-        if programmingAdapterVID_PID	 :   argList.extend(['-c', propertiesPrefix + 'vid_pid '	 + programmingAdapterVID_PID])
+        if programmingAdapterSerialNumber:   argList.extend(['-c', propertiesPrefix + 'serial '      + programmingAdapterSerialNumber])
+        if programmingAdapterVID_PID	 :   argList.extend(['-c', propertiesPrefix + 'vid_pid '     + programmingAdapterVID_PID])
         if programmingAdapterDescription :   argList.extend(['-c', propertiesPrefix + 'device_desc ' + programmingAdapterDescription])
         
         argList.extend([
@@ -340,13 +340,11 @@ class Project(object):
         print("\n".join(argList))
         
         
-        
         p = Popen([openOcdDir + "bin/openocd"] + argList,
         cwd = self.path)
         
         stdout, stderr = p.communicate()
         print(stdout, stderr)
-        
         
         
     def flashLoader(self,
