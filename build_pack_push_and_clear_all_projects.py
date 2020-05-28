@@ -211,7 +211,8 @@ def createConfig(path):
 	
 	configParserInstance.set('DEFAULT', 'projectDir', 'E:/development/SmartWeb_v1/')
 	configParserInstance.set('DEFAULT', 'archiveDir', 'Z:/firmware/')
-	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts')
+	configParserInstance.set('DEFAULT', 'pythonDir' , 'C:/Python/')
+	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts/')
 	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
 	
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Ftdi'         , 'yes')            # 'yes', 'no', 'true', 'false' 
@@ -230,13 +231,17 @@ def createConfig(path):
 
 	return configParserInstance
 
-def getSconsDir():
+def getSconsDir(projectName):
 	configParserInstance.read(settingsPath)
-	return configParserInstance.get('DEFAULT', 'sconsDir')
+	return configParserInstance.get(projectName, 'sconsDir')
 
-def getOpenOcdDir():
+def getPythonDir(projectName):
 	configParserInstance.read(settingsPath)
-	return configParserInstance.get('DEFAULT', 'openOcdDir')
+	return configParserInstance.get(projectName, 'pythonDir')
+
+def getOpenOcdDir(projectName):
+	configParserInstance.read(settingsPath)
+	return configParserInstance.get(projectName, 'openOcdDir')
 
 
 def fixConsoleLang():
