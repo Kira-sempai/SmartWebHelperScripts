@@ -323,7 +323,7 @@ class Project(object):
             '-f', 'interface/' + interfacePrefix + programmingAdapterInterface,
             ]
         
-        propertiesPrefix = 'ftdi_' if programmingAdapterFtdi else ''
+        propertiesPrefix = 'ftdi_' if programmingAdapterFtdi else 'hla_'
         
         if programmingAdapterSerialNumber:   argList.extend(['-c', propertiesPrefix + 'serial '      + programmingAdapterSerialNumber])
         if programmingAdapterVID_PID	 :   argList.extend(['-c', propertiesPrefix + 'vid_pid '     + programmingAdapterVID_PID])
