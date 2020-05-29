@@ -214,6 +214,7 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'pythonDir' , 'C:/Python/')
 	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts/')
 	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
+	configParserInstance.set('DEFAULT', 'scons_extra_args') # can be any string args, separated by ','
 	
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Ftdi'         , 'yes')            # 'yes', 'no', 'true', 'false' 
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Serial_Number', 'OLUUKDU둭')       # 'OLUUKDU둭', 'OLYKF0UM' or 'OLZ4APP8' for known Olimex adapters
@@ -242,6 +243,16 @@ def getPythonDir(projectName):
 def getOpenOcdDir(projectName):
 	configParserInstance.read(settingsPath)
 	return configParserInstance.get(projectName, 'openOcdDir')
+
+def getProjectDir(projectName):
+	configParserInstance.read(settingsPath)
+	return configParserInstance.get(projectName, 'projectDir')
+
+def getSconsExtraArgs(projectName):
+	configParserInstance.read(settingsPath)
+	args_str = configParserInstance.get(projectName, 'scons_extra_args')
+	args_str = args_str.translate(str.maketrans('', '', ' \n\t\r'))
+	return args_str.split(',')
 
 
 def fixConsoleLang():
@@ -287,8 +298,7 @@ if __name__ == "__main__":
 		print('Those projects will be used:')
 		for p in projects_to_work_with:
 			print(p.workingName)
-			p.setPath(configParserInstance.get(p.name, 'projectDir'))
-		
+			p.setPath(getProjectDir(p.name))
 		
 		for projectItem in projects_to_work_with:
 			projectItem.production = production
@@ -297,11 +307,7 @@ if __name__ == "__main__":
 				projectItem.platform = 'qtsim'
 				projectItem.target   = 'qtsim'
 			if buildWithSpecialArgs :
-				extraArgs = []
-				extraArgsFile = 'setup.py'
-				if os.path.isfile(extraArgsFile):
-					for line in open(extraArgsFile, 'r', encoding='utf-8'):
-						extraArgs.append(line.rstrip())
+				extraArgs = getSconsExtraArgs(p.name)
 
 				result = projectItem.build(extraArgs)
 				if result != 0:
