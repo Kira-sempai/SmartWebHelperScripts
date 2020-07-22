@@ -214,6 +214,7 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'pythonDir' , 'C:/Python/')
 	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts/')
 	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
+	configParserInstance.set('DEFAULT', 'sconsJobsNum', '8')
 	configParserInstance.set('DEFAULT', 'scons_extra_args') # can be any string args, separated by ','
 	
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Ftdi'         , 'yes')            # 'yes', 'no', 'true', 'false' 
@@ -232,25 +233,18 @@ def createConfig(path):
 
 	return configParserInstance
 
-def getSconsDir(projectName):
+def getSettingsFileParameterValue(projectName, parameter):
 	configParserInstance.read(settingsPath)
-	return configParserInstance.get(projectName, 'sconsDir')
+	return configParserInstance.get(projectName, parameter)
 
-def getPythonDir(projectName):
-	configParserInstance.read(settingsPath)
-	return configParserInstance.get(projectName, 'pythonDir')
-
-def getOpenOcdDir(projectName):
-	configParserInstance.read(settingsPath)
-	return configParserInstance.get(projectName, 'openOcdDir')
-
-def getProjectDir(projectName):
-	configParserInstance.read(settingsPath)
-	return configParserInstance.get(projectName, 'projectDir')
+def getSconsDir    (projectName): return getSettingsFileParameterValue(projectName, 'sconsDir')
+def getPythonDir   (projectName): return getSettingsFileParameterValue(projectName, 'pythonDir')
+def getOpenOcdDir  (projectName): return getSettingsFileParameterValue(projectName, 'openOcdDir')
+def getProjectDir  (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
+def getSconsJobsNum(projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
 
 def getSconsExtraArgs(projectName):
-	configParserInstance.read(settingsPath)
-	args_str = configParserInstance.get(projectName, 'scons_extra_args')
+	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')
 	args_str = args_str.translate(str.maketrans('', '', ' \n\t\r'))
 	return args_str.split(',')
 

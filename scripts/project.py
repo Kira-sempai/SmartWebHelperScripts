@@ -221,12 +221,14 @@ class Project(object):
         os.system('start '  + simulator_file)
     
     def runSCons(self, args, path):
-        from build_pack_push_and_clear_all_projects import getSconsDir
-        from build_pack_push_and_clear_all_projects import getPythonDir
-        print(args)
+        from build_pack_push_and_clear_all_projects import getSconsDir, getPythonDir, getSconsJobsNum
         
         scons  = os.path.join(getSconsDir (self.name), 'scons')
         python = os.path.join(getPythonDir(self.name), 'python.exe')
+        
+        args.append('--jobs=' + getSconsJobsNum(self.name))
+        
+        print(args)
         
         try:
             p = Popen([python, scons] + args,
@@ -258,7 +260,6 @@ class Project(object):
             'CFG_PLATFORM='   + self.platform,
             'CFG_PRODUCTION=' + ('1' if self.production else '0'),
 #            'features=dbgmcu',
-            '--jobs=8',
 #           '--debug=pdb',
 #           '--debug=time',
         ]
@@ -286,7 +287,6 @@ class Project(object):
                 'CFG_PROJECT='    + self.name,
                 'CFG_PLATFORM='   + self.platform,
                 'CFG_PRODUCTION=' + ('1' if self.production else '0'),
-                '--jobs=8',
                 '-c',
         ]
         
@@ -308,7 +308,7 @@ class Project(object):
             programmingAdapterDescription,
             programmingAdapterInterface,
             programmingAdapterTransport):
-    
+        
         from build_pack_push_and_clear_all_projects import getOpenOcdDir
         openOcdDir = getOpenOcdDir(self.name)
         settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg').replace("\\","/")
@@ -402,7 +402,7 @@ class Project(object):
         if p.returncode > 1:
             print('git tag failed:'+stderr)
             return 1
-
+        
         return stdout.decode('utf-8')
     
     def getSconsBuildArgs(self):
