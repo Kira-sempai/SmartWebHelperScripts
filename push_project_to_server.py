@@ -55,5 +55,11 @@ def do(project, dest):
 	copyProjectBinaryFiles(project, 'firmware')
 	
 	for firmwareData in project.firmwareData:
-		func.copytree(firmwareData.src, os.path.join(firmwareDestPath, firmwareData.dest))
+		src = firmwareData.src
+		dst = os.path.join(firmwareDestPath, firmwareData.dest)
+		
+		if os.path.exists(src):
+			func.copytree(src, dst)
+		else:
+			print("src not found: " + src)
 	
