@@ -93,13 +93,16 @@ class Project(object):
        
     def getTarget(self):
         target = self.target
-        target = target + self.boardVariantToString()
+        if self.sdk == 'old':
+            target = target + self.boardVariantToString()
         
         return target
     
     def getBootloaderTarget(self):
         target = 'loader'
         target = target + self.boardVariantToString()
+        if self.sdk == 'old':
+            target = target + self.boardVariantToString()
         
         return target
     
@@ -140,11 +143,14 @@ class Project(object):
         else:
             oemstring = ''
         # get platform name
-        if 'TARGET_PLATFORM_FRIENDLY_NAME' in env:
-            platformstring = env['TARGET_PLATFORM_FRIENDLY_NAME']
-        else:
-            platformstring = env['TARGET_PLATFORM']
-            
+        if 'TARGET_PLATFORM_FRIENDLY_NAME' not in env:
+            if env['TARGET_PLATFORM'].lower() == "cubemx":
+                env['TARGET_PLATFORM_FRIENDLY_NAME'] = "STM32C"
+            else:
+                env['TARGET_PLATFORM_FRIENDLY_NAME'] = env['TARGET_PLATFORM'].upper()
+        
+        platformstring = env['TARGET_PLATFORM_FRIENDLY_NAME']
+        
         subststring = env['CFG_DEVICENAME'] + oemstring
         if not no_platform:
             subststring = subststring + '-' + env['BOARD'] + 'v' + env['CFG_BOARD_VARIANT'] + 'r' + env['CFG_BOARD_REVISION'] + '-' + platformstring
