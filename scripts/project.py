@@ -100,7 +100,6 @@ class Project(object):
     
     def getBootloaderTarget(self):
         target = 'loader'
-        target = target + self.boardVariantToString()
         if self.sdk == 'old':
             target = target + self.boardVariantToString()
         
