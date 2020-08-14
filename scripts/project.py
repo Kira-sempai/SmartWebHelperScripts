@@ -273,8 +273,6 @@ class Project(object):
         if self.production:
             productionArgList = [
                 'CFG_LOG_MASK=0',
-                'CFG_DEBUG_LOG_TM=0',
-                'CFG_DEBUG_LOG_KSE=0',
             ]
             argList.extend(productionArgList)
         
