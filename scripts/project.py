@@ -219,11 +219,11 @@ class Project(object):
         if os.path.isfile(cache_setup_file):
             os.remove(cache_setup_file)
     
-    def runSimulator(self):
+    def runSimulator(self, args):
         firmwareName = self.generateSimulatorName() + '.exe'
         simulator_file = os.path.join(self.getDeviceBinDir(), firmwareName)
         
-        os.system('start '  + simulator_file)
+        os.system('start '  + simulator_file + ' ' + args)
     
     def runSCons(self, args, path):
         from build_pack_push_and_clear_all_projects import getSconsDir, getPythonDir, getSconsJobsNum

@@ -219,6 +219,7 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
 	configParserInstance.set('DEFAULT', 'sconsJobsNum', '8')
 	configParserInstance.set('DEFAULT', 'scons_extra_args') # can be any string args, separated by ','
+	configParserInstance.set('DEFAULT', 'simulator_args') # can be any string
 	
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Ftdi'         , 'yes')            # 'yes', 'no', 'true', 'false' 
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Serial_Number', 'OLUUKDU둭')       # 'OLUUKDU둭', 'OLYKF0UM' or 'OLZ4APP8' for known Olimex adapters
@@ -245,6 +246,7 @@ def getPythonDir   (projectName): return getSettingsFileParameterValue(projectNa
 def getOpenOcdDir  (projectName): return getSettingsFileParameterValue(projectName, 'openOcdDir')
 def getProjectDir  (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
 def getSconsJobsNum(projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
+def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectName, 'simulator_args')
 
 def getSconsExtraArgs(projectName):
 	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')
@@ -315,7 +317,7 @@ if __name__ == "__main__":
 					if result != 0:
 						break
 			if runSimulator:
-				projectItem.runSimulator()
+				projectItem.runSimulator(getSimulatorArgs(p.name))
 			if flashLoader or flashDevice:
 				Ftdi         = configParserInstance.getboolean(p.name, 'programming_Adapter_Ftdi')
 				VID_PID      = configParserInstance.get       (p.name, 'programming_Adapter_VID_PID')
