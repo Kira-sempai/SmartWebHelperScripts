@@ -160,6 +160,7 @@ def getSDCardProjectFiles(project):
 def parseArguments(string_input, projects_array):
 	args = string_input.split() #splits the input string on spaces
 	
+	show_projects_list = False
 	production  = False
 	build       = False
 	pack_n_push = False
@@ -176,6 +177,7 @@ def parseArguments(string_input, projects_array):
 		if s == '-e':
 			print('Exit')
 			sys.exit()
+		if s == '-l': show_projects_list = True
 		if s == '-a': projects_to_build = projects_array
 		if s == '-P': production  = True
 		if s == '-b': build       = True
@@ -195,6 +197,7 @@ def parseArguments(string_input, projects_array):
 				continue
 		
 	return (
+		show_projects_list,
 		production,
 		build,
 		pack_n_push,
@@ -268,7 +271,6 @@ if __name__ == "__main__":
 	
 	while True:
 		projects_array = getAvailableProjectsList()
-		printAvailableProjectsList(projects_array)
 		
 		try: input = raw_input
 		except NameError: pass
@@ -280,6 +282,7 @@ if __name__ == "__main__":
 		#TODO: add "real" console
 		
 		(
+		show_projects_list,
 		production  ,
 		build       ,
 		pack_n_push ,
@@ -293,6 +296,9 @@ if __name__ == "__main__":
 		projects_to_work_with) = parseArguments(string_input, projects_array)
 		
 		configParserInstance.read(settingsPath)
+		
+		if show_projects_list:
+			printAvailableProjectsList(projects_array)
 		
 		print('Those projects will be used:')
 		for p in projects_to_work_with:
