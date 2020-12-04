@@ -4,6 +4,7 @@ import sys
 import os
 import subprocess
 from subprocess import Popen
+import datetime
 
 PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(PROJECT_DIR)
@@ -71,6 +72,8 @@ def getAvailableProjectsList():
 		Project('Other',  'domvs'       , 'Domvs'         , Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'caleon_clima_smart_controller'    , 'Caleon SW', Device('caleon_clima_smart_controller'    , 'RC50', None, False, 'cubemx'), 'rom', 'new'),
 		Project('Other',  'caleon_clima_smart_web_controller', 'Caleon SW', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		Project('Other',  'caleon_smart_web_base'  , 'Caleon Base'  , Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		Project('Other',  'caleon_smart_web_master', 'Caleon Master', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
 		Project('Other',  'tece_floor', 'Caleon TECE', Device('tece_floor', 'RC50', None, False, 'cubemx'), 'rom', 'new'),
 		Project('Other',  'tece_floor_clima_smart', 'Caleon TECE Clima', Device('tece_floor', 'RC50', None, False, 'cubemx'), 'rom', 'new'),
 		
@@ -257,6 +260,7 @@ def getSconsExtraArgs(projectName):
 	return args_str.split(',')
 
 
+
 def fixConsoleLang():
 	subprocess.run([os.path.join('C:\Windows\system32','chcp.com'), '437'])
 
@@ -265,7 +269,7 @@ if __name__ == "__main__":
 	fixConsoleLang()
 	os.system('color')
 	colorama.init()
-		
+	
 	if not os.path.exists(settingsPath):
 		createConfig(settingsPath)
 	
@@ -352,7 +356,7 @@ if __name__ == "__main__":
 				push_project_to_server.do(projectItem, archiveDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 			if clear: projectItem.clear()
 		
-		print(colored("Done", 'white', 'on_green'))
+		print(colored(str(datetime.datetime.now()) + " Done", 'white', 'on_green'))
 		print('\r\n\n')
 		
 
