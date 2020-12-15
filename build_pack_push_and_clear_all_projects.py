@@ -70,10 +70,13 @@ def getAvailableProjectsList():
 		Project('Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'domvs'       , 'Domvs'         , Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
-		Project('Other',  'caleon_clima_smart_controller'    , 'Caleon SW', Device('caleon_clima_smart_controller'    , 'RC50', None, False, 'cubemx'), 'rom', 'new'),
-		Project('Other',  'caleon_clima_smart_web_controller', 'Caleon SW', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		Project('Other',  'caleon_smart_web_base'  , 'Caleon Base'  , Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		Project('Other',  'caleon_smart_web_master', 'Caleon Master', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		Project('SW4',  'caleon_clima_smart_controller'    , 'Caleon SW', Device('caleon_clima_smart_controller'    , 'RC50', None, False, 'cubemx'), 'rom', 'new'),
+		Project('SW4',  'caleon_clima_smart_web_controller', 'Caleon SW', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		
+		Project('SW4',  'caleonbox_clima'  , 'CaleonBox'  , Device('caleonbox_clima', 'S70', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_SOREL'),
+		
+		Project('SW4',  'caleon_smart_web_base'  , 'Caleon Base'  , Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		Project('SW4',  'caleon_smart_web_master', 'Caleon Master', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
 		Project('Other',  'tece_floor', 'Caleon TECE', Device('tece_floor', 'RC50', None, False, 'cubemx'), 'rom', 'new'),
 		Project('Other',  'tece_floor_clima_smart', 'Caleon TECE Clima', Device('tece_floor', 'RC50', None, False, 'cubemx'), 'rom', 'new'),
 		
