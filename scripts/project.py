@@ -202,17 +202,31 @@ class Project(object):
 
         return firmwareFile
     
+    def generateMergedFirmwareFileName(self, deviceName):
+        firmwareName = self.generateFirmwareName(deviceName)
+        firmwareFile = firmwareName+ 'merged.s19'
+
+        return firmwareFile
+    
     def getProjectBinaries(self):
-        binaries = []
-        
-        firmwareFileName = self.generateFirmwareFileName(self.device.name)
         postfix = self.getFirmwareLangPostfix()
         
-        binaries.append(firmwareFileName)
-        binaries.append(postfix + 'app.map')
-        binaries.append(postfix + 'app.elf')
+        firmwareDir = self.getProjectFirmwareDir()
+        bootldrDir  = self.getProjectBootloaderDir()
         
-        return binaries
+        firmwareFileName        = self.generateFirmwareFileName(self.device.name)
+        mergedFirmwareFileName  = self.generateMergedFirmwareFileName(self.device.name)
+        bootldrFirmwareFileName = self.generateFirmwareFileName('loader')
+        appFileName             = postfix + 'app.map'
+        elfFileName             = postfix + 'app.elf'
+        
+        return [
+            os.path.join(firmwareDir, firmwareFileName       ).replace("\\","/"),
+            os.path.join(firmwareDir, mergedFirmwareFileName ).replace("\\","/"),
+            os.path.join(firmwareDir, appFileName            ).replace("\\","/"),
+            os.path.join(firmwareDir, elfFileName            ).replace("\\","/"),
+            os.path.join(bootldrDir , bootldrFirmwareFileName).replace("\\","/"),
+        ]
     
     def clearSConsOptionsCacheFile(self):
         cache_setup_file = os.path.join(self.path, 'setup.py')
@@ -300,8 +314,11 @@ class Project(object):
             return;
         self.sdCardData.extend(sdCardData)
     
-    def addFirmwareData(self, firmwareData):
+    def extendFirmwareData(self, firmwareData):
         self.firmwareData.extend(firmwareData)
+        
+    def appendFirmwareData(self, firmwareData):
+        self.firmwareData.append(firmwareData)
     
     def flashCommon(self,
             firmware,

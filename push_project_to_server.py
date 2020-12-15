@@ -9,7 +9,9 @@ def copyProjectBinaryFiles(project, dest):
 	firmwareSourcePath = project.getProjectFirmwareDir()
 	
 	for item in project.getProjectBinaries():
-		project.addFirmwareData([SrcDestData(os.path.join(firmwareSourcePath, item), os.path.join(dest, item))])
+		fileName = os.path.basename(item)
+		destFile = os.path.join(dest, fileName)
+		project.appendFirmwareData(SrcDestData(item, destFile))
 
 def addVersionInfoFile(project, firmwareDestPath):
 	fileName = os.path.join(firmwareDestPath, 'versionLog.txt')

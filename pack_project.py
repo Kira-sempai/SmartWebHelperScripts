@@ -169,7 +169,7 @@ def do(project):
 		SrcDestData(os.path.join(output_folder, bl_pack)   , os.path.join('web_firmware', bl_pack))
 	]
 	
-	project.addFirmwareData(packData)
+	project.extendFirmwareData(packData)
 	
 	return 0
 #	printEndMessage()
