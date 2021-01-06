@@ -2,6 +2,7 @@
 
 import sys
 import os
+import datetime
 import subprocess
 from subprocess import Popen
 import datetime
@@ -34,6 +35,8 @@ from func import SrcDestData
 import pack_project
 import push_project_to_server
 
+from projectsList import getAvailableProjectsList
+
 settingsPath = 'settings.ini'
 configParserInstance = configparser.ConfigParser()
 
@@ -48,51 +51,6 @@ def printAvailableProjectsList(projects_array):
 		space = 15 - l
 		space2 = 20 - l2
 		print (p.workingName + ' '*space + '- ' + p.name + ' '*space2 + '(' + p.group + ')')
-
-def getAvailableProjectsList():
-	return [
-		Project('SW1',         'stdc'        , 'SmartWeb S'    , Device('STDC'    , 'S20' , 3), 'rom'),
-		Project('SW1_special', 'stdc_lin'    , 'SmartWeb S LIN', Device('STDC_LIN', 'S28' , 3), 'rom'),
-		Project('SW1',         'ltdc'        , 'SmartWeb L'    , Device('LTDC'    , 'S40' , 3), 'rom'),
-		Project('SW1',         'ltdc_s45'    , 'SmartWeb L2'   , Device('LTDC_S45', 'S45' , 1), 'rom'),
-		Project('SW1',         'swndin'      , 'SmartWeb N'    , Device('SWNDIN'  , 'S41N', 1), 'rom'),
-		
-		Project('SW2_deprecated', 'DataLogger'       , 'DataLogger'        , Device('DL'    , 'L30', None, True), 'rom'),
-		Project('SW2',            'DataLoggerSW'     , 'DataLogger SW'     , Device('DL_SW' , 'L30', None, True), 'rom'),
-		Project('SW2',            'DataLoggerKSE'    , 'DataLogger KSE'    , Device('DL_KSE', 'L30', None, True), 'rom'),
-		
-		Project('SW2', 'disco'       , 'SmartWeb Disco', Device('DISCO'   , '32F746GDISCOVERY',    1, True, 'stm32', 'stm32f7x.cfg')),
-		Project('SW2', 'xhcc'        , 'SmartWeb X'    , Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project('SW2', 'xhcc_s62'    , 'SmartWeb X2'   , Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
-		Project('Other', 'xhcc_s62_unitTest', 'SmartWeb X2 Unit Test', Device('XHCC-S62', 'S62',   2, True, 'stm32', 'stm32f2x.cfg')),
-		Project('SW2', 'swk'         , 'SmartWeb K'    , Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
-		
-		Project('Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
-		Project('Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
-		Project('Other',  'domvs'       , 'Domvs'         , Device('Domvs'       , 'RC40', None, False, 'stm32n'), 'rom', 'new'),
-		Project('SW4',  'caleon_clima_smart_controller'    , 'Caleon SW', Device('caleon_clima_smart_controller'    , 'RC50', None, False, 'cubemx'), 'rom', 'new'),
-		Project('SW4',  'caleon_clima_smart_web_controller', 'Caleon SW', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		
-		Project('SW4',  'caleonbox_clima'  , 'CaleonBox'  , Device('caleonbox_clima', 'S70', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_SOREL'),
-		
-		Project('SW4',  'caleon_smart_web_base'  , 'Caleon Base'  , Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		Project('SW4',  'caleon_smart_web_master', 'Caleon Master', Device('SmartWeb-Caleon', 'RC50', 1, False, 'cubemx'), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		Project('Other',  'tece_floor', 'Caleon TECE', Device('tece_floor', 'RC50', None, False, 'cubemx'), 'rom', 'new'),
-		Project('Other',  'tece_floor_clima_smart', 'Caleon TECE Clima', Device('tece_floor', 'RC50', None, False, 'cubemx'), 'rom', 'new'),
-		
-		Project('Other', 'lfwc'                 , 'LFWC'              , Device('LFWC'       , 'S40', None, False, 'stm32'), 'rom'),
-		Project('Other', 'lfwc_mt_v01'          , 'LFWC'              , Device('LFWC-MT-V01', 'S40', None, False, 'stm32'), 'rom'),
-		Project('Other', 'lfwc_mt_v02'          , 'LFWC'              , Device('LFWC-MT-V02', 'S40', None, False, 'stm32'), 'rom'),
-		Project('Other', 'lfwc_mt_s47'          , 'LFWC'              , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project('Other', 'lfwc_mt_s47_unitTest' , 'LFWC Unit Test'    , Device('LFWC-MT-S47', 'S47', None, False, 'stm32'), 'rom'),
-		Project('Other', 'charlie'              , 'CHARLIE'           , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-		Project('Other', 'charlie_runTimeTest'  , 'CHARLIE Runtime Test', Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-		Project('Other', 'charlie_unitTest'     , 'CHARLIE Unit Test' , Device('CHARLIE'    , 'S48',    1, False, 'stm32'), 'rom', 'old', False, 'OID_Kemper'),
-
-		Project('Other', 'DataLoggerCharlie'            , 'DataLogger Charlie'             , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
-		Project('Other', 'DataLoggerCharlie_unitTest'   , 'DataLogger Charlie Unit Test'   , Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
-		Project('Other', 'DataLoggerCharlie_runTimeTest', 'DataLogger Charlie Runtime Test', Device('DataLoggerCharlie' , 'L30', None, False, 'stm32'), 'rom', 'old', False, 'OID_SOREL'),
-	]
 
 def getSDCardFirmwarePath(project):
 	name = project.name
@@ -139,7 +97,6 @@ def getSDCardProjectFiles(project):
 	webPagesPath           = os.path.join(srcPath, 'web/teplomonitor-server')
 	
 	if buildWebPages(webPagesPath):
-		
 		webPagesSrcFolder = 'dist'
 	else:
 		webPagesSrcFolder = 'server'
@@ -187,7 +144,9 @@ def parseArguments(string_input, projects_array):
 		if s == '-a': projects_to_build = projects_array
 		if s == '-P': production  = True
 		if s == '-b': build       = True
-		if s == '-B': buildWithSpecialArgs = True
+		if s == '-B': 
+					build       = True
+					buildWithSpecialArgs = True
 		if s == '-p': pack_n_push = True
 		if s == '-c': clear       = True
 		if s == '-C': clearCache  = True
@@ -248,13 +207,17 @@ def createConfig(path):
 
 def getSettingsFileParameterValue(projectName, parameter):
 	configParserInstance.read(settingsPath)
+
+	if not configParserInstance.has_section(projectName):
+		configParserInstance.add_section(p.name)
+	
 	return configParserInstance.get(projectName, parameter)
 
-def getSconsDir    (projectName): return getSettingsFileParameterValue(projectName, 'sconsDir')
-def getPythonDir   (projectName): return getSettingsFileParameterValue(projectName, 'pythonDir')
-def getOpenOcdDir  (projectName): return getSettingsFileParameterValue(projectName, 'openOcdDir')
-def getProjectDir  (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
-def getSconsJobsNum(projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
+def getSconsDir     (projectName): return getSettingsFileParameterValue(projectName, 'sconsDir')
+def getPythonDir    (projectName): return getSettingsFileParameterValue(projectName, 'pythonDir')
+def getOpenOcdDir   (projectName): return getSettingsFileParameterValue(projectName, 'openOcdDir')
+def getProjectDir   (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
+def getSconsJobsNum (projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
 def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectName, 'simulator_args')
 
 def getSconsExtraArgs(projectName):
@@ -262,11 +225,57 @@ def getSconsExtraArgs(projectName):
 	args_str = args_str.translate(str.maketrans('', '', ' \n\t\r'))
 	return args_str.split(',')
 
-
+def printProjectsToWorkWith(projects_to_work_with):
+	print('Those projects will be used:')
+	for projectItem in projects_to_work_with:
+		print(projectItem.workingName)
 
 def fixConsoleLang():
 	subprocess.run([os.path.join('C:\Windows\system32','chcp.com'), '437'])
 
+def buildProjectItem(projectItem, buildWithSpecialArgs):
+	extraArgs = []
+	if buildWithSpecialArgs :
+		extraArgs = getSconsExtraArgs(projectItem.name)
+		
+	start   = datetime.datetime.now()
+	result  = projectItem.build(extraArgs)
+	stop    = datetime.datetime.now()
+	elapsed = stop - start
+	
+	print('Build time: %s seconds' % elapsed.seconds)
+	
+	return result
+	
+def loadProjectToFlash(projectItem, flashLoader, flashDevice):
+	Ftdi         = configParserInstance.getboolean(projectItem.name, 'programming_Adapter_Ftdi')
+	VID_PID      = configParserInstance.get       (projectItem.name, 'programming_Adapter_VID_PID')
+	SerialNumber = configParserInstance.get       (projectItem.name, 'programming_Adapter_Serial_Number')
+	Description  = configParserInstance.get       (projectItem.name, 'programming_Adapter_Description')
+	Interface    = configParserInstance.get       (projectItem.name, 'programming_Adapter_Interface')
+	Transport    = configParserInstance.get       (projectItem.name, 'programming_Adapter_Transport')
+	
+	if flashLoader: projectItem.flashLoader(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
+	if flashDevice: projectItem.flashDevice(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
+
+def packAndPushProjectToArchive(projectItem):
+	archiveDir = configParserInstance.get(projectItem.name, 'archiveDir')
+	
+	if not os.path.exists(archiveDir):
+		try:
+			os.makedirs(archiveDir)
+		except OSError as e:
+			func.print_warning('Error %d: Can\'t create folder for archive dir at "%s"' %(e.errno, archiveDir))
+			print('\r\n\n')
+			return 1
+
+	if projectItem.device.sdCard:
+		projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
+		pack_project.do(projectItem)
+	push_project_to_server.do(projectItem, archiveDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
+	
+	return 0
+				
 if __name__ == "__main__":
 	
 	fixConsoleLang()
@@ -307,57 +316,38 @@ if __name__ == "__main__":
 		if show_projects_list:
 			printAvailableProjectsList(projects_array)
 		
-		print('Those projects will be used:')
-		for p in projects_to_work_with:
-			print(p.workingName)
-			p.setPath(getProjectDir(p.name))
+		printProjectsToWorkWith(projects_to_work_with)
 		
 		for projectItem in projects_to_work_with:
+			projectItem.setPath(getProjectDir(projectItem.name))
 			projectItem.production = production
-			if clearCache: projectItem.clearSConsOptionsCacheFile()
+			
+			if clearCache:
+				projectItem.clearSConsOptionsCacheFile()
+			
 			if simulator :
 				projectItem.platform = 'qtsim'
 				projectItem.target   = 'qtsim'
-			if buildWithSpecialArgs :
-				extraArgs = getSconsExtraArgs(p.name)
 
-				result = projectItem.build(extraArgs)
+			if build:
+				result = buildProjectItem(projectItem, buildWithSpecialArgs)
+				
 				if result != 0:
 					break
-			else:
-				if build     :
-					result =  projectItem.build()
-					if result != 0:
-						break
-			if runSimulator:
-				projectItem.runSimulator(getSimulatorArgs(p.name))
-			if flashLoader or flashDevice:
-				Ftdi         = configParserInstance.getboolean(p.name, 'programming_Adapter_Ftdi')
-				VID_PID      = configParserInstance.get       (p.name, 'programming_Adapter_VID_PID')
-				SerialNumber = configParserInstance.get       (p.name, 'programming_Adapter_Serial_Number')
-				Description  = configParserInstance.get       (p.name, 'programming_Adapter_Description')
-				Interface    = configParserInstance.get       (p.name, 'programming_Adapter_Interface')
-				Transport    = configParserInstance.get       (p.name, 'programming_Adapter_Transport')
 				
-				if flashLoader: projectItem.flashLoader(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
-				if flashDevice: projectItem.flashDevice(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
+			if runSimulator:
+				projectItem.runSimulator(getSimulatorArgs(projectItem.name))
+				
+			if flashLoader or flashDevice:
+				loadProjectToFlash(projectItem, flashLoader, flashDevice)
 
 			if pack_n_push:
-				archiveDir = configParserInstance.get(p.name, 'archiveDir')
+				result = packAndPushProjectToArchive(projectItem)
+				if result != 0:
+					break
 				
-				if not os.path.exists(archiveDir):
-					try:
-						os.makedirs(archiveDir)
-					except OSError as e:
-						func.print_warning('Error %d: Can\'t create folder for archive dir at "%s"' %(e.errno, archiveDir))
-						print('\r\n\n')
-						break
-
-				if projectItem.device.sdCard:
-					projectItem.addSDCardData(getSDCardProjectFiles(projectItem))
-					pack_project.do(projectItem)
-				push_project_to_server.do(projectItem, archiveDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
-			if clear: projectItem.clear()
+			if clear:
+				projectItem.clear()
 		
 		print(colored(str(datetime.datetime.now()) + " Done", 'white', 'on_green'))
 		print('\r\n\n')
