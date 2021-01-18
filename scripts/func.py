@@ -1,7 +1,7 @@
 import os
 import sys
 import shutil
-from termcolor import colored
+
 #################################################
 #################################################
 
