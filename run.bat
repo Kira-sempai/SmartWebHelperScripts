@@ -1,1 +1,1 @@
-F:\Tools\Python38_32\python.exe build_pack_push_and_clear_all_projects.py
+E:\Tools\Python38_32\python.exe build_pack_push_and_clear_all_projects.py
