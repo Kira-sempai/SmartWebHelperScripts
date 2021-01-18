@@ -6,10 +6,11 @@ Created on 28 sept. 2017.
 
 import os
 import re
+import subprocess
 
-import func
-from subprocess import Popen
 from termcolor import colored
+
+from subprocess import Popen
 
 
 class Version(object):
@@ -105,15 +106,9 @@ class Project(object):
         
         return target
     
-    def getDeviceBuildDir(self):
-        return os.path.join(self.path, 'build', self.getProjectDirName(), self.getTarget())
-    
-    def getBootloaderBuildDir(self):
-        return os.path.join(self.path, 'build', self.getProjectDirName(), self.getBootloaderTarget())
-    
-    def getDeviceBinDir(self):
-        return os.path.join(self.path, 'bin', self.getProjectDirName())
-    
+    def getDeviceBuildDir    (self): return os.path.join(self.path, 'build', self.getProjectDirName(), self.getTarget())
+    def getBootloaderBuildDir(self): return os.path.join(self.path, 'build', self.getProjectDirName(), self.getBootloaderTarget())
+    def getDeviceBinDir      (self): return os.path.join(self.path, 'bin'  , self.getProjectDirName())
     
     def getSrcPath(self):
         if self.sdk == 'old':
@@ -121,14 +116,9 @@ class Project(object):
         elif self.sdk == 'new':
             return 'shared/sdk'
     
-    def getProjectFirmwareDir(self):
-        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
-    
-    def getProjectBootloaderDir(self):
-        return os.path.join(self.getBootloaderBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
-    
-    def getVersionInfoFilePath(self):
-        return os.path.join(self.getDeviceBuildDir(), self.getSrcPath(), 'include/versionInfo.h')
+    def getProjectFirmwareDir  (self): return os.path.join(self.getDeviceBuildDir()    , self.getSrcPath(), 'platform', self.device.microcontroller)
+    def getProjectBootloaderDir(self): return os.path.join(self.getBootloaderBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
+    def getVersionInfoFilePath (self): return os.path.join(self.getDeviceBuildDir()    , self.getSrcPath(), 'include/versionInfo.h')
     
     def getVersion(self):
         return Version(self.getVersionInfoFilePath())
@@ -163,7 +153,10 @@ class Project(object):
             return self.langkey + '-'
         return ''
         
-    def generateFirmwareName(self, deviceName):
+    def generateFirmwareName(self, deviceName = None):
+        if deviceName is None:
+           deviceName = self.device.name
+        
         baseEnv = dict()
         baseEnv['CFG_OEM_ID']           = self.oem_id
         baseEnv['CFG_DEVICENAME']       = deviceName
@@ -190,40 +183,27 @@ class Project(object):
         
         return self.MakeFilename(baseEnv, prefix+'sim')
         
-    def generateSDCardFirmwareFileName(self):
-        firmwareFile = self.generateFirmwareName(self.device.name) + 'sdcard.bin'
-        
-        
-        return firmwareFile
-    
-    def generateFirmwareFileName(self, deviceName):
-        firmwareName = self.generateFirmwareName(deviceName)
-        firmwareFile = firmwareName+ 'app.s19'
-
-        return firmwareFile
-    
-    def generateMergedFirmwareFileName(self, deviceName):
-        firmwareName = self.generateFirmwareName(deviceName)
-        firmwareFile = firmwareName+ 'merged.s19'
-
-        return firmwareFile
+    def generateFirmwareFileName      (self): return self.generateFirmwareName() + 'app.s19'
+    def generateMergedFirmwareFileName(self): return self.generateFirmwareName() + 'merged.s19'
+    def generateSDCardFirmwareFileName(self): return self.generateFirmwareName() + 'sdcard.bin'
+    def generateBootoaderFileName     (self): return self.generateFirmwareName('loader') + 'app.s19'
+    def generateMapFileName           (self): return self.getFirmwareLangPostfix() + 'app.map'
+    def generateElfFileName           (self): return self.getFirmwareLangPostfix() + 'app.elf'
     
     def getProjectBinaries(self):
-        postfix = self.getFirmwareLangPostfix()
-        
         firmwareDir = self.getProjectFirmwareDir()
         bootldrDir  = self.getProjectBootloaderDir()
         
-        firmwareFileName        = self.generateFirmwareFileName(self.device.name)
-        mergedFirmwareFileName  = self.generateMergedFirmwareFileName(self.device.name)
-        bootldrFirmwareFileName = self.generateFirmwareFileName('loader')
-        appFileName             = postfix + 'app.map'
-        elfFileName             = postfix + 'app.elf'
+        firmwareFileName        = self.generateFirmwareFileName()
+        mergedFirmwareFileName  = self.generateMergedFirmwareFileName()
+        mapFileName             = self.generateMapFileName()
+        elfFileName             = self.generateElfFileName()
+        bootldrFirmwareFileName = self.generateBootoaderFileName()
         
         return [
             os.path.join(firmwareDir, firmwareFileName       ).replace("\\","/"),
             os.path.join(firmwareDir, mergedFirmwareFileName ).replace("\\","/"),
-            os.path.join(firmwareDir, appFileName            ).replace("\\","/"),
+            os.path.join(firmwareDir, mapFileName            ).replace("\\","/"),
             os.path.join(firmwareDir, elfFileName            ).replace("\\","/"),
             os.path.join(bootldrDir , bootldrFirmwareFileName).replace("\\","/"),
         ]
@@ -295,6 +275,26 @@ class Project(object):
         result = self.runSCons(argList, self.path)
         
         return result
+       
+    def getFirmwareSize(self):
+        firmwareDir = self.getProjectFirmwareDir()
+        elfFileName = self.generateElfFileName()
+        elfFile = os.path.join(firmwareDir, elfFileName).replace("\\","/")
+        
+        sizeApp = 'E:/Tools/gcc_arm_none_eabi_10_2020-q4-major/bin/arm-none-eabi-size.exe'
+        
+        p = Popen([sizeApp, elfFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+        
+        raw = stdout.split()
+        
+        text = int(raw[6])
+        data = int(raw[7])
+        bss  = int(raw[8])
+        
+        print('Flash\t: %d\n\rData\t: %d\n\rBSS\t: %d' % (text, data, bss))
+        
+        return
     
     def clear(self):
         print( colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
@@ -353,6 +353,7 @@ class Project(object):
                 '-c', 'transport select ' + programmingAdapterTransport,
                 '-f', 'target/' + target,
                 '-c', 'adapter_nsrst_delay 1000',
+                '-c', 'adapter_khz 4000',
                 '-f', settings,
                 '-c', 'flash_and_quit ' + firmware,
         ])
@@ -376,7 +377,7 @@ class Project(object):
             programmingAdapterTransport):
         print(colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
-        firmware = os.path.join(self.getProjectBootloaderDir(), self.generateFirmwareFileName('loader')).replace("\\","/")
+        firmware = os.path.join(self.getProjectBootloaderDir(), self.generateBootoaderFileName()).replace("\\","/")
         
         self.flashCommon(
             firmware,
@@ -397,7 +398,7 @@ class Project(object):
             programmingAdapterTransport):
         print(colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
-        firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName(self.device.name)).replace("\\","/")
+        firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName()).replace("\\","/")
         
         self.flashCommon(
             firmware,
