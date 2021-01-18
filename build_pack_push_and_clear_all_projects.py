@@ -7,11 +7,6 @@ import subprocess
 from subprocess import Popen
 import datetime
 
-PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(PROJECT_DIR)
-
-sys.path.insert(0, PROJECT_DIR + "/scripts")
-
 try:
 	import configparser
 except ImportError:
@@ -24,14 +19,15 @@ except ImportError:
 	print('colorama is missing: use "pip install colorama" to add it to Python')
 
 try:
+	import termcolor
 	from termcolor import colored
 except ImportError:
 	from scripts import termcolor
 	print('termcolor is missing: use "pip install termcolor" to add it to Python')
 
-
-from project import Project, Device
-from func import SrcDestData
+import scripts.func
+from scripts.func import SrcDestData
+from scripts.project import Project, Device
 import pack_project
 import push_project_to_server
 
@@ -134,28 +130,33 @@ def parseArguments(string_input, projects_array):
 	simulator   = False
 	runSimulator = False
 	buildWithSpecialArgs = False
+	printSize   = False
 	projects_to_build = []
 	
 	for s in args:
 		if s == '-e':
 			print('Exit')
 			sys.exit()
-		if s == '-l': show_projects_list = True
-		if s == '-a': projects_to_build = projects_array
-		if s == '-P': production  = True
-		if s == '-b': build       = True
+		if s == '-l': show_projects_list = True; continue
+		if s == '-a': projects_to_build = projects_array; continue
+		if s == '-P': production  = True; continue
+		if s == '-b': build       = True; continue
 		if s == '-B': 
 					build       = True
 					buildWithSpecialArgs = True
-		if s == '-p': pack_n_push = True
-		if s == '-c': clear       = True
-		if s == '-C': clearCache  = True
-		if s == '-f': flashLoader = True
-		if s == '-F': flashDevice = True
-		if s == '-s': simulator   = True
+					continue
+		if s == '-p': pack_n_push = True; continue
+		if s == '-x': printSize = True; continue
+		if s == '-c': clear       = True; continue
+		if s == '-C': clearCache  = True; continue
+		if s == '-f': flashLoader = True; continue
+		if s == '-F': flashDevice = True; continue
+		if s == '-s': simulator   = True; continue
 		if s == '-S':
 			simulator    = True
 			runSimulator = True
+			continue
+		
 		for p in projects_array:
 			if p.name == s or p.group == s:
 				projects_to_build.append(p)
@@ -173,6 +174,7 @@ def parseArguments(string_input, projects_array):
 		simulator,
 		runSimulator,
 		buildWithSpecialArgs,
+		printSize,
 		projects_to_build)
 
 def createConfig(path):
@@ -209,7 +211,9 @@ def getSettingsFileParameterValue(projectName, parameter):
 	configParserInstance.read(settingsPath)
 
 	if not configParserInstance.has_section(projectName):
-		configParserInstance.add_section(p.name)
+		configParserInstance.add_section(projectName)
+		with open(settingsPath, "w", encoding='utf-8') as config_file:
+			configParserInstance.write(config_file)
 	
 	return configParserInstance.get(projectName, parameter)
 
@@ -309,6 +313,7 @@ if __name__ == "__main__":
 		simulator   ,
 		runSimulator,
 		buildWithSpecialArgs,
+		printSize,
 		projects_to_work_with) = parseArguments(string_input, projects_array)
 		
 		configParserInstance.read(settingsPath)
@@ -334,7 +339,9 @@ if __name__ == "__main__":
 				
 				if result != 0:
 					break
-				
+			
+			if printSize:
+				projectItem.getFirmwareSize()
 			if runSimulator:
 				projectItem.runSimulator(getSimulatorArgs(projectItem.name))
 				
