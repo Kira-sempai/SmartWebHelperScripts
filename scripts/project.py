@@ -90,6 +90,10 @@ class Project(object):
     def getProjectDirName(self):
         #postfix = ''
         postfix = '_production' if self.production else ''
+        
+        #if self.sdk == 'new':
+        #    postfix = '_production' if self.production else '_debug'
+        
         return self.name + postfix
        
     def getTarget(self):
