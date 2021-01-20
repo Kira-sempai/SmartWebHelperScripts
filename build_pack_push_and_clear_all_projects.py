@@ -226,8 +226,8 @@ def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectN
 
 def getSconsExtraArgs(projectName):
 	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')
-	args_str = args_str.translate(str.maketrans('', '', ' \n\t\r'))
-	return args_str.split(',')
+#	args_str = args_str.translate(str.maketrans('', '', ' \n\t\r'))
+	return args_str.split(', ')
 
 def printProjectsToWorkWith(projects_to_work_with):
 	print('Those projects will be used:')
