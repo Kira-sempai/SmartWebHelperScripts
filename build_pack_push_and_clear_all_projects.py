@@ -131,6 +131,7 @@ def parseArguments(string_input, projects_array):
 	runSimulator = False
 	buildWithSpecialArgs = False
 	printSize   = False
+	showFwMap   = False
 	projects_to_build = []
 	
 	for s in args:
@@ -152,6 +153,7 @@ def parseArguments(string_input, projects_array):
 		if s == '-f': flashLoader = True; continue
 		if s == '-F': flashDevice = True; continue
 		if s == '-s': simulator   = True; continue
+		if s == '-m': showFwMap   = True; continue
 		if s == '-S':
 			simulator    = True
 			runSimulator = True
@@ -175,6 +177,7 @@ def parseArguments(string_input, projects_array):
 		runSimulator,
 		buildWithSpecialArgs,
 		printSize,
+		showFwMap,
 		projects_to_build)
 
 def createConfig(path):
@@ -314,6 +317,7 @@ if __name__ == "__main__":
 		runSimulator,
 		buildWithSpecialArgs,
 		printSize,
+		showFwMap,
 		projects_to_work_with) = parseArguments(string_input, projects_array)
 		
 		configParserInstance.read(settingsPath)
@@ -342,6 +346,10 @@ if __name__ == "__main__":
 			
 			if printSize:
 				projectItem.getFirmwareSize()
+				
+			if showFwMap:
+				projectItem.showFirmwareMap()
+				
 			if runSimulator:
 				projectItem.runSimulator(getSimulatorArgs(projectItem.name))
 				

@@ -286,9 +286,14 @@ class Project(object):
         elfFile = os.path.join(firmwareDir, elfFileName).replace("\\","/")
         
         sizeApp = 'E:/Tools/gcc_arm_none_eabi_10_2020-q4-major/bin/arm-none-eabi-size.exe'
-        
+       
         p = Popen([sizeApp, elfFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
         stdout, stderr = p.communicate()
+        
+        if stderr:
+            print('File not found: %s'%(elfFile))
+            return
         
         raw = stdout.split()
         
@@ -298,8 +303,18 @@ class Project(object):
         
         print('Flash\t: %d\n\rData\t: %d\n\rBSS\t: %d' % (text, data, bss))
         
-        return
-    
+
+    def showFirmwareMap(self):
+        firmwareDir = self.getProjectFirmwareDir()
+        mapFileName = self.generateMapFileName()
+        mapFile = os.path.join(firmwareDir, mapFileName).replace("\\","/")
+    	
+    	
+        firmwareName = self.generateSimulatorName() + '.exe'
+        amap = 'F:/Tools/Amap/amap.exe'
+                
+        os.system('start '  + amap + ' ' + '-g ' + mapFile)
+    	
     def clear(self):
         print( colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
