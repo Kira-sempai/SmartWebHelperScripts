@@ -6,6 +6,8 @@ import datetime
 import subprocess
 from subprocess import Popen
 import datetime
+from PyQt5 import QtWidgets, uic
+
 
 try:
 	import configparser
@@ -282,12 +284,21 @@ def packAndPushProjectToArchive(projectItem):
 	push_project_to_server.do(projectItem, archiveDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 	
 	return 0
-				
+			
+def initGui():
+	app = QtWidgets.QApplication([])
+	win = uic.loadUi("F:/development/PyQt_Test/mydesign.ui")
+ 
+	win.show()
+	sys.exit(app.exec())
+			
 if __name__ == "__main__":
 	
 	fixConsoleLang()
 	os.system('color')
 	colorama.init()
+	
+	initGui()
 	
 	if not os.path.exists(settingsPath):
 		createConfig(settingsPath)
