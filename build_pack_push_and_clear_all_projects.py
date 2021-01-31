@@ -6,8 +6,9 @@ import datetime
 import subprocess
 from subprocess import Popen
 import datetime
-from PyQt5 import QtWidgets, uic
 
+from PyQt5 import QtWidgets
+from ui.mydesign import Ui_MainWindow
 
 try:
 	import configparser
@@ -284,11 +285,17 @@ def packAndPushProjectToArchive(projectItem):
 	push_project_to_server.do(projectItem, archiveDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 	
 	return 0
-			
+
+class mywindow(QtWidgets.QMainWindow):
+	def __init__(self):
+		super(mywindow, self).__init__()
+		self.ui = Ui_MainWindow()
+		self.ui.setupUi(self)
+
 def initGui():
 	app = QtWidgets.QApplication([])
-	win = uic.loadUi("F:/development/PyQt_Test/mydesign.ui")
- 
+	win = mywindow()
+
 	win.show()
 	sys.exit(app.exec())
 			
