@@ -12,7 +12,6 @@ from termcolor import colored
 
 from subprocess import Popen
 
-
 class Version(object):
     '''
     classdocs
@@ -339,94 +338,74 @@ class Project(object):
     def appendFirmwareData(self, firmwareData):
         self.firmwareData.append(firmwareData)
     
-    def flashCommon(self,
-            firmware,
-            programmingAdapterFtdi,
-            programmingAdapterVID_PID,
-            programmingAdapterSerialNumber,
-            programmingAdapterDescription,
-            programmingAdapterInterface,
-            programmingAdapterTransport):
-        
+    def getOpenOcdArgsCommon(self, programmingAdapter):
         from build_pack_push_and_clear_all_projects import getOpenOcdDir
         openOcdDir = getOpenOcdDir(self.name)
         settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg').replace("\\","/")
-        interface = programmingAdapterInterface
         target	= self.device.configFile
-        transport = programmingAdapterTransport
         
-        interfacePrefix = 'ftdi/' if programmingAdapterFtdi else ''
+        interfacePrefix  = 'ftdi/' if programmingAdapter['Ftdi'] else ''
+        propertiesPrefix = 'ftdi_' if programmingAdapter['Ftdi'] else 'hla_'
         
         argList = [
             '-s', openOcdDir + 'scripts',
-            '-f', 'interface/' + interfacePrefix + programmingAdapterInterface,
-            ]
+            '-f', 'interface/' + interfacePrefix + programmingAdapter['Interface'],
+        ]
         
-        propertiesPrefix = 'ftdi_' if programmingAdapterFtdi else 'hla_'
         
-        if programmingAdapterSerialNumber:   argList.extend(['-c', propertiesPrefix + 'serial '      + programmingAdapterSerialNumber])
-        if programmingAdapterVID_PID	 :   argList.extend(['-c', propertiesPrefix + 'vid_pid '     + programmingAdapterVID_PID])
-        if programmingAdapterDescription :   argList.extend(['-c', propertiesPrefix + 'device_desc ' + programmingAdapterDescription])
+        if programmingAdapter['SerialNumber']: argList.extend(['-c', propertiesPrefix + 'serial '	  + programmingAdapter['SerialNumber']])
+        if programmingAdapter['VID_PID']	 : argList.extend(['-c', propertiesPrefix + 'vid_pid '	 + programmingAdapter['VID_PID']])
+        if programmingAdapter['Description'] : argList.extend(['-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description']])
         
         argList.extend([
-                '-c', 'transport select ' + programmingAdapterTransport,
+                '-c', 'transport select ' + programmingAdapter['Transport'],
                 '-f', 'target/' + target,
                 '-c', 'adapter_nsrst_delay 1000',
                 '-c', 'adapter_khz 4000',
                 '-f', settings,
-                '-c', 'flash_and_quit ' + firmware,
         ])
         
+        return argList
+    
+    def callOpenOcd(self, argList):
         print("\n".join(argList))
-        
-        
-        p = Popen([openOcdDir + "bin/openocd"] + argList,
-        cwd = self.path)
+        from build_pack_push_and_clear_all_projects import getOpenOcdDir
+        openOcdDir = getOpenOcdDir(self.name)
+        p = Popen([openOcdDir + "bin/openocd"] + argList, cwd = self.path)
         
         stdout, stderr = p.communicate()
         print(stdout, stderr)
+    
+    
+    def flashCommon(self, firmware, programmingAdapter):
+        argList = self.getOpenOcdArgsCommon(programmingAdapter)
+        argList.extend(['-c', 'flash_and_quit ' + firmware])
+        
+        self.callOpenOcd(argList)
         
         
-    def flashLoader(self,
-            programmingAdapterFtdi,
-            programmingAdapterVID_PID,
-            programmingAdapterSerialNumber,
-            programmingAdapterDescription,
-            programmingAdapterInterface,
-            programmingAdapterTransport):
+    def flashLoader(self, programmingAdapter):
         print(colored("Flashing loader: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
         firmware = os.path.join(self.getProjectBootloaderDir(), self.generateBootoaderFileName()).replace("\\","/")
         
-        self.flashCommon(
-            firmware,
-            programmingAdapterFtdi,
-            programmingAdapterVID_PID,
-            programmingAdapterSerialNumber,
-            programmingAdapterDescription,
-            programmingAdapterInterface,
-            programmingAdapterTransport)
+        self.flashCommon(firmware, programmingAdapter)
             
     
-    def flashDevice(self,
-            programmingAdapterFtdi,
-            programmingAdapterVID_PID,
-            programmingAdapterSerialNumber,
-            programmingAdapterDescription,
-            programmingAdapterInterface,
-            programmingAdapterTransport):
+    def flashDevice(self, programmingAdapter):
         print(colored("Flashing device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
         firmware = os.path.join(self.getProjectFirmwareDir(), self.generateFirmwareFileName()).replace("\\","/")
         
-        self.flashCommon(
-            firmware,
-            programmingAdapterFtdi,
-            programmingAdapterVID_PID,
-            programmingAdapterSerialNumber,
-            programmingAdapterDescription,
-            programmingAdapterInterface,
-            programmingAdapterTransport)
+        self.flashCommon(firmware, programmingAdapter)
+        
+    def rebootDevice(self, programmingAdapter):
+        print(colored("Reboot device: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
+        
+        argList = self.getOpenOcdArgsCommon(programmingAdapter)
+        argList.extend(['-c', 'reboot'])
+        
+        self.callOpenOcd(argList)
         
         
     def getVersionLog(self):
