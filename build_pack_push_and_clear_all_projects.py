@@ -7,8 +7,9 @@ import subprocess
 from subprocess import Popen
 import datetime
 
-from PyQt5 import QtWidgets
-from ui.mydesign import Ui_MainWindow
+from PyQt5 import QtWidgets, QtGui,QtCore
+#from ui.mydesign import Ui_MainWindow
+from ui.qlabel import Ui_MainWindow
 
 try:
 	import configparser
@@ -291,6 +292,41 @@ class mywindow(QtWidgets.QMainWindow):
 		super(mywindow, self).__init__()
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
+		
+		self.ui.label.setFont(
+			QtGui.QFont('SansSerif', 30)
+		) # Изменение шрифта и размера
+		
+		self.ui.label.setGeometry(
+			QtCore.QRect(10, 10, 200, 200)
+		) # изменить геометрию ярлыка
+		
+		self.ui.label.setText("PyScripts") # Меняем текст
+		
+		# Меняем текст
+		self.ui.lineEdit.setText("Добро пожаловать на PythonScripts")
+ 
+		# указать максимальную длину
+		self.ui.lineEdit_2.setMaxLength(10)
+ 
+		# ввод пароля
+		self.ui.lineEdit_3.setEchoMode(QtWidgets.QLineEdit.Password)
+		# только чтение без изменения содержимого.
+		self.ui.lineEdit_4.setReadOnly(True)
+ 
+		# меняем цвет вводимого текста
+		self.ui.lineEdit_5.setStyleSheet("color: rgb(28, 43, 255);")
+ 
+		# изменение цвета фона QLineEdit
+		self.ui.lineEdit_6.setStyleSheet("background-color: rgb(28, 43, 255);")
+		
+		# подключение клик-сигнал к слоту btnClicked
+		self.ui.pushButton.clicked.connect(self.btnClicked)
+ 
+	def btnClicked(self):
+		self.ui.label.setText("Вы нажали на кнопку!")
+		# Если не использовать, то часть текста исчезнет.
+		self.ui.label.adjustSize()
 
 def initGui():
 	app = QtWidgets.QApplication([])
