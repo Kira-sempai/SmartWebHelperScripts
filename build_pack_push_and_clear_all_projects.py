@@ -119,44 +119,34 @@ def getSDCardProjectFiles(project):
 def parseArguments(string_input, projects_array):
 	args = string_input.split() #splits the input string on spaces
 	
-	show_projects_list = False
-	production  = False
-	build       = False
-	pack_n_push = False
-	clear       = False
-	clearCache  = False
-	flashLoader = False
-	flashDevice = False
-	simulator   = False
-	runSimulator = False
-	buildWithSpecialArgs = False
-	printSize   = False
-	showFwMap   = False
 	projects_to_build = []
+	
+	parsedArgs = {}
 	
 	for s in args:
 		if s == '-e':
 			print('Exit')
 			sys.exit()
-		if s == '-l': show_projects_list = True; continue
-		if s == '-a': projects_to_build = projects_array; continue
-		if s == '-P': production  = True; continue
-		if s == '-b': build       = True; continue
+		if s == '-l': parsedArgs['show_projects_list'] = True; continue
+		if s == '-a': parsedArgs['projects_to_build'] = projects_array; continue
+		if s == '-P': parsedArgs['production']  = True; continue
+		if s == '-b': parsedArgs['build']       = True; continue
 		if s == '-B': 
-					build       = True
-					buildWithSpecialArgs = True
+					parsedArgs['build']       = True
+					parsedArgs['buildWithSpecialArgs'] = True
 					continue
-		if s == '-p': pack_n_push = True; continue
-		if s == '-x': printSize = True; continue
-		if s == '-c': clear       = True; continue
-		if s == '-C': clearCache  = True; continue
-		if s == '-f': flashLoader = True; continue
-		if s == '-F': flashDevice = True; continue
-		if s == '-s': simulator   = True; continue
-		if s == '-m': showFwMap   = True; continue
+		if s == '-p': parsedArgs['pack_n_push'] = True; continue
+		if s == '-x': parsedArgs['printSize']   = True; continue
+		if s == '-c': parsedArgs['clear']       = True; continue
+		if s == '-C': parsedArgs['clearCache']  = True; continue
+		if s == '-f': parsedArgs['flashLoader'] = True; continue
+		if s == '-F': parsedArgs['flashDevice'] = True; continue
+		if s == '-s': parsedArgs['simulator']   = True; continue
+		if s == '-m': parsedArgs['showFwMap']   = True; continue
+		if s == '-r': parsedArgs['reboot']      = True; continue
 		if s == '-S':
-			simulator    = True
-			runSimulator = True
+			parsedArgs['simulator']    = True
+			parsedArgs['runSimulator'] = True
 			continue
 		
 		for p in projects_array:
@@ -164,21 +154,7 @@ def parseArguments(string_input, projects_array):
 				projects_to_build.append(p)
 				continue
 		
-	return (
-		show_projects_list,
-		production,
-		build,
-		pack_n_push,
-		clear,
-		clearCache,
-		flashLoader,
-		flashDevice,
-		simulator,
-		runSimulator,
-		buildWithSpecialArgs,
-		printSize,
-		showFwMap,
-		projects_to_build)
+	return (parsedArgs, projects_to_build)
 
 def createConfig(path):
 	"""
@@ -254,16 +230,28 @@ def buildProjectItem(projectItem, buildWithSpecialArgs):
 	
 	return result
 	
-def loadProjectToFlash(projectItem, flashLoader, flashDevice):
-	Ftdi         = configParserInstance.getboolean(projectItem.name, 'programming_Adapter_Ftdi')
-	VID_PID      = configParserInstance.get       (projectItem.name, 'programming_Adapter_VID_PID')
-	SerialNumber = configParserInstance.get       (projectItem.name, 'programming_Adapter_Serial_Number')
-	Description  = configParserInstance.get       (projectItem.name, 'programming_Adapter_Description')
-	Interface    = configParserInstance.get       (projectItem.name, 'programming_Adapter_Interface')
-	Transport    = configParserInstance.get       (projectItem.name, 'programming_Adapter_Transport')
+def getProjectAdapter(projectItem):
+	return {
+		'Ftdi'         : configParserInstance.getboolean(projectItem.name, 'programming_Adapter_Ftdi'),
+		'VID_PID'      : configParserInstance.get       (projectItem.name, 'programming_Adapter_VID_PID'),
+		'SerialNumber' : configParserInstance.get       (projectItem.name, 'programming_Adapter_Serial_Number'),
+		'Description'  : configParserInstance.get       (projectItem.name, 'programming_Adapter_Description'),
+		'Interface'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Interface'),
+		'Transport'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Transport'),
+	}
 	
-	if flashLoader: projectItem.flashLoader(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
-	if flashDevice: projectItem.flashDevice(Ftdi, VID_PID, SerialNumber, Description, Interface, Transport)
+def loadFirmwareToLoaderFlash(projectItem):
+	adapter = getProjectAdapter(projectItem)
+	projectItem.flashLoader(adapter)
+	
+def loadFirmwareToAppFlash(projectItem):
+	adapter = getProjectAdapter(projectItem)
+	projectItem.flashDevice(adapter)
+
+def rebootDevice(projectItem):
+	adapter = getProjectAdapter(projectItem)
+	projectItem.rebootDevice(adapter)
+	
 
 def packAndPushProjectToArchive(projectItem):
 	archiveDir = configParserInstance.get(projectItem.name, 'archiveDir')
@@ -304,65 +292,44 @@ if __name__ == "__main__":
 				attrs=['bold']))
 		#TODO: add "real" console
 		
-		(
-		show_projects_list,
-		production  ,
-		build       ,
-		pack_n_push ,
-		clear       ,
-		clearCache  ,
-		flashLoader ,
-		flashDevice ,
-		simulator   ,
-		runSimulator,
-		buildWithSpecialArgs,
-		printSize,
-		showFwMap,
-		projects_to_work_with) = parseArguments(string_input, projects_array)
+		(parsedArgs, projects_to_work_with) = parseArguments(string_input, projects_array)
 		
 		configParserInstance.read(settingsPath)
 		
-		if show_projects_list:
+		if 'show_projects_list' in parsedArgs:
 			printAvailableProjectsList(projects_array)
 		
 		printProjectsToWorkWith(projects_to_work_with)
 		
 		for projectItem in projects_to_work_with:
 			projectItem.setPath(getProjectDir(projectItem.name))
-			projectItem.production = production
+			projectItem.production = 'production' in parsedArgs
 			
-			if clearCache:
+			if 'clearCache' in parsedArgs:
 				projectItem.clearSConsOptionsCacheFile()
 			
-			if simulator :
+			if 'simulator' in parsedArgs:
 				projectItem.platform = 'qtsim'
 				projectItem.target   = 'qtsim'
 
-			if build:
-				result = buildProjectItem(projectItem, buildWithSpecialArgs)
+			if 'build' in parsedArgs:
+				result = buildProjectItem(projectItem, 'buildWithSpecialArgs' in parsedArgs)
 				
 				if result != 0:
 					break
 			
-			if printSize:
-				projectItem.getFirmwareSize()
-				
-			if showFwMap:
-				projectItem.showFirmwareMap()
-				
-			if runSimulator:
-				projectItem.runSimulator(getSimulatorArgs(projectItem.name))
-				
-			if flashLoader or flashDevice:
-				loadProjectToFlash(projectItem, flashLoader, flashDevice)
-
-			if pack_n_push:
+			if 'printSize'    in parsedArgs: projectItem.getFirmwareSize()
+			if 'showFwMap'    in parsedArgs: projectItem.showFirmwareMap()
+			if 'runSimulator' in parsedArgs: projectItem.runSimulator(getSimulatorArgs(projectItem.name))
+			if 'flashLoader'  in parsedArgs: loadFirmwareToLoaderFlash(projectItem)
+			if 'flashDevice'  in parsedArgs: loadFirmwareToAppFlash(projectItem)
+			if 'reboot'       in parsedArgs: rebootDevice(projectItem)
+			if 'clear'        in parsedArgs: projectItem.clear()
+			if 'pack_n_push'  in parsedArgs:
 				result = packAndPushProjectToArchive(projectItem)
 				if result != 0:
 					break
 				
-			if clear:
-				projectItem.clear()
 		
 		print(colored(str(datetime.datetime.now()) + " Done", 'white', 'on_green'))
 		print('\r\n\n')
