@@ -7,7 +7,8 @@ import subprocess
 from subprocess import Popen
 import datetime
 
-from PyQt5 import QtWidgets, QtGui,QtCore
+from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtCore import pyqtSignal, QObject, Qt
 #from ui.mydesign import Ui_MainWindow
 from ui.qlabel import Ui_MainWindow
 
@@ -275,6 +276,18 @@ def packAndPushProjectToArchive(projectItem):
 	
 	return 0
 
+class nut(QObject):
+	cracked = pyqtSignal()
+	
+	def __init__(self):
+		QObject.__init__(self)
+	
+	def crack(self):
+		self.cracked.emit()
+
+def crackit():
+	print("hazelnut cracked!")
+	
 class mywindow(QtWidgets.QMainWindow):
 	def __init__(self):
 		super(mywindow, self).__init__()
@@ -310,11 +323,20 @@ class mywindow(QtWidgets.QMainWindow):
 		
 		# подключение клик-сигнал к слоту btnClicked
 		self.ui.pushButton.clicked.connect(self.btnClicked)
+		
+		hazelnut = nut()
+		# подключение сигнала cracked к слоту crackit
+		hazelnut.cracked.connect(crackit)
+		hazelnut.crack()
  
 	def btnClicked(self):
 		self.ui.label.setText("Вы нажали на кнопку!")
 		# Если не использовать, то часть текста исчезнет.
 		self.ui.label.adjustSize()
+	
+	def keyPressEvent(self, e):
+		if e.key() == Qt.Key_F12:
+			self.close()
 
 def initGui():
 	app = QtWidgets.QApplication([])
