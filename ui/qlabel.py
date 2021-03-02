@@ -39,7 +39,7 @@ class Ui_MainWindow(object):
         self.lineEdit_6.setGeometry(QtCore.QRect(160, 390, 351, 20))
         self.lineEdit_6.setObjectName("lineEdit_6")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(160, 450, 75, 23))
+        self.pushButton.setGeometry(QtCore.QRect(320, 440, 75, 23))
         self.pushButton.setAutoFillBackground(False)
         self.pushButton.setObjectName("pushButton")
         MainWindow.setCentralWidget(self.centralwidget)
@@ -52,6 +52,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
+        self.pushButton.clicked.connect(self.label.clear)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
