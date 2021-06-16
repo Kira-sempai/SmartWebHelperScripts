@@ -7,10 +7,11 @@ Created on 28 sept. 2017.
 import os
 import re
 import subprocess
+from subprocess import Popen
 
 from termcolor import colored
 
-from subprocess import Popen
+import func
 
 class Version(object):
     '''
@@ -348,22 +349,17 @@ class Project(object):
         propertiesPrefix = 'ftdi_' if programmingAdapter['Ftdi'] else 'hla_'
         
         argList = [
-            '-s', openOcdDir + 'scripts',
-            '-f', 'interface/' + interfacePrefix + programmingAdapter['Interface'],
-        ]
-        
-        
-        if programmingAdapter['SerialNumber']: argList.extend(['-c', propertiesPrefix + 'serial '	  + programmingAdapter['SerialNumber']])
-        if programmingAdapter['VID_PID']	 : argList.extend(['-c', propertiesPrefix + 'vid_pid '	 + programmingAdapter['VID_PID']])
-        if programmingAdapter['Description'] : argList.extend(['-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description']])
-        
-        argList.extend([
+                '-s', openOcdDir + 'scripts',
+                '-f', 'interface/' + interfacePrefix    + programmingAdapter['Interface'],
+                '-c', propertiesPrefix + 'serial '      + programmingAdapter['SerialNumber'],
+                '-c', propertiesPrefix + 'vid_pid '     + programmingAdapter['VID_PID'],
+                '-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description'],
+                '-c', 'adapter_khz '      + programmingAdapter['Speed'],
                 '-c', 'transport select ' + programmingAdapter['Transport'],
-                '-f', 'target/' + target,
                 '-c', 'adapter_nsrst_delay 1000',
-                '-c', 'adapter_khz 4000',
+                '-f', 'target/' + target,
                 '-f', settings,
-        ])
+        ]
         
         return argList
     
