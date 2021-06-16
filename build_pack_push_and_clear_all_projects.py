@@ -7,6 +7,8 @@ import subprocess
 from subprocess import Popen
 import datetime
 
+sys.path.insert(0, "./scripts")
+
 try:
 	import configparser
 except ImportError:
@@ -83,6 +85,12 @@ def buildWebPages(webPagesPath):
 	
 	return True
 
+def projectWithCodeOnSdCard(project):
+	name = project.name
+	return ((name == 'DataLogger'   ) or
+			(name == 'DataLoggerKSE') or
+			(name == 'DataLoggerSW' ))
+		
 def getSDCardProjectFiles(project):
 	if not projectItem.device.sdCard:
 		return
@@ -98,20 +106,26 @@ def getSDCardProjectFiles(project):
 		webPagesSrcFolder = 'server'
 	
 	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
-	
+	platformPath = os.path.join(buildPath, 'shared/platform/stm32/')
 	files = [
 		SrcDestData(os.path.join(webPagesPath, webPagesSrcFolder), 'WEB/'),
 		SrcDestData(os.path.join(webPagesPath, 'sitemenu.txt'), 'sitemenu.txt'),
-		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), firmwarePathOnSdCard)
+		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), firmwarePathOnSdCard)
 	]
 	
 	name = project.name
 	
-	if ((name == 'DataLogger')    or
-		(name == 'DataLoggerKSE') or
-		(name == 'DataLoggerSW')):
-		files.append(SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/langs.sd'), 'langs.sd'))
-	elif name == 'disco':
+	if projectWithCodeOnSdCard(project):
+		extraFiles = [
+			os.path.join(platformPath, 'langs.sd'),
+			os.path.join(platformPath, 'dlparams.sd'),
+		]
+		for extraFile in extraFiles:
+			if os.path.exists(extraFile):
+				head, tail = os.path.split(extraFile)
+				files.append(SrcDestData(extraFile, tail))
+				
+	if name == 'disco':
 		files.append(SrcDestData(os.path.join(srcPath, 'sdcard/Disco/GUI'), 'GUI/'))
 	
 	return files
@@ -176,6 +190,7 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Description'  , '"Olimex OpenOCD JTAG ARM-USB-TINY-H"')
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Interface'    , 'olimex-arm-usb-tiny-h.cfg')
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Transport'    , 'jtag') # 'jtag', 'swd' and so on
+	configParserInstance.set('DEFAULT', 'programming_Adapter_speed'        , '4000') # 4000kHz
 	
 	projects_array = getAvailableProjectsList()
 	for p in projects_array:
@@ -238,6 +253,7 @@ def getProjectAdapter(projectItem):
 		'Description'  : configParserInstance.get       (projectItem.name, 'programming_Adapter_Description'),
 		'Interface'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Interface'),
 		'Transport'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Transport'),
+		'Speed'        : configParserInstance.get       (projectItem.name, 'programming_Adapter_speed'),
 	}
 	
 def loadFirmwareToLoaderFlash(projectItem):
