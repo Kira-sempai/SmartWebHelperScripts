@@ -1,5 +1,4 @@
 import os, shutil, sys, copy
-sys.path.insert(0, "./scripts")
 import func
 from func import SrcDestData
 from subprocess import Popen
