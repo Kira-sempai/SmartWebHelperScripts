@@ -17,7 +17,9 @@ def getAvailableProjectsList():
 		Project('SW2', 'xhcc'        , 'SmartWeb X'    , Device('XHCC'    , 'S61'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
 		Project('SW2', 'xhcc_s62'    , 'SmartWeb X2'   , Device('XHCC-S62', 'S62'             ,    2, True, 'stm32', 'stm32f2x.cfg')),
 		Project('Other', 'xhcc_s62_unitTest', 'SmartWeb X2 Unit Test', Device('XHCC-S62', 'S62',   2, True, 'stm32', 'stm32f2x.cfg')),
-		Project('SW2', 'swk'         , 'SmartWeb K'    , Device('SWK'     , 'SW-N2'           ,    1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		
+		Project('SW2', 'swk'     , 'SmartWeb K'     , Device('SWK', 'SW-N2', 1, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2', 'swk_base', 'SmartWeb K Base', Device('SWK', 'SW-N2', 1, False, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
 		Project('Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, False, 'stm32n'), 'rom', 'new'),
