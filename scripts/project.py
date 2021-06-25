@@ -115,10 +115,11 @@ class Project(object):
     def getDeviceBinDir      (self): return os.path.join(self.path, 'bin'  , self.getProjectDirName())
     
     def getSrcPath(self):
-        if self.sdk == 'old':
-            return 'shared'
-        elif self.sdk == 'new':
-            return 'shared/sdk'
+    	return 'shared'
+#        if self.sdk == 'old':
+#            return 'shared'
+#        elif self.sdk == 'new':
+#            return 'shared/sdk'
     
     def getProjectFirmwareDir  (self): return os.path.join(self.getDeviceBuildDir()    , self.getSrcPath(), 'platform', self.device.microcontroller)
     def getProjectBootloaderDir(self): return os.path.join(self.getBootloaderBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
@@ -300,6 +301,8 @@ class Project(object):
         text = int(raw[6])
         data = int(raw[7])
         bss  = int(raw[8])
+        
+        #print(stdout.decode('utf-8'))
         
         print('Flash\t: %d\n\rData\t: %d\n\rBSS\t: %d' % (text, data, bss))
         
