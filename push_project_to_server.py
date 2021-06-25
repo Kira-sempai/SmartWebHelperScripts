@@ -1,6 +1,5 @@
 import sys
 import os
-sys.path.insert(0, "./scripts")
 import func
 from func import SrcDestData
 from termcolor import colored
