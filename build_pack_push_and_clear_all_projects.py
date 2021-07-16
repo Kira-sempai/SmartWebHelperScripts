@@ -163,6 +163,8 @@ def parseArguments(string_input, projects_array):
 			parsedArgs['runSimulator'] = True
 			continue
 		
+		if s == '--rel': parsedArgs['readElfLine'] = True; continue
+		
 		for p in projects_array:
 			if p.name == s or p.group == s:
 				projects_to_build.append(p)
@@ -286,7 +288,7 @@ def packAndPushProjectToArchive(projectItem):
 	push_project_to_server.do(projectItem, archiveDir + projectItem.workingName + getProjectDestPathPostfix(projectItem))
 	
 	return 0
-				
+
 if __name__ == "__main__":
 	
 	fixConsoleLang()
@@ -327,7 +329,7 @@ if __name__ == "__main__":
 			if 'simulator' in parsedArgs:
 				projectItem.platform = 'qtsim'
 				projectItem.target   = 'qtsim'
-
+				
 			if 'build' in parsedArgs:
 				result = buildProjectItem(projectItem, 'buildWithSpecialArgs' in parsedArgs)
 				
@@ -345,7 +347,13 @@ if __name__ == "__main__":
 				result = packAndPushProjectToArchive(projectItem)
 				if result != 0:
 					break
-				
+			
+			if 'readElfLine' in parsedArgs:
+				addrFile = 'addrToLine.txt'
+				if not os.path.exists(addrFile):
+					open(addrFile, 'w').close()
+				print(projectItem.elfAddrToLine(addrFile))
+			
 		
 		print(colored(str(datetime.datetime.now()) + " Done", 'white', 'on_green'))
 		print('\r\n\n')
