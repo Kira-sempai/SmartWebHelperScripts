@@ -7,6 +7,8 @@ import subprocess
 from subprocess import Popen
 import datetime
 
+sys.path.insert(0, "./scripts")
+
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import pyqtSignal, QObject, Qt
 #from ui.mydesign import Ui_MainWindow
@@ -88,6 +90,12 @@ def buildWebPages(webPagesPath):
 	
 	return True
 
+def projectWithCodeOnSdCard(project):
+	name = project.name
+	return ((name == 'DataLogger'   ) or
+			(name == 'DataLoggerKSE') or
+			(name == 'DataLoggerSW' ))
+		
 def getSDCardProjectFiles(project):
 	if not projectItem.device.sdCard:
 		return
@@ -103,20 +111,26 @@ def getSDCardProjectFiles(project):
 		webPagesSrcFolder = 'server'
 	
 	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
-	
+	platformPath = os.path.join(buildPath, 'shared/platform/stm32/')
 	files = [
 		SrcDestData(os.path.join(webPagesPath, webPagesSrcFolder), 'WEB/'),
 		SrcDestData(os.path.join(webPagesPath, 'sitemenu.txt'), 'sitemenu.txt'),
-		SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/', SDCardFirmwareFileName), firmwarePathOnSdCard)
+		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), firmwarePathOnSdCard)
 	]
 	
 	name = project.name
 	
-	if ((name == 'DataLogger')    or
-		(name == 'DataLoggerKSE') or
-		(name == 'DataLoggerSW')):
-		files.append(SrcDestData(os.path.join(buildPath, 'shared/platform/stm32/langs.sd'), 'langs.sd'))
-	elif name == 'disco':
+	if projectWithCodeOnSdCard(project):
+		extraFiles = [
+			os.path.join(platformPath, 'langs.sd'),
+			os.path.join(platformPath, 'dlparams.sd'),
+		]
+		for extraFile in extraFiles:
+			if os.path.exists(extraFile):
+				head, tail = os.path.split(extraFile)
+				files.append(SrcDestData(extraFile, tail))
+				
+	if name == 'disco':
 		files.append(SrcDestData(os.path.join(srcPath, 'sdcard/Disco/GUI'), 'GUI/'))
 	
 	return files
@@ -154,6 +168,8 @@ def parseArguments(string_input, projects_array):
 			parsedArgs['runSimulator'] = True
 			continue
 		
+		if s == '--rel': parsedArgs['readElfLine'] = True; continue
+		
 		for p in projects_array:
 			if p.name == s or p.group == s:
 				projects_to_build.append(p)
@@ -181,6 +197,7 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Description'  , '"Olimex OpenOCD JTAG ARM-USB-TINY-H"')
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Interface'    , 'olimex-arm-usb-tiny-h.cfg')
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Transport'    , 'jtag') # 'jtag', 'swd' and so on
+	configParserInstance.set('DEFAULT', 'programming_Adapter_speed'        , '4000') # 4000kHz
 	
 	projects_array = getAvailableProjectsList()
 	for p in projects_array:
@@ -243,6 +260,7 @@ def getProjectAdapter(projectItem):
 		'Description'  : configParserInstance.get       (projectItem.name, 'programming_Adapter_Description'),
 		'Interface'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Interface'),
 		'Transport'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Transport'),
+		'Speed'        : configParserInstance.get       (projectItem.name, 'programming_Adapter_speed'),
 	}
 	
 def loadFirmwareToLoaderFlash(projectItem):
@@ -344,7 +362,8 @@ def initGui():
 
 	win.show()
 	sys.exit(app.exec())
-			
+	
+
 if __name__ == "__main__":
 	
 	fixConsoleLang()
@@ -387,7 +406,7 @@ if __name__ == "__main__":
 			if 'simulator' in parsedArgs:
 				projectItem.platform = 'qtsim'
 				projectItem.target   = 'qtsim'
-
+				
 			if 'build' in parsedArgs:
 				result = buildProjectItem(projectItem, 'buildWithSpecialArgs' in parsedArgs)
 				
@@ -405,7 +424,13 @@ if __name__ == "__main__":
 				result = packAndPushProjectToArchive(projectItem)
 				if result != 0:
 					break
-				
+			
+			if 'readElfLine' in parsedArgs:
+				addrFile = 'addrToLine.txt'
+				if not os.path.exists(addrFile):
+					open(addrFile, 'w').close()
+				print(projectItem.elfAddrToLine(addrFile))
+			
 		
 		print(colored(str(datetime.datetime.now()) + " Done", 'white', 'on_green'))
 		print('\r\n\n')

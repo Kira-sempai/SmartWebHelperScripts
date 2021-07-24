@@ -7,10 +7,11 @@ Created on 28 sept. 2017.
 import os
 import re
 import subprocess
+from subprocess import Popen
 
 from termcolor import colored
 
-from subprocess import Popen
+import func
 
 class Version(object):
     '''
@@ -114,10 +115,11 @@ class Project(object):
     def getDeviceBinDir      (self): return os.path.join(self.path, 'bin'  , self.getProjectDirName())
     
     def getSrcPath(self):
-        if self.sdk == 'old':
-            return 'shared'
-        elif self.sdk == 'new':
-            return 'shared/sdk'
+    	return 'shared'
+#        if self.sdk == 'old':
+#            return 'shared'
+#        elif self.sdk == 'new':
+#            return 'shared/sdk'
     
     def getProjectFirmwareDir  (self): return os.path.join(self.getDeviceBuildDir()    , self.getSrcPath(), 'platform', self.device.microcontroller)
     def getProjectBootloaderDir(self): return os.path.join(self.getBootloaderBuildDir(), self.getSrcPath(), 'platform', self.device.microcontroller)
@@ -300,20 +302,34 @@ class Project(object):
         data = int(raw[7])
         bss  = int(raw[8])
         
+        #print(stdout.decode('utf-8'))
+        
         print('Flash\t: %d\n\rData\t: %d\n\rBSS\t: %d' % (text, data, bss))
         
-
+    def elfAddrToLine(self, addrFile):
+        firmwareDir = self.getProjectFirmwareDir()
+        elfFileName = self.generateElfFileName()
+        elfFile     = os.path.join(firmwareDir, elfFileName).replace("\\","/")
+        
+        addrToLineApp = 'E:/Tools/gcc_arm_none_eabi_10_2020-q4-major/bin/arm-none-eabi-addr2line.exe'
+        
+        p = Popen([addrToLineApp, '-e', elfFile, '-a', '-p', '-f', '-C', '@' + addrFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#       p = Popen([addrToLineApp, '-e', elfFile, '-p', addr], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        
+        stdout, stderr = p.communicate()
+        
+        return stdout.decode('utf-8')
+        
     def showFirmwareMap(self):
         firmwareDir = self.getProjectFirmwareDir()
         mapFileName = self.generateMapFileName()
         mapFile = os.path.join(firmwareDir, mapFileName).replace("\\","/")
-    	
-    	
+        
         firmwareName = self.generateSimulatorName() + '.exe'
         amap = 'F:/Tools/Amap/amap.exe'
-                
+        
         os.system('start '  + amap + ' ' + '-g ' + mapFile)
-    	
+        
     def clear(self):
         print( colored("Clearing project: %s" % (self.workingName), 'white', 'on_green', attrs=['bold']))
         
@@ -348,22 +364,17 @@ class Project(object):
         propertiesPrefix = 'ftdi_' if programmingAdapter['Ftdi'] else 'hla_'
         
         argList = [
-            '-s', openOcdDir + 'scripts',
-            '-f', 'interface/' + interfacePrefix + programmingAdapter['Interface'],
-        ]
-        
-        
-        if programmingAdapter['SerialNumber']: argList.extend(['-c', propertiesPrefix + 'serial '	  + programmingAdapter['SerialNumber']])
-        if programmingAdapter['VID_PID']	 : argList.extend(['-c', propertiesPrefix + 'vid_pid '	 + programmingAdapter['VID_PID']])
-        if programmingAdapter['Description'] : argList.extend(['-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description']])
-        
-        argList.extend([
+                '-s', openOcdDir + 'scripts',
+                '-f', 'interface/' + interfacePrefix    + programmingAdapter['Interface'],
+                '-c', propertiesPrefix + 'serial '      + programmingAdapter['SerialNumber'],
+                '-c', propertiesPrefix + 'vid_pid '     + programmingAdapter['VID_PID'],
+                '-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description'],
+                '-c', 'adapter_khz '      + programmingAdapter['Speed'],
                 '-c', 'transport select ' + programmingAdapter['Transport'],
-                '-f', 'target/' + target,
                 '-c', 'adapter_nsrst_delay 1000',
-                '-c', 'adapter_khz 4000',
+                '-f', 'target/' + target,
                 '-f', settings,
-        ])
+        ]
         
         return argList
     

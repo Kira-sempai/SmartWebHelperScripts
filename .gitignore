@@ -167,3 +167,5 @@ setup.py
 #project specific settings
 settings.ini
 
+#ELF file address lines
+/addrToLine.txt
