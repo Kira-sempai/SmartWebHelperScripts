@@ -48,13 +48,14 @@ class Device(object):
     classdocs
     '''
     
-    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32', configFile = 'stm32f1x.cfg'):
+    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32', configFile = 'stm32f1x.cfg', connectUnderReset = False):
         self.name         = name
         self.board        = board
         self.boardVariant = boardVariant
         self.sdCard       = sdCard
         self.microcontroller = microcontroller
         self.configFile   = configFile
+        self.connectUnderReset = connectUnderReset
 
 class Project(object):
     '''
@@ -357,7 +358,7 @@ class Project(object):
     def getOpenOcdArgsCommon(self, programmingAdapter):
         from build_pack_push_and_clear_all_projects import getOpenOcdDir
         openOcdDir = getOpenOcdDir(self.name)
-        settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform/stm32', 'flash_stm32.cfg').replace("\\","/")
+        settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform', self.device.microcontroller, 'flash_stm32.cfg').replace("\\","/")
         target	= self.device.configFile
         
         interfacePrefix  = 'ftdi/' if programmingAdapter['Ftdi'] else ''
@@ -373,8 +374,12 @@ class Project(object):
                 '-c', 'transport select ' + programmingAdapter['Transport'],
                 '-c', 'adapter_nsrst_delay 1000',
                 '-f', 'target/' + target,
-                '-f', settings,
         ]
+        
+        if self.device.connectUnderReset:
+        	argList.extend(['-c', 'reset_config srst_only srst_nogate connect_assert_srst',])
+        
+        argList.extend(['-f', settings,])
         
         return argList
     
