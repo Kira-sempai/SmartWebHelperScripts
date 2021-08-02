@@ -6,8 +6,13 @@ import datetime
 import subprocess
 from subprocess import Popen
 import datetime
+import argparse
 
 sys.path.insert(0, "./scripts")
+
+
+try: input = raw_input
+except NameError: pass
 
 try:
 	import configparser
@@ -35,7 +40,9 @@ import push_project_to_server
 
 from projectsList import getAvailableProjectsList
 
-settingsPath = 'settings.ini'
+settingsPath      = 'settings.ini'
+addressToLineFile = 'addrToLine.txt'
+
 configParserInstance = configparser.ConfigParser()
 
 def getProjectDestPathPostfix(project):
@@ -130,47 +137,33 @@ def getSDCardProjectFiles(project):
 	
 	return files
 
-def parseArguments(string_input, projects_array):
-	args = string_input.split() #splits the input string on spaces
+def initParser():
+	parser = argparse.ArgumentParser(
+		description='Build SW projects, Flash them, pack n push project archives to server and so on.',
+		epilog='If any questions - ask Andreyka'
+		)
 	
-	projects_to_build = []
+	parser.add_argument('projects', metavar='Project name', nargs='*', help='Project to work with')
+	parser.add_argument('-e', '--exit'      , action='store_true', help = 'Exit script')
+	parser.add_argument('-l', '--list'      , action='store_true', help = 'List of available projects')
+	parser.add_argument('-a', '--all'       , action='store_true', help = 'Select all projects (not recommended)')
+	parser.add_argument('-P', '--production', action='store_true', help = 'Use production version of the project')
+	parser.add_argument('-b', '--build'     , action='store_true', help = 'Build project')
+	parser.add_argument('-B', '--Build'     , action='store_true', help = 'Build project using args in ' + settingsPath + ' file')
+	parser.add_argument('-p', '--pack'      , action='store_true', help = 'Pack builded project and store it in server')
+	parser.add_argument('-x', '--size'      , action='store_true', help = 'Print project binary size in Flash and RAM')
+	parser.add_argument('-c', '--clear'     , action='store_true', help = 'Clear project directory')
+	parser.add_argument('-C', '--clearCache', action='store_true', help = 'Clear SCons options cache file (setup.py)')
+	parser.add_argument('-f', '--floader'   , action='store_true', help = 'Flash controller loader')
+	parser.add_argument('-F', '--fdevice'   , action='store_true', help = 'Flash controller application')
+	parser.add_argument('-s', '--simulator' , action='store_true', help = 'Use simulator version of the project')
+	parser.add_argument('-S', '--Simulator' , action='store_true', help = 'Use simulator version of the project and Run it at the end')
+	parser.add_argument('-m', '--map'       , action='store_true', help = 'Show binary map. Amap program called')
+	parser.add_argument('-r', '--reboot'    , action='store_true', help = 'Reboot controller')
+	parser.add_argument('-R', '--readElfLine', action='store_true', help = 'Read address lines stored in ' + addressToLineFile + ' file')
 	
-	parsedArgs = {}
-	
-	for s in args:
-		if s == '-e':
-			print('Exit')
-			sys.exit()
-		if s == '-l': parsedArgs['show_projects_list'] = True; continue
-		if s == '-a': parsedArgs['projects_to_build'] = projects_array; continue
-		if s == '-P': parsedArgs['production']  = True; continue
-		if s == '-b': parsedArgs['build']       = True; continue
-		if s == '-B': 
-					parsedArgs['build']       = True
-					parsedArgs['buildWithSpecialArgs'] = True
-					continue
-		if s == '-p': parsedArgs['pack_n_push'] = True; continue
-		if s == '-x': parsedArgs['printSize']   = True; continue
-		if s == '-c': parsedArgs['clear']       = True; continue
-		if s == '-C': parsedArgs['clearCache']  = True; continue
-		if s == '-f': parsedArgs['flashLoader'] = True; continue
-		if s == '-F': parsedArgs['flashDevice'] = True; continue
-		if s == '-s': parsedArgs['simulator']   = True; continue
-		if s == '-m': parsedArgs['showFwMap']   = True; continue
-		if s == '-r': parsedArgs['reboot']      = True; continue
-		if s == '-S':
-			parsedArgs['simulator']    = True
-			parsedArgs['runSimulator'] = True
-			continue
-		
-		if s == '--rel': parsedArgs['readElfLine'] = True; continue
-		
-		for p in projects_array:
-			if p.name == s or p.group == s:
-				projects_to_build.append(p)
-				continue
-		
-	return (parsedArgs, projects_to_build)
+	return parser
+
 
 def createConfig(path):
 	"""
@@ -289,8 +282,7 @@ def packAndPushProjectToArchive(projectItem):
 	
 	return 0
 
-if __name__ == "__main__":
-	
+def main():
 	fixConsoleLang()
 	os.system('color')
 	colorama.init()
@@ -298,58 +290,67 @@ if __name__ == "__main__":
 	if not os.path.exists(settingsPath):
 		createConfig(settingsPath)
 	
-	while True:
-		projects_array = getAvailableProjectsList()
-		
-		try: input = raw_input
-		except NameError: pass
+	parser = initParser()
+	
+	projects_array = getAvailableProjectsList()
+	
+	while True:	
 		string_input = input(
-			colored('Please enter projects to build (-a = All, -e = exit, -P = production and so on): ',
+			colored('Please enter commands to execute: ',
 				'white',
 				'on_green',
 				attrs=['bold']))
-		#TODO: add "real" console
 		
-		(parsedArgs, projects_to_work_with) = parseArguments(string_input, projects_array)
+		args = parser.parse_args(string_input.split())
+		
+		if args.exit:
+			print('Exit')
+			sys.exit()
+		
+		projects_to_work_with = []
+		for p in projects_array:
+			if (p.name  in args.projects or
+			    p.group in args.projects):
+				projects_to_work_with.append(p)
 		
 		configParserInstance.read(settingsPath)
 		
-		if 'show_projects_list' in parsedArgs:
+		if args.list:
 			printAvailableProjectsList(projects_array)
 		
 		printProjectsToWorkWith(projects_to_work_with)
 		
 		for projectItem in projects_to_work_with:
 			projectItem.setPath(getProjectDir(projectItem.name))
-			projectItem.production = 'production' in parsedArgs
+			projectItem.production = args.production
 			
-			if 'clearCache' in parsedArgs:
+			if args.clearCache:
 				projectItem.clearSConsOptionsCacheFile()
 			
-			if 'simulator' in parsedArgs:
+			if args.simulator or args.Simulator:
 				projectItem.platform = 'qtsim'
 				projectItem.target   = 'qtsim'
 				
-			if 'build' in parsedArgs:
-				result = buildProjectItem(projectItem, 'buildWithSpecialArgs' in parsedArgs)
+			if args.build or args.Build:
+				result = buildProjectItem(projectItem, args.Build)
 				
 				if result != 0:
 					break
 			
-			if 'printSize'    in parsedArgs: projectItem.getFirmwareSize()
-			if 'showFwMap'    in parsedArgs: projectItem.showFirmwareMap()
-			if 'runSimulator' in parsedArgs: projectItem.runSimulator(getSimulatorArgs(projectItem.name))
-			if 'flashLoader'  in parsedArgs: loadFirmwareToLoaderFlash(projectItem)
-			if 'flashDevice'  in parsedArgs: loadFirmwareToAppFlash(projectItem)
-			if 'reboot'       in parsedArgs: rebootDevice(projectItem)
-			if 'clear'        in parsedArgs: projectItem.clear()
-			if 'pack_n_push'  in parsedArgs:
+			if args.size     : projectItem.getFirmwareSize()
+			if args.map      : projectItem.showFirmwareMap()
+			if args.Simulator: projectItem.runSimulator(getSimulatorArgs(projectItem.name))
+			if args.floader  : loadFirmwareToLoaderFlash(projectItem)
+			if args.fdevice  : loadFirmwareToAppFlash(projectItem)
+			if args.reboot   : rebootDevice(projectItem)
+			if args.clear    : projectItem.clear()
+			if args.pack     :
 				result = packAndPushProjectToArchive(projectItem)
 				if result != 0:
 					break
 			
-			if 'readElfLine' in parsedArgs:
-				addrFile = 'addrToLine.txt'
+			if args.readElfLine:
+				addrFile = addressToLineFile
 				if not os.path.exists(addrFile):
 					open(addrFile, 'w').close()
 				print(projectItem.elfAddrToLine(addrFile))
@@ -359,3 +360,5 @@ if __name__ == "__main__":
 		print('\r\n\n')
 		
 
+if __name__ == "__main__":
+	main()
