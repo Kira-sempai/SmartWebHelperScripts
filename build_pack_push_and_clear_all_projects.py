@@ -292,9 +292,9 @@ def main():
 	
 	parser = initParser()
 	
-	projects_array = getAvailableProjectsList()
+	while True:
+		projects_array = getAvailableProjectsList()
 	
-	while True:	
 		string_input = input(
 			colored('Please enter commands to execute: ',
 				'white',
