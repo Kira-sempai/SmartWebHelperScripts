@@ -99,7 +99,7 @@ def projectWithCodeOnSdCard(project):
 			(name == 'DataLoggerSW' ))
 		
 def getSDCardProjectFiles(project):
-	if not projectItem.device.sdCard:
+	if not project.device.sdCard:
 		return
 	
 	srcPath                = project.path
@@ -167,7 +167,7 @@ def initParser():
 
 def createConfig(path):
 	"""
-	Create a config file
+	Create default config file
 	"""
 	
 	configParserInstance.set('DEFAULT', 'projectDir', 'E:/development/SmartWeb_v1/')
@@ -215,8 +215,16 @@ def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectN
 
 def getSconsExtraArgs(projectName):
 	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')
-#	args_str = args_str.translate(str.maketrans('', '', ' \n\t\r'))
-	return args_str.split(', ')
+	parser = argparse.ArgumentParser(
+		description='Get extra args for SCons',
+		epilog='If any questions - ask Andreyka'
+	)
+	
+	parser.add_argument('sconsArgs', metavar='SCons Arg', nargs='*', help='Additional args for SCons command')
+	
+	args = parser.parse_args(args_str.split())
+
+	return args.sconsArgs
 
 def printProjectsToWorkWith(projects_to_work_with):
 	print('Those projects will be used:')
