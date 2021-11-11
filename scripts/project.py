@@ -48,10 +48,11 @@ class Device(object):
     classdocs
     '''
     
-    def __init__(self, name, board, boardVariant, sdCard = False, microcontroller = 'stm32', configFile = 'stm32f1x.cfg', connectUnderReset = False):
+    def __init__(self, name, board, boardVariant, boardRevision = 1, sdCard = False, microcontroller = 'stm32', configFile = 'stm32f1x.cfg', connectUnderReset = False):
         self.name         = name
         self.board        = board
         self.boardVariant = boardVariant
+        self.boardRevision = boardRevision
         self.sdCard       = sdCard
         self.microcontroller = microcontroller
         self.configFile   = configFile
@@ -87,7 +88,13 @@ class Project(object):
             return ''
         else:
             return str(self.device.boardVariant)
-    
+
+    def boardRevisionToString(self):
+        if self.device.boardRevision is None:
+            return '1'
+        else:
+            return str(self.device.boardRevision)
+
     def getProjectDirName(self):
         #postfix = ''
         postfix = '_production' if self.production else ''
@@ -139,7 +146,9 @@ class Project(object):
             oemstring = ''
         # get platform name
         if 'TARGET_PLATFORM_FRIENDLY_NAME' not in env:
-            if env['TARGET_PLATFORM'].lower() == "cubemx":
+        	#dirty hack
+        	#TODO: fix in Caleon project binary title generation
+            if env['TARGET_PLATFORM'].lower() == "cubemx" and self.group == 'SW4':
                 env['TARGET_PLATFORM_FRIENDLY_NAME'] = "STM32C"
             else:
                 env['TARGET_PLATFORM_FRIENDLY_NAME'] = env['TARGET_PLATFORM'].upper()
@@ -168,7 +177,7 @@ class Project(object):
         baseEnv['CFG_DEVICENAME']       = deviceName
         baseEnv['TARGET_PLATFORM']      = self.device.microcontroller.upper()
         baseEnv['BOARD']                = self.device.board
-        baseEnv['CFG_BOARD_REVISION']   = '1'
+        baseEnv['CFG_BOARD_REVISION']   = self.boardRevisionToString()
         baseEnv['CFG_BOARD_VARIANT']    = self.boardVariantToString()
         
         #work around
@@ -182,7 +191,7 @@ class Project(object):
         baseEnv['CFG_DEVICENAME']       = self.device.name
         baseEnv['TARGET_PLATFORM']      = 'QT'
         baseEnv['BOARD']                = self.device.board
-        baseEnv['CFG_BOARD_REVISION']   = '1'
+        baseEnv['CFG_BOARD_REVISION']   = self.boardRevisionToString()
         baseEnv['CFG_BOARD_VARIANT']    = self.boardVariantToString()
         
         prefix = ''
