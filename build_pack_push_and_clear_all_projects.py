@@ -112,12 +112,13 @@ def getSDCardProjectFiles(project):
 	else:
 		webPagesSrcFolder = 'server'
 	
-	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
+#	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
 	platformPath = os.path.join(buildPath, 'shared/platform/stm32/')
 	files = [
 		SrcDestData(os.path.join(webPagesPath, webPagesSrcFolder), 'WEB/'),
 		SrcDestData(os.path.join(webPagesPath, 'sitemenu.txt'), 'sitemenu.txt'),
-		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), firmwarePathOnSdCard)
+		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), 'update/firmware.bin'),
+		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), 'firmware.bin'),  # copy firmware also in root dir for compatibility
 	]
 	
 	name = project.name
