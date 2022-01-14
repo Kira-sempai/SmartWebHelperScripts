@@ -211,15 +211,16 @@ class Project(object):
         
         firmwareFileName        = self.generateFirmwareFileName()
         mergedFirmwareFileName  = self.generateMergedFirmwareFileName()
-        mapFileName             = self.generateMapFileName()
-        elfFileName             = self.generateElfFileName()
+#       those files are large and nobody need them except me
+#        mapFileName             = self.generateMapFileName()
+#        elfFileName             = self.generateElfFileName()
         bootldrFirmwareFileName = self.generateBootoaderFileName()
         
         return [
             os.path.join(firmwareDir, firmwareFileName       ).replace("\\","/"),
             os.path.join(firmwareDir, mergedFirmwareFileName ).replace("\\","/"),
-            os.path.join(firmwareDir, mapFileName            ).replace("\\","/"),
-            os.path.join(firmwareDir, elfFileName            ).replace("\\","/"),
+#            os.path.join(firmwareDir, mapFileName            ).replace("\\","/"),
+#            os.path.join(firmwareDir, elfFileName            ).replace("\\","/"),
             os.path.join(bootldrDir , bootldrFirmwareFileName).replace("\\","/"),
         ]
     
