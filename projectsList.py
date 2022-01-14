@@ -31,9 +31,9 @@ def getAvailableProjectsList():
 		Project('Other',  'caleon_clima_smart_web_controller', 'Caleon SW', Device('SmartWeb-Caleon', 'RC50', 1, None, False, 'cubemx', 'stm32f7x.cfg'), 'rom', 'new', False, 'OID_HYDROLOGO'),
 		Project('Other', 'caleonbox_clima'   , 'CaleonBox'         , Device('caleonbox_clima', 'S70', 1, None, False, 'cubemx', 'stm32f2x.cfg', True), 'rom', 'new', False, 'OID_SOREL'),
 		Project('SW4', 'caleonbox_smartweb', 'CaleonBox SmartWeb', Device('caleonbox_sw'   , 's70', 1, None, False, 'cubemx', 'stm32f2x.cfg', True), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		Project('SW4', 'caleon_sw_base'  , 'Caleon Base'  , Device('SmartWeb-Caleon', 'rc50', 1, None, False, 'cubemx', 'stm32f7x.cfg'), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		Project('SW4', 'caleon_sw_clima' , 'Caleon Clima' , Device('SmartWeb-Caleon', 'rc50', 1, None, False, 'cubemx', 'stm32f7x.cfg'), 'rom', 'new', False, 'OID_HYDROLOGO'),
-		Project('SW4', 'caleon_sw_master', 'Caleon Master', Device('SmartWeb-Caleon', 'rc50', 1, None, False, 'cubemx', 'stm32f7x.cfg'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		Project('SW4', 'caleon_sw_base'  , 'Caleon Base'  , Device('caleon_sw_base'  , 'rc50', 1, None, False, 'cubemx', 'stm32f7x.cfg'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		Project('SW4', 'caleon_sw_clima' , 'Caleon Clima' , Device('caleon_sw_clima' , 'rc50', 1, None, False, 'cubemx', 'stm32f7x.cfg'), 'rom', 'new', False, 'OID_HYDROLOGO'),
+		Project('SW4', 'caleon_sw_master', 'Caleon Master', Device('caleon_sw_master', 'rc50', 1, None, False, 'cubemx', 'stm32f7x.cfg'), 'rom', 'new', False, 'OID_HYDROLOGO'),
 		
 		Project('Other',  'tece_floor', 'Caleon TECE', Device('tece_floor', 'RC50', None, None, False, 'cubemx'), 'rom', 'new'),
 		Project('Other',  'tece_floor_clima_smart', 'Caleon TECE Clima', Device('tece_floor', 'RC50', None, None, False, 'cubemx'), 'rom', 'new'),
