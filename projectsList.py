@@ -7,7 +7,7 @@ def getAvailableProjectsList():
 		Project('SW1_special', 'stdc_lin'    , 'SmartWeb S LIN', Device('STDC_LIN', 'S28' , 3), 'rom'),
 		Project('SW1',         'ltdc'        , 'SmartWeb L'    , Device('LTDC'    , 'S40' , 3), 'rom'),
 		Project('SW1',         'ltdc_s45'    , 'SmartWeb L2'   , Device('LTDC_S45', 'S45' , 1), 'rom'),
-		Project('SW2',         'ltdc_s45_l4' , 'SmartWeb L3'   , Device('LTDC_S45_L4', 'S45' , 1, 4, False, 'cubemx'), 'rom'),
+		Project('SW2',         'ltdc_s45_l4' , 'SmartWeb L3'   , Device('LTDC_S45_L4', 'S45' , 1, 4, False, 'cubemx', 'stm32l4x.cfg'), 'rom'),
 		Project('Other',       'swndin'      , 'SmartWeb N'    , Device('SWNDIN'  , 'S41N', 1), 'rom'),
 		
 		Project('SW2_deprecated', 'DataLogger'       , 'DataLogger'        , Device('DL'    , 'L30', None, 1, True), 'rom'),
