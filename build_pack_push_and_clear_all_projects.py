@@ -162,6 +162,7 @@ def initParser():
 	parser.add_argument('-m', '--map'       , action='store_true', help = 'Show binary map. Amap program called')
 	parser.add_argument('-r', '--reboot'    , action='store_true', help = 'Reboot controller')
 	parser.add_argument('-R', '--readElfLine', action='store_true', help = 'Read address lines stored in ' + addressToLineFile + ' file')
+	parser.add_argument(      '--putty'     , action='store_true', help = 'Run debug console')
 	
 	return parser
 
@@ -213,6 +214,8 @@ def getOpenOcdDir   (projectName): return getSettingsFileParameterValue(projectN
 def getProjectDir   (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
 def getSconsJobsNum (projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
 def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectName, 'simulator_args')
+def getConsole      (projectName): return getSettingsFileParameterValue(projectName, 'putty_path')
+def getConsoleProfile(projectName): return getSettingsFileParameterValue(projectName, 'putty_profile')
 
 def getSconsExtraArgs(projectName):
 	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')
@@ -291,6 +294,19 @@ def packAndPushProjectToArchive(projectItem):
 	
 	return 0
 
+def runDebugConsole(projectItem):
+	projectName = projectItem.name
+	
+	console = getConsole       (projectName)
+	profile = getConsoleProfile(projectName)
+	
+	args = [console, '-load', profile]
+	
+	print(args)
+	
+	Popen(args)
+
+
 def main():
 	fixConsoleLang()
 	os.system('color')
@@ -364,6 +380,7 @@ def main():
 					open(addrFile, 'w').close()
 				print(projectItem.elfAddrToLine(addrFile))
 			
+			if args.putty    : runDebugConsole(projectItem)
 		
 		print(colored(str(datetime.datetime.now()) + " Done", 'white', 'on_green'))
 		print('\r\n\n')
