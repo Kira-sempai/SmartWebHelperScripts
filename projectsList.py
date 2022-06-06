@@ -23,7 +23,7 @@ def getAvailableProjectsList():
 		Project('SW2', 'swk_base', 'SmartWeb K Base', Device('SWK', 'SW-N2', 1, None, False, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		Project('Other', 'swk_unitTest', 'SmartWeb K UnitTest', Device('SWK', 'SW-N2', 1, None, False, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
-		Project('SW2', 'swk_at32', 'SmartWeb K2', Device('SWK', 'SW-N3', 1, None, True, 'at32', 'at32f4x.cfg'), 'rom', 'old', False, 'OID_HLOGO'),
+		Project('SW2', 'swk_at32', 'SmartWeb K2', Device('SWK', 'SW-N3', 1, None, True, 'at32', 'at32f4x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
 		Project('Caleon', 'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1, None, False, 'stm32n'), 'rom', 'new'),
 		Project('Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, None, False, 'stm32n'), 'rom', 'new'),
