@@ -113,7 +113,7 @@ def getSDCardProjectFiles(project):
 		webPagesSrcFolder = 'server'
 	
 #	firmwarePathOnSdCard = os.path.join(getSDCardFirmwarePath(project), 'firmware.bin')
-	platformPath = os.path.join(buildPath, 'shared/platform/stm32/')
+	platformPath = os.path.join(buildPath, 'shared/platform/', project.device.microcontroller)
 	files = [
 		SrcDestData(os.path.join(webPagesPath, webPagesSrcFolder), 'WEB/'),
 		SrcDestData(os.path.join(webPagesPath, 'sitemenu.txt'), 'sitemenu.txt'),
@@ -211,6 +211,7 @@ def getSettingsFileParameterValue(projectName, parameter):
 def getSconsDir     (projectName): return getSettingsFileParameterValue(projectName, 'sconsDir')
 def getPythonDir    (projectName): return getSettingsFileParameterValue(projectName, 'pythonDir')
 def getOpenOcdDir   (projectName): return getSettingsFileParameterValue(projectName, 'openOcdDir')
+def getJlinkDir     (projectName): return getSettingsFileParameterValue(projectName, 'jlinkdir')
 def getProjectDir   (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
 def getSconsJobsNum (projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
 def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectName, 'simulator_args')
