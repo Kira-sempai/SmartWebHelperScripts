@@ -198,10 +198,10 @@ class Project(object):
         
         return self.MakeFilename(baseEnv, prefix+'sim')
         
-    def generateFirmwareFileName      (self): return self.generateFirmwareName() + 'app.s19'
-    def generateMergedFirmwareFileName(self): return self.generateFirmwareName() + 'merged.s19'
+    def generateFirmwareFileName      (self): return self.generateFirmwareName() + 'app.hex'
+    def generateMergedFirmwareFileName(self): return self.generateFirmwareName() + 'merged.hex'
     def generateSDCardFirmwareFileName(self): return self.generateFirmwareName() + 'sdcard.bin'
-    def generateBootoaderFileName     (self): return self.generateFirmwareName('loader') + 'app.s19'
+    def generateBootoaderFileName     (self): return self.generateFirmwareName('loader') + 'app.hex'
     def generateMapFileName           (self): return self.getFirmwareLangPostfix() + 'app.map'
     def generateElfFileName           (self): return self.getFirmwareLangPostfix() + 'app.elf'
     
@@ -402,8 +402,28 @@ class Project(object):
         stdout, stderr = p.communicate()
         print(stdout, stderr)
     
+    def callJlink(self, firmware):
+        from build_pack_push_and_clear_all_projects import getJlinkDir
+        jLinkDir = getJlinkDir(self.name)
+        
+        commandFileName = 'tmp/command_file.jlink'
+        with open(commandFileName, 'w') as cf:
+            cf.write('si 1\nspeed 4000\nr\nh\nloadfile ' + firmware + '\nexit\n')
+        
+        p = Popen([jLinkDir + 'JLink'] +
+                [
+                    '-device'         , 'AT32F407VGT7',
+                    '-CommanderScript', commandFileName,
+                ])
+        
+        stdout, stderr = p.communicate()
+        print(stdout, stderr)
     
     def flashCommon(self, firmware, programmingAdapter):
+        if programmingAdapter['Description'] == '"J-Link driver"':
+            self.callJlink(firmware)
+            return
+        
         argList = self.getOpenOcdArgsCommon(programmingAdapter)
         argList.extend(['-c', 'flash_and_quit ' + firmware])
         
