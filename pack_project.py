@@ -1,6 +1,8 @@
 import os, shutil, sys, copy
-import func
-from func import SrcDestData
+
+
+import scripts.func
+from scripts.func import SrcDestData
 from subprocess import Popen
 from termcolor import colored
 

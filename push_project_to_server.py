@@ -1,7 +1,7 @@
-import sys
-import os
-import func
-from func import SrcDestData
+import sys, os
+#import func
+
+from scripts.func import SrcDestData
 from termcolor import colored
 
 def copyProjectBinaryFiles(project, dest):
