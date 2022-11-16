@@ -11,7 +11,7 @@ from subprocess import Popen
 
 from termcolor import colored
 
-import func
+from . import func
 
 class Version(object):
     '''
