@@ -8,8 +8,6 @@ from subprocess import Popen
 import datetime
 import argparse
 
-sys.path.insert(0, "./scripts")
-
 
 try: input = raw_input
 except NameError: pass
@@ -40,8 +38,10 @@ import push_project_to_server
 
 from projectsList import getAvailableProjectsList
 
-settingsPath      = 'settings.ini'
-addressToLineFile = 'addrToLine.txt'
+
+file_dir = os.path.dirname(__file__)
+settingsPath      = os.path.join(file_dir, 'settings.ini')
+addressToLineFile = os.path.join(file_dir, 'addrToLine.txt')
 
 configParserInstance = configparser.ConfigParser()
 
@@ -178,8 +178,8 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts/')
 	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
 	configParserInstance.set('DEFAULT', 'sconsJobsNum', '8')
-	configParserInstance.set('DEFAULT', 'scons_extra_args') # can be any string args, separated by ','
-	configParserInstance.set('DEFAULT', 'simulator_args') # can be any string
+	configParserInstance.set('DEFAULT', 'scons_extra_args', '') # can be any string args, separated by ','
+	configParserInstance.set('DEFAULT', 'simulator_args', '') # can be any string
 	
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Ftdi'         , 'yes')            # 'yes', 'no', 'true', 'false' 
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Serial_Number', 'OLUUKDU둭')       # 'OLUUKDU둭', 'OLYKF0UM' or 'OLZ4APP8' for known Olimex adapters
