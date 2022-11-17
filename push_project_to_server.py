@@ -1,6 +1,7 @@
 import sys, os
 #import func
 
+import scripts.func
 from scripts.func import SrcDestData
 from termcolor import colored
 
@@ -61,7 +62,7 @@ def do(project, dest):
 		dst = os.path.join(firmwareDestPath, firmwareData.dest)
 		
 		if os.path.exists(src):
-			func.copytree(src, dst)
+			scripts.func.copytree(src, dst)
 		else:
 			print("src not found: " + src)
 	
