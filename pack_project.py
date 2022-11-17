@@ -44,14 +44,14 @@ def copySDCardFiles(project, tmp_folder):
 			dest = os.path.join(tmp_folder, data.dest)
 			src  = data.src
 			if os.path.isdir(src):
-				func.copytree(src, dest)
+				scripts.func.copytree(src, dest)
 			elif os.path.isfile(src):
 				dest_path = os.path.dirname(os.path.abspath(dest))
 				if not os.path.exists(dest_path):
 					os.makedirs(dest_path)
 				shutil.copy2(src, dest)
 			else:
-				func.print_warning("SD-Card file not found: " + src)
+				scripts.func.print_warning("SD-Card file not found: " + src)
 
 def printEndMessage():
 	#TODO: can be used for logs
@@ -105,7 +105,7 @@ def do(project):
 	
 	#copy data from tmp_folder to data_folder
 	print(colored("Copy tmp folder to data folder", 'green'))
-	func.copytree(tmp_folder, data_folder)
+	scripts.func.copytree(tmp_folder, data_folder)
 	
 	#copy sd-card firmware file to firmware_folder
 	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
@@ -116,7 +116,7 @@ def do(project):
 	
 	
 	if not os.path.exists(SDCardFirmwareFileSourcePath):
-		func.print_warning(
+		scripts.func.print_warning(
 			'%s file missing! can\'t add project binary files to SD-card'
 			 % (SDCardFirmwareFileSourcePath))
 		return 1
