@@ -32,7 +32,9 @@ def reset_folders(folders):
 
 def reduceFileNames(path):
 	print(colored("Run hashren.exe script for %s" % (path) , 'blue', 'on_green'))
-	p = Popen(["tools/hashren.exe", path])
+	file_dir = os.path.dirname(__file__)
+	hashren  = os.path.join(file_dir, 'tools/hashren.exe'    )
+	p = Popen([hashren, path])
 	p.communicate()
 	print(colored("Done", 'blue', 'on_green'))
 
@@ -82,10 +84,11 @@ def do(project):
 	print(colored("Packing project: %s" % (project.name), 'white', 'on_green', attrs=['bold']))
 	
 	# prepare temp data folders
-	data_folder     = './data_files'
-	firmware_folder = './install_files'
-	output_folder   = './archive'
-	tmp_folder      = './tmp'
+	file_dir = os.path.dirname(__file__)
+	data_folder     = os.path.join(file_dir, 'data_files'    )
+	firmware_folder = os.path.join(file_dir, 'install_files' )
+	output_folder   = os.path.join(file_dir, 'archive'       )
+	tmp_folder      = os.path.join(file_dir, 'tmp'           )
 	
 	dest_folders = [
 		data_folder,
@@ -132,13 +135,15 @@ def do(project):
 	
 	print(colored("Run DLPack.exe script for firmware and data folders:", 'white', 'on_green'))
 	print(colored("pack firmware", 'white', 'on_green'))
-	p = Popen(["tools/DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, fw_pack)])
+	file_dir = os.path.dirname(__file__)
+	dlpack  = os.path.join(file_dir, 'tools/DLPack.exe'    )
+	p = Popen([dlpack, firmware_folder, 'null', os.path.join(output_folder, fw_pack)])
 	p.communicate()
 	print(colored("pack data", 'white', 'on_green'))
-	p = Popen(["tools/DLPack.exe", data_folder, 'null', os.path.join(output_folder, sd_pack)])
+	p = Popen([dlpack, data_folder, 'null', os.path.join(output_folder, sd_pack)])
 	p.communicate()
 	print(colored("pack firmware and data", 'white', 'on_green'))
-	p = Popen(["tools/DLPack.exe", firmware_folder, data_folder, os.path.join(output_folder, fw_sd_pack)])
+	p = Popen([dlpack, firmware_folder, data_folder, os.path.join(output_folder, fw_sd_pack)])
 	p.communicate()
 	
 	#pack bootloader
@@ -159,7 +164,7 @@ def do(project):
 	
 	print(colored("Run DLPack.exe script for bootloader", 'white', 'on_green'))
 	bl_pack = project.device.name + '_BL.bin'
-	p = Popen(["tools/DLPack.exe", firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
+	p = Popen([dlpack, firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
 	
 	packData = [
