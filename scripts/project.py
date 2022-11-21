@@ -7,7 +7,7 @@ Created on 28 sept. 2017.
 import os
 import re
 import subprocess
-from subprocess import Popen
+from subprocess import Popen, CREATE_NEW_CONSOLE
 
 from termcolor import colored
 
@@ -230,10 +230,16 @@ class Project(object):
             os.remove(cache_setup_file)
     
     def runSimulator(self, args):
-        firmwareName = self.generateSimulatorName() + '.exe'
-        simulator_file = os.path.join(self.getDeviceBinDir(), firmwareName)
+        simulatorName  = self.generateSimulatorName() + '.exe'
+        simulatorPath  = self.getDeviceBinDir()
+        simulator_file = os.path.join(simulatorPath, simulatorName)
         
-        os.system('start '  + simulator_file + ' ' + args)
+        print(args)
+        
+        p = Popen([simulator_file, args],
+            cwd = simulatorPath,
+            creationflags=CREATE_NEW_CONSOLE
+        )
     
     def runSCons(self, args, path):
         from build_pack_push_and_clear_all_projects import getSconsDir, getPythonDir, getSconsJobsNum
