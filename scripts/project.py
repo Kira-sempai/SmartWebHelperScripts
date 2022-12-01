@@ -412,7 +412,10 @@ class Project(object):
         from build_pack_push_and_clear_all_projects import getJlinkDir
         jLinkDir = getJlinkDir(self.name)
         
-        commandFileName = 'tmp/command_file.jlink'
+        file_dir = os.path.dirname(__file__)
+        
+        commandFileName = os.path.join(file_dir, '../tmp/command_file.jlink')
+        
         with open(commandFileName, 'w') as cf:
             cf.write('si 1\nspeed 4000\nr\nh\nloadfile ' + firmware + '\nexit\n')
         
