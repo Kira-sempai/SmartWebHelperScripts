@@ -324,11 +324,13 @@ class Project(object):
         print('Flash\t: %d\n\rData\t: %d\n\rBSS\t: %d' % (text, data, bss))
         
     def elfAddrToLine(self, addrFile):
+        from build_pack_push_and_clear_all_projects import getAddrToLineTool
+        addrToLineApp = getAddrToLineTool(self.name)
+        
         firmwareDir = self.getProjectFirmwareDir()
         elfFileName = self.generateElfFileName()
         elfFile     = os.path.join(firmwareDir, elfFileName).replace("\\","/")
         
-        addrToLineApp = 'E:/Tools/gcc_arm_none_eabi_10_2020-q4-major/bin/arm-none-eabi-addr2line.exe'
         
         p = Popen([addrToLineApp, '-e', elfFile, '-a', '-p', '-f', '-C', '@' + addrFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #       p = Popen([addrToLineApp, '-e', elfFile, '-p', addr], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
