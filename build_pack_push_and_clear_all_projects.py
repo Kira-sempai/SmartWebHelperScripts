@@ -174,10 +174,10 @@ def createConfig(path):
 	
 	configParserInstance.set('DEFAULT', 'projectDir', 'E:/development/SmartWeb_v1/')
 	configParserInstance.set('DEFAULT', 'archiveDir', 'Z:/firmware/')
-	configParserInstance.set('DEFAULT', 'pythonDir' , 'C:/Python/')
-	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts/')
-	configParserInstance.set('DEFAULT', 'jlinkdir'  , 'C:/JLINK/')
-	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
+	configParserInstance.set('DEFAULT', 'pythonDir' , 'C:/Tools/Python/')
+	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Tools/Python/Scripts/')
+	configParserInstance.set('DEFAULT', 'jlinkdir'  , 'C:/Tools/JLINK/')
+	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/Tools/OpenOCD/')
 	configParserInstance.set('DEFAULT', 'sconsJobsNum', '8')
 	configParserInstance.set('DEFAULT', 'scons_extra_args', '') # can be any string args, separated by ','
 	configParserInstance.set('DEFAULT', 'simulator_args', '') # can be any string
@@ -189,6 +189,13 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Interface'    , 'olimex-arm-usb-tiny-h.cfg')
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Transport'    , 'jtag') # 'jtag', 'swd' and so on
 	configParserInstance.set('DEFAULT', 'programming_Adapter_speed'        , '4000') # 4000kHz
+	
+	configParserInstance.set('DEFAULT', 'putty_path'       , 'C:/Tools/PuTTY/putty.exe')
+	configParserInstance.set('DEFAULT', 'putty_profile'    , 'SmartWeb')
+	
+	configParserInstance.set('DEFAULT', 'addr_to_line_tool', 'C:/Tools/Compiler/bin/addr2line.exe')
+	
+	
 	
 	projects_array = getAvailableProjectsList()
 	for p in projects_array:
@@ -218,6 +225,7 @@ def getSconsJobsNum (projectName): return getSettingsFileParameterValue(projectN
 def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectName, 'simulator_args')
 def getConsole      (projectName): return getSettingsFileParameterValue(projectName, 'putty_path')
 def getConsoleProfile(projectName): return getSettingsFileParameterValue(projectName, 'putty_profile')
+def getAddrToLineTool(projectName): return getSettingsFileParameterValue(projectName, 'addr_to_line_tool')
 
 def getSconsExtraArgs(projectName):
 	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')
