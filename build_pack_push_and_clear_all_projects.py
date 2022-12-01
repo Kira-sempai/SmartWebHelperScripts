@@ -176,6 +176,7 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'archiveDir', 'Z:/firmware/')
 	configParserInstance.set('DEFAULT', 'pythonDir' , 'C:/Python/')
 	configParserInstance.set('DEFAULT', 'sconsDir'  , 'C:/Python/Scripts/')
+	configParserInstance.set('DEFAULT', 'jlinkdir'  , 'C:/JLINK/')
 	configParserInstance.set('DEFAULT', 'openOcdDir', 'C:/OpenOCD/')
 	configParserInstance.set('DEFAULT', 'sconsJobsNum', '8')
 	configParserInstance.set('DEFAULT', 'scons_extra_args', '') # can be any string args, separated by ','
