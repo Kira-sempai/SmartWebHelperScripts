@@ -216,16 +216,17 @@ def getSettingsFileParameterValue(projectName, parameter):
 	
 	return configParserInstance.get(projectName, parameter)
 
-def getSconsDir     (projectName): return getSettingsFileParameterValue(projectName, 'sconsDir')
-def getPythonDir    (projectName): return getSettingsFileParameterValue(projectName, 'pythonDir')
-def getOpenOcdDir   (projectName): return getSettingsFileParameterValue(projectName, 'openOcdDir')
-def getJlinkDir     (projectName): return getSettingsFileParameterValue(projectName, 'jlinkdir')
-def getProjectDir   (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
-def getSconsJobsNum (projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
-def getSimulatorArgs(projectName): return getSettingsFileParameterValue(projectName, 'simulator_args')
-def getConsole      (projectName): return getSettingsFileParameterValue(projectName, 'putty_path')
+def getSconsDir      (projectName): return getSettingsFileParameterValue(projectName, 'sconsDir')
+def getPythonDir     (projectName): return getSettingsFileParameterValue(projectName, 'pythonDir')
+def getOpenOcdDir    (projectName): return getSettingsFileParameterValue(projectName, 'openOcdDir')
+def getJlinkDir      (projectName): return getSettingsFileParameterValue(projectName, 'jlinkdir')
+def getProjectDir    (projectName): return getSettingsFileParameterValue(projectName, 'projectDir')
+def getSconsJobsNum  (projectName): return getSettingsFileParameterValue(projectName, 'sconsJobsNum')
+def getSimulatorArgs (projectName): return getSettingsFileParameterValue(projectName, 'simulator_args')
+def getConsole       (projectName): return getSettingsFileParameterValue(projectName, 'putty_path')
 def getConsoleProfile(projectName): return getSettingsFileParameterValue(projectName, 'putty_profile')
 def getAddrToLineTool(projectName): return getSettingsFileParameterValue(projectName, 'addr_to_line_tool')
+
 
 def getSconsExtraArgs(projectName):
 	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')
