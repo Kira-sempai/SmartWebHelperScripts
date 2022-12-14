@@ -417,9 +417,10 @@ class Project(object):
         file_dir = os.path.dirname(__file__)
         
         commandFileName = os.path.join(file_dir, '../tmp/command_file.jlink')
+        adapter_speed = programmingAdapter['Speed']
         
         with open(commandFileName, 'w') as cf:
-            cf.write('si 1\nspeed 1000\nr\nh\nloadfile ' + firmware + '\nexit\n')
+            cf.write('si 1\nspeed ' + adapter_speed + '\nr\nh\nloadfile ' + firmware + '\nexit\n')
         
         p = Popen([jLinkDir + 'JLink'] +
                 [
