@@ -385,12 +385,12 @@ class Project(object):
         argList = [
                 '-s', openOcdDir + 'scripts',
                 '-f', 'interface/' + interfacePrefix    + programmingAdapter['Interface'],
-                '-c', propertiesPrefix + 'serial '      + programmingAdapter['SerialNumber'],
+                '-c', 'adapter serial '                 + programmingAdapter['SerialNumber'],
                 '-c', propertiesPrefix + 'vid_pid '     + programmingAdapter['VID_PID'],
                 '-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description'],
-                '-c', 'adapter_khz '      + programmingAdapter['Speed'],
-                '-c', 'transport select ' + programmingAdapter['Transport'],
-                '-c', 'adapter_nsrst_delay 1000',
+                '-c', 'adapter speed '                  + programmingAdapter['Speed'],
+                '-c', 'transport select '               + programmingAdapter['Transport'],
+                '-c', 'adapter srst delay 1000',
                 '-f', 'target/' + target,
         ]
         
@@ -410,7 +410,7 @@ class Project(object):
         stdout, stderr = p.communicate()
         print(stdout, stderr)
     
-    def callJlink(self, firmware):
+    def callJlink(self, firmware, programmingAdapter):
         from build_pack_push_and_clear_all_projects import getJlinkDir
         jLinkDir = getJlinkDir(self.name)
         
@@ -419,11 +419,11 @@ class Project(object):
         commandFileName = os.path.join(file_dir, '../tmp/command_file.jlink')
         
         with open(commandFileName, 'w') as cf:
-            cf.write('si 1\nspeed 4000\nr\nh\nloadfile ' + firmware + '\nexit\n')
+            cf.write('si 1\nspeed 1000\nr\nh\nloadfile ' + firmware + '\nexit\n')
         
         p = Popen([jLinkDir + 'JLink'] +
                 [
-                    '-device'         , 'AT32F407VGT7',
+                    '-device'         , programmingAdapter['Target'],
                     '-CommanderScript', commandFileName,
                 ])
         
@@ -432,7 +432,7 @@ class Project(object):
     
     def flashCommon(self, firmware, programmingAdapter):
         if programmingAdapter['Description'] == '"J-Link driver"':
-            self.callJlink(firmware)
+            self.callJlink(firmware, programmingAdapter)
             return
         
         argList = self.getOpenOcdArgsCommon(programmingAdapter)
