@@ -189,6 +189,7 @@ def createConfig(path):
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Interface'    , 'olimex-arm-usb-tiny-h.cfg')
 	configParserInstance.set('DEFAULT', 'programming_Adapter_Transport'    , 'jtag') # 'jtag', 'swd' and so on
 	configParserInstance.set('DEFAULT', 'programming_Adapter_speed'        , '4000') # 4000kHz
+	configParserInstance.set('DEFAULT', 'programming_Adapter_target'       , 'AT32F407VGT7')
 	
 	configParserInstance.set('DEFAULT', 'putty_path'       , 'C:/Tools/PuTTY/putty.exe')
 	configParserInstance.set('DEFAULT', 'putty_profile'    , 'SmartWeb')
@@ -272,6 +273,7 @@ def getProjectAdapter(projectItem):
 		'Interface'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Interface'),
 		'Transport'    : configParserInstance.get       (projectItem.name, 'programming_Adapter_Transport'),
 		'Speed'        : configParserInstance.get       (projectItem.name, 'programming_Adapter_speed'),
+		'Target'       : configParserInstance.get       (projectItem.name, 'programming_Adapter_Target'),
 	}
 	
 def loadFirmwareToLoaderFlash(projectItem):
