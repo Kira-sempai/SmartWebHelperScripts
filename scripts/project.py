@@ -217,11 +217,11 @@ class Project(object):
         bootldrFirmwareFileName = self.generateBootoaderFileName()
         
         return [
-            os.path.join(firmwareDir, firmwareFileName       ).replace("\\","/"),
-            os.path.join(firmwareDir, mergedFirmwareFileName ).replace("\\","/"),
+#            os.path.join(firmwareDir, firmwareFileName       ).replace("\\","/"),
+             os.path.join(firmwareDir, mergedFirmwareFileName ).replace("\\","/"),
 #            os.path.join(firmwareDir, mapFileName            ).replace("\\","/"),
 #            os.path.join(firmwareDir, elfFileName            ).replace("\\","/"),
-            os.path.join(bootldrDir , bootldrFirmwareFileName).replace("\\","/"),
+#            os.path.join(bootldrDir , bootldrFirmwareFileName).replace("\\","/"),
         ]
     
     def clearSConsOptionsCacheFile(self):
