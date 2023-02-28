@@ -167,6 +167,12 @@ def do(project):
 	p = Popen([dlpack, firmware_folder, 'null', os.path.join(output_folder, bl_pack)])
 	p.communicate()
 	
+	SDCardFirmwareFileName = project.generateSDCardFirmwareFileName()
+	sd_fw_path_src = os.path.join(project.getProjectFirmwareDir(), SDCardFirmwareFileName)
+	sd_fw_path_dst = os.path.join(data_folder, 'update/firmware.bin')
+	scripts.func.copytree(sd_fw_path_src, sd_fw_path_dst)
+	
+	
 	packData = [
 		SrcDestData(data_folder, 'SD-card'),
 		SrcDestData(os.path.join(output_folder, fw_pack)   , os.path.join('web_firmware', fw_pack)),
