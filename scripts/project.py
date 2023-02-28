@@ -207,14 +207,14 @@ class Project(object):
     
     def getProjectBinaries(self):
         firmwareDir = self.getProjectFirmwareDir()
-        bootldrDir  = self.getProjectBootloaderDir()
+#       bootldrDir  = self.getProjectBootloaderDir()
         
-        firmwareFileName        = self.generateFirmwareFileName()
+#        firmwareFileName        = self.generateFirmwareFileName()
         mergedFirmwareFileName  = self.generateMergedFirmwareFileName()
 #       those files are large and nobody need them except me
 #        mapFileName             = self.generateMapFileName()
 #        elfFileName             = self.generateElfFileName()
-        bootldrFirmwareFileName = self.generateBootoaderFileName()
+#        bootldrFirmwareFileName = self.generateBootoaderFileName()
         
         return [
 #            os.path.join(firmwareDir, firmwareFileName       ).replace("\\","/"),
