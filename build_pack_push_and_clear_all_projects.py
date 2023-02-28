@@ -117,7 +117,7 @@ def getSDCardProjectFiles(project):
 	files = [
 		SrcDestData(os.path.join(webPagesPath, webPagesSrcFolder), 'WEB/'),
 		SrcDestData(os.path.join(webPagesPath, 'sitemenu.txt'), 'sitemenu.txt'),
-		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), 'update/firmware.bin'),
+#		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), 'update/firmware.bin'),
 #		SrcDestData(os.path.join(platformPath, SDCardFirmwareFileName), 'firmware.bin'),  # copy firmware also in root dir for compatibility
 	]
 	
