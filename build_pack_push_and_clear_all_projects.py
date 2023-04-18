@@ -227,7 +227,7 @@ def getSimulatorArgs (projectName): return getSettingsFileParameterValue(project
 def getConsole       (projectName): return getSettingsFileParameterValue(projectName, 'putty_path')
 def getConsoleProfile(projectName): return getSettingsFileParameterValue(projectName, 'putty_profile')
 def getAddrToLineTool(projectName): return getSettingsFileParameterValue(projectName, 'addr_to_line_tool')
-
+def getMapParser     (projectName): return getSettingsFileParameterValue(projectName, 'read_firmware_map_tool')
 
 def getSconsExtraArgs(projectName):
 	args_str = getSettingsFileParameterValue(projectName, 'scons_extra_args')

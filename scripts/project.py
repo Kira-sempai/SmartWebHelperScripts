@@ -340,12 +340,15 @@ class Project(object):
         return stdout.decode('utf-8')
         
     def showFirmwareMap(self):
+        from build_pack_push_and_clear_all_projects import getMapParser
+        
         firmwareDir = self.getProjectFirmwareDir()
         mapFileName = self.generateMapFileName()
         mapFile = os.path.join(firmwareDir, mapFileName).replace("\\","/")
         
         firmwareName = self.generateSimulatorName() + '.exe'
-        amap = 'F:/Tools/Amap/amap.exe'
+        
+        amap = getMapParser(self.name)
         
         os.system('start '  + amap + ' ' + '-g ' + mapFile)
         
