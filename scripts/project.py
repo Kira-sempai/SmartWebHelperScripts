@@ -303,8 +303,10 @@ class Project(object):
         elfFileName = self.generateElfFileName()
         elfFile = os.path.join(firmwareDir, elfFileName).replace("\\","/")
         
-        sizeApp = 'E:/Tools/gcc_arm_none_eabi_10_2020-q4-major/bin/arm-none-eabi-size.exe'
-       
+        
+        from build_pack_push_and_clear_all_projects import getReadFwSizeTool
+        sizeApp = getReadFwSizeTool(self.name)
+        
         p = Popen([sizeApp, elfFile], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         
         stdout, stderr = p.communicate()
@@ -379,7 +381,7 @@ class Project(object):
     def getOpenOcdArgsCommon(self, programmingAdapter):
         from build_pack_push_and_clear_all_projects import getOpenOcdDir
         openOcdDir = getOpenOcdDir(self.name)
-        settings = os.path.join(self.path, 'src', self.getSrcPath(), 'platform', self.device.microcontroller, 'flash_stm32.cfg').replace("\\","/")
+        settings = 'flash_openocd.cfg'
         target	= self.device.configFile
         
         interfacePrefix  = 'ftdi/' if programmingAdapter['Ftdi'] else ''
@@ -388,14 +390,22 @@ class Project(object):
         argList = [
                 '-s', openOcdDir + 'scripts',
                 '-f', 'interface/' + interfacePrefix    + programmingAdapter['Interface'],
-                '-c', 'adapter serial '                 + programmingAdapter['SerialNumber'],
-                '-c', propertiesPrefix + 'vid_pid '     + programmingAdapter['VID_PID'],
-                '-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description'],
                 '-c', 'adapter speed '                  + programmingAdapter['Speed'],
-                '-c', 'transport select '               + programmingAdapter['Transport'],
                 '-c', 'adapter srst delay 1000',
                 '-f', 'target/' + target,
         ]
+        
+        if programmingAdapter['VID_PID']:
+        	argList.extend(['-c', 'cmsis_dap_vid_pid ' + programmingAdapter['VID_PID'],])
+        
+        if programmingAdapter['SerialNumber']:
+        	argList.extend(['-c', 'adapter serial ' + programmingAdapter['SerialNumber'],])
+        
+        if programmingAdapter['Description']:
+        	argList.extend(['-c', propertiesPrefix + 'device_desc ' + programmingAdapter['Description'],])
+        	
+        if programmingAdapter['Transport']:
+        	argList.extend(['-c', 'transport select '               + programmingAdapter['Transport'],])
         
         if self.device.connectUnderReset:
         	argList.extend(['-c', 'reset_config srst_only srst_nogate connect_assert_srst',])
