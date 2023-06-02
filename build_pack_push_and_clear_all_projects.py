@@ -7,7 +7,7 @@ import subprocess
 from subprocess import Popen
 import datetime
 import argparse
-
+import winsound
 
 try: input = raw_input
 except NameError: pass
@@ -399,6 +399,11 @@ def main():
 		print(colored(str(datetime.datetime.now()) + " Done", 'white', 'on_green'))
 		print('\r\n\n')
 		
+		if args.build or args.Build or args.pack:
+			if result == 0:
+				winsound.MessageBeep()
+			else:
+				print('\a') # beep
 
 if __name__ == "__main__":
 	main()
