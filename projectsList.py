@@ -10,6 +10,9 @@ def getAvailableProjectsList():
 		Project('SW2',         'ltdc_s45_l4' , 'SmartWeb L3'   , Device('LTDC_S45_L4', 'S45' , 1, 4, False, 'cubemx', 'stm32l4x.cfg'), 'rom'),
 		Project('Other',       'swndin'      , 'SmartWeb N'    , Device('SWNDIN'  , 'S41N', 1), 'rom'),
 		
+		
+		Project('SW2', 'swpc', 'DataLogger', Device('DL', 'L30', None, 1, True), 'rom'),
+		
 		Project('SW2_deprecated', 'DataLogger'       , 'DataLogger'        , Device('DL'    , 'L30', None, 1, True), 'rom'),
 		Project('SW2',            'DataLoggerSW'     , 'DataLogger SW'     , Device('DL_SW' , 'L30', None, 1, True), 'rom'),
 		Project('SW2',            'DataLoggerKSE'    , 'DataLogger KSE'    , Device('DL_KSE', 'L30', None, 1, True), 'rom'),
