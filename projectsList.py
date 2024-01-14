@@ -22,14 +22,14 @@ def getAvailableProjectsList():
 		Project('SW2', 'xhcc_s62'    , 'SmartWeb X2'   , Device('XHCC-S62', 'S62'             ,    2, 1, True, 'stm32', 'stm32f2x.cfg')),
 		Project('Other', 'xhcc_s62_unitTest', 'SmartWeb X2 Unit Test', Device('XHCC-S62', 'S62',   2, 1, True, 'stm32', 'stm32f2x.cfg')),
 		
-		Project('SW2', 'swk'     , 'SmartWeb K'     , Device('SWK', 'SW-N2', 1, None, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
-		Project('SW2', 'swk_base', 'SmartWeb K Base', Device('SWK', 'SW-N2', 1, None, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
-		Project('SW2', 'swk_solar', 'SmartWeb K Solar', Device('SWKS', 'SW-N2', 1, None, True, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
-		Project('Other', 'swk_unitTest', 'SmartWeb K UnitTest', Device('SWK', 'SW-N2', 1, None, False, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2'  , 'swk'         , 'SmartWeb K'         , Device('SWK' , 'SW-N2', 1, None, True , 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2'  , 'swk_base'    , 'SmartWeb K Base'    , Device('SWKB', 'SW-N2', 1, None, True , 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2'  , 'swk_solar'   , 'SmartWeb K Solar'   , Device('SWKS', 'SW-N2', 1, None, True , 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('Other', 'swk_unitTest', 'SmartWeb K UnitTest', Device('SWK' , 'SW-N2', 1, None, False, 'stm32', 'stm32f2x.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
-		Project('SW2', 'swk_at32'     , 'SmartWeb K2'     , Device('SWK2', 'SW-N3', 1, None, True, 'at32', 'at32f407xG.cfg'), 'west', 'old', False, 'OID_HLOGO'),
-		Project('SW2', 'swk_at32_eh'  , 'SmartWeb K21'    , Device('SWK21','SW-N3', 1, None, True, 'at32', 'at32f407xG.cfg'), 'west', 'old', False, 'OID_HLOGO'),
-		Project('SW2', 'swk_at32_base', 'SmartWeb K2 Base', Device('SWK2', 'SW-N3', 1, None, True, 'at32', 'at32f407xG.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2', 'swk_at32'     , 'SmartWeb K2'     , Device('SWK2' , 'SW-N3', 1, None, True, 'at32', 'at32f407xG.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2', 'swk_at32_eh'  , 'SmartWeb K21'    , Device('SWK21', 'SW-N3', 1, None, True, 'at32', 'at32f407xG.cfg'), 'west', 'old', False, 'OID_HLOGO'),
+		Project('SW2', 'swk_at32_base', 'SmartWeb K2 Base', Device('SWK2B', 'SW-N3', 1, None, True, 'at32', 'at32f407xG.cfg'), 'west', 'old', False, 'OID_HLOGO'),
 		
 		Project('SW3'  ,  'caleon_clima', 'Caleon'        , Device('caleon_clima', 'RC40',    1,    1, False, 'stm32n'), 'rom', 'old'),
 		Project('Other',  'caleon_brv'  , 'Caleon BRV'    , Device('caleon_brv'  , 'RC50', None, None, False, 'stm32n'), 'rom', 'new'),
